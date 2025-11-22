@@ -1,0 +1,41 @@
+@use "./reset";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+	color: var(--foreground);
+	background: var(--background);
+	font-family: Inter, sans-serif;
+	@extend %unscroll;
+}
+
+.container {
+	width: 100%;
+	max-width: 1350px;
+	margin: 0 auto;
+	padding: 0 10px;
+}
+
+body {
+	background: #fafafa;
+}
+ 
+.swiper-pagination-bullet {
+	background-color: #CDD5DF !important;
+	opacity: 1 !important;
+	width: 5px !important;
+	height: 5px !important;
+	margin: 0 4px !important;
+	border-radius: 50% !important;
+	transition: width 0.3s ease, background-color 0.3s ease; // ✅ Плавный переход
+}
+
+.swiper-pagination-bullet-active {
+	background-color: #AAA4C2 !important;
+	width: 13px !important;
+	height: 5px !important;
+	border-radius: 30% !important;
+	transition: width 0.3s ease, background-color 0.3s ease; // ✅ Плавный переход
+}
