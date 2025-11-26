@@ -4,44 +4,55 @@ import statistics from "@/assets/svg/Statistics.svg";
 import Image from "next/image";
 import { Title } from "@/components/ui/text/Title";
 import Input from "@/components/ui/input/Input";
+import PageHeader from "@/components/ui/heading/PageHeader";
+import { PAGE } from "@/config/pages/public-page.config";
 
 const Analytics = () => {
 	return (
-		<section className="md:p-4 p-0">
-			<div className="p-4 md:bg-white bg-transparent rounded-[8px]">
-				<TitleComponent className="text-[24px]">Статистика</TitleComponent>
-				<Description className="pb-4">Здесь вы можете посмотреть вашу статистику</Description>
+		<section >
+			<PageHeader
+				href={PAGE.PROFILE}
+				className="hidden md:flex"
+				title="Аналитика"
+			/>
+			<div className="md:p-4 p-0">
+				<div className="p-4 md:bg-white bg-transparent rounded-[8px]">
+					<TitleComponent className="text-[24px]">Статистика</TitleComponent>
+					<Description className="pb-4">
+						Здесь вы можете посмотреть вашу статистику
+					</Description>
 
-        <Input label="Дата" type="date" />
-				<div className="flex flex-col gap-4 mt-4">
-					<div className="flex justify-between items-center bg-white rounded-[8px] p-4 border border-[#E4E4E7]">
-						<div className="flex flex-col gap-1">
-							<Description className="text-[#515151]">
-								Использовано подгузников:
-							</Description>
-							<Title>22</Title>
+					<Input label="Дата" type="date" />
+					<div className="flex flex-col gap-4 mt-4">
+						<div className="flex justify-between items-center bg-white rounded-[8px] p-4 border border-[#E4E4E7]">
+							<div className="flex flex-col gap-1">
+								<Description className="text-[#515151]">
+									Использовано подгузников:
+								</Description>
+								<Title>22</Title>
+							</div>
+							<Image src={statistics} alt="statistics" />
 						</div>
-						<Image src={statistics} alt="statistics" />
-					</div>
 
-					<div className="flex justify-between items-center bg-white rounded-[8px] p-4 border border-[#E4E4E7]">
-						<div className="flex flex-col gap-1">
-							<Description className="text-[#515151]">
-								Потрачено денег:
-							</Description>
-							<Title>14 000 с</Title>
+						<div className="flex justify-between items-center bg-white rounded-[8px] p-4 border border-[#E4E4E7]">
+							<div className="flex flex-col gap-1">
+								<Description className="text-[#515151]">
+									Потрачено денег:
+								</Description>
+								<Title>14 000 с</Title>
+							</div>
+							<Image src={statistics} alt="statistics" />
 						</div>
-						<Image src={statistics} alt="statistics" />
-					</div>
 
-					<div className="flex justify-between items-center bg-white rounded-[8px] p-4 border border-[#E4E4E7]">
-						<div className="flex flex-col gap-1">
-							<Description className="text-[#515151]">
-								Какие размеры вы брали:
-							</Description>
-							<Title>S, M</Title>
+						<div className="flex justify-between items-center bg-white rounded-[8px] p-4 border border-[#E4E4E7]">
+							<div className="flex flex-col gap-1">
+								<Description className="text-[#515151]">
+									Какие размеры вы брали:
+								</Description>
+								<Title>S, M</Title>
+							</div>
+							<Image src={statistics} alt="statistics" />
 						</div>
-						<Image src={statistics} alt="statistics" />
 					</div>
 				</div>
 			</div>

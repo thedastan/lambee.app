@@ -5,7 +5,7 @@ import PaymentForma from "./payment-forma/PaymentForma";
  
 const PaymentComponents = () => {
 	return (
-		<div className=" md:bg-white bg-[#FFFDFA] flex flex-col md:flex-row justify-between items-start h-full relative">
+		<div className=" md:bg-transparent  bg-[#FFFDFA] flex flex-col md:flex-row justify-between items-start h-full relative">
 			<div className=" md:p-4 p-0 md:w-[50%] w-full">
 				<PaymentForma />
 			</div>
