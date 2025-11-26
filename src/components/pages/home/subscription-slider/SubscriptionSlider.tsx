@@ -79,7 +79,7 @@ const SubscriptionSlider = () => {
                     Перейти <GoChevronRight  />
                   </Link>
                 </div>
-                <div className="md:w-[450px] w-[174px] h-full rounded-[16px] bg-[#063B71] flex justify-center items-center">
+                <div className="md:w-[450px] w-[174px] h-full rounded-[16px] md:rounded-bl-[16px] rounded-bl-none bg-[#063B71] flex justify-center items-center">
                   <Image
                     width={83}
                     height={79}

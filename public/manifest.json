@@ -1,0 +1,23 @@
+{
+	"name": "Lambee",
+	"short_name": "Lambee",
+	"description": "",
+	"lang": "ru-RU",
+	"start_url": "/",
+	"scope": "/",
+	"display": "standalone",
+	"background_color": "#ffffff",
+	"theme_color": "#ffffff",
+	"icons": [
+		{
+			"src": "/favicon.ico",
+			"sizes": "512x512",
+			"type": "image/png"
+		},
+		{
+			"src": "/favicon.ico",
+			"sizes": "512x512",
+			"type": "image/png"
+		}
+	]
+}

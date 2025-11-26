@@ -28,17 +28,20 @@ const CategoryHome = () => {
 	];
 	return (
 		<section className="pb-6 px-4">
-      <TitleComponent className="pb-4">Категории товаров</TitleComponent>
+			<TitleComponent className="pb-4">Категории товаров</TitleComponent>
 			<div className=" grid grid-cols-2 gap-2">
 				{data.map((el, index) => (
-					<Link key={index} href={"#"} className="p-3 bg-white border border-[#E4E4E7] rounded-[8px] flex items-center gap-4">
-						<Image
-							width={48}
-							height={48}
-							className=" rounded-[8px]"
-							src={el.img}
-							alt="category-img"
-						/>
+					<Link
+						key={index}
+						href={"#"}
+						className="p-3 bg-white border border-[#E4E4E7] rounded-[8px] flex items-center gap-3">
+						<div className=" relative overflow-hidden rounded-[8px] w-[48px] h-[48px] min-w-[48px] max-w-[48px]">
+							<Image
+								 fill
+								src={el.img}
+								alt="category-img"
+							/>
+						</div>
 						<Title>{el.title}</Title>
 					</Link>
 				))}

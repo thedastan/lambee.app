@@ -3,6 +3,7 @@ import React, { useState, useRef } from "react";
 import { FaCamera } from "react-icons/fa";
 import { Title } from "../text/Title";
 import { Description } from "../text/Description";
+import Image from "next/image";
 
 interface PhotoUploadProps {
   label?: string;
@@ -100,8 +101,10 @@ const PhotoUpload = ({
         {/* Превью фото */}
         {previewUrl ? (
           <div className="flex items-center gap-3">
-            <img
+            <Image
               src={previewUrl}
+              width={56}
+              height={56}
               alt="Превью"
               className="w-[56px] h-[56px] border-2 border-[#E4E4E7] rounded-full object-cover  "
             />
