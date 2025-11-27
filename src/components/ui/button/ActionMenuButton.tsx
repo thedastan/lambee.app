@@ -32,7 +32,7 @@ const ActionMenuButton = ({ isOpen, onToggle, onAction }: ActionMenuButtonProps)
       {isOpen && (
         <div
           data-menu-content="true" // ← исправлено: не "trigger", а "content"!
-          className="absolute top-full right-0 mt-2 w-[240px] bg-white border border-[#E4E4E7] text-start rounded-lg shadow-lg z-10 p-4"
+          className="absolute top-full right-0 mt-2 w-[240px] bg-white border border-[#E4E4E7] text-start rounded-lg shadow-md z-10 p-4"
         >
           <Title className="font-bold text-[#101828]">Действия</Title>
           <ul className="flex flex-col gap-3 mt-4 text-[16px] font-[400]">

@@ -105,7 +105,7 @@ const SubscriptionsHome = () => {
 			<TitleComponent className="px-4">Ваши подписки</TitleComponent>
 			<div
 				style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-				className="flex items-start gap-3 mt-3 overflow-x-auto scrollbar-hide   pl-[calc((100%-96%)/3)] pr-[calc((100%-96%)/3)]">
+				className="flex items-start gap-3   h-[310px] mt-3 overflow-x-auto scrollbar-hide   pl-[calc((100%-90%)/3)] pr-[calc((100%-90%)/3)]">
 				{data.map((item) => (
 					<SubscriptionCard
 						key={item.id}

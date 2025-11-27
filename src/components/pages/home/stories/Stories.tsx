@@ -177,7 +177,7 @@ const Stories = () => {
           onClick={closeModal}
           className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
         >
-          <div className="bg-black py-6 rounded-lg max-w-md w-full text-center">
+          <div className="bg-black py-6 rounded-lg max-w-md md:w-full w-[95%] text-center">
             <div className="flex justify-between px-6 w-full items-center">
               <Image
                 width={50}

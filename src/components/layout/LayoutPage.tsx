@@ -38,7 +38,7 @@ const LayoutPage: React.FC<LayoutProps> = ({
 				</main>
 
 				{/* Нижняя панель — только на мобильных */}
-				<div className="md:hidden">
+				<div className="md:hidden block">
 					<MobileBottomNav />
 				</div>
 			</div>
