@@ -1,7 +1,7 @@
-// components/ui/Button.tsx
+// components/ui/button/Button.tsx
 import React from "react";
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	children: React.ReactNode;
 	onClick?: () => void;
 	disabled?: boolean;
@@ -13,16 +13,18 @@ const Button: React.FC<ButtonProps> = ({
 	onClick,
 	disabled = false,
 	className = "",
+	...rest // <- пропускаем остальные HTML-пропсы (включая type)
 }) => {
-	// Определяем классы по варианту
 	const baseClasses =
 		"flex items-center bg-[#AAA4C2] px-8 h-[40px] text-[14px] text-md justify-center font-[600] text-white rounded-[8px]";
- 
+
 	return (
 		<button
 			onClick={onClick}
 			disabled={disabled}
-			className={`${baseClasses} ${className}`}>
+			className={`${baseClasses} ${className}`}
+			{...rest} // <- передаём type="submit" и другие атрибуты
+		>
 			{children}
 		</button>
 	);

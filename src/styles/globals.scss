@@ -39,3 +39,43 @@ body {
 	border-radius: 30% !important;
 	transition: width 0.3s ease, background-color 0.3s ease; // ✅ Плавный переход
 }
+ 
+///
+
+
+.swiper-pagination-bullet_dev {
+  background-color: #CDD5DF !important;
+  opacity: 1 !important;
+  width: 5px !important;
+  height: 5px !important;
+  margin: 0 4px !important;
+  border-radius: 50% !important;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.swiper-pagination-bullet-active_dev {
+  background-color: #0071E3 !important;
+  width: 13px !important;
+  height: 5px !important;
+  border-radius: 30% !important;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.pagination_dev {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+
+ 
+.my-phone-input {
+  width: 100% !important;
+  max-width: 700px !important;
+  
+
+  input {
+    
+    width: 100% !important;
+  }
+}

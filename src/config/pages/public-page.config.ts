@@ -8,6 +8,18 @@ class PublicPage {
 	ANALYTICS = "/profile/analytics";
 	EDITPROFILE = "/profile/edit-profile";
 
+
+
+	/// AUTH ///
+
+	AUTH = "/auth"
+	AUTH_PRE_REGISTRATION = "/auth/pre-registration"
+	AUTH_REGISTRATION = "/auth/registration"
+	AUTH_LOGIN = "/auth/login"
+	AUTH_FORGOT_PASSWORD = "/auth/forgot-password"
+	AUTH_RESET_PASSWORD = "/auth/reset-password"
+
+
 }
 
 export const PAGE = new PublicPage();

@@ -8,9 +8,8 @@ const MobileBottomNav: React.FC = () => {
   const pathname = usePathname();
 
   return (
-    <nav className="sticky bottom-0 left-0 right-0 bg-white border-t flex justify-around py-2 px-4">
+    <nav className=" fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around py-2 px-4">
       {navbar.map((item) => {
-        // Проверяем, является ли текущий путь активным
         const isActive = pathname === item.link || pathname.startsWith(item.link + '/');
 
         return (
