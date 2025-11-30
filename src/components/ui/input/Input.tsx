@@ -6,6 +6,7 @@ import React, { forwardRef, useState } from "react";
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
+  error?: boolean; // Новый проп для отображения ошибки
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -16,6 +17,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       type = "text",
       disabled = false,
       className = "",
+      error = false, // По умолчанию ошибки нет
       ...rest  
     },
     ref
@@ -38,9 +40,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             type={inputType}
             placeholder={placeholder}
             disabled={disabled}
-            className={`w-full h-[48px] px-4 py-4 rounded-[8px] border border-[#E4E4E7] outline-none transition-all duration-200 ${
+            className={`w-full h-[48px] px-4 py-4 rounded-[8px] border outline-none transition-all duration-200 ${
               disabled ? "opacity-50 cursor-not-allowed" : "cursor-text"
-            } ${className}`}
+            } ${error ? "border-red-500" : "border-[#E4E4E7]"} ${className}`}
             {...rest}
           />
           {type === "password" && (
