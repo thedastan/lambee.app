@@ -14,6 +14,7 @@ import { TitleComponent } from "@/components/ui/text/TitleComponent";
 import PageHeader from "@/components/ui/heading/PageHeader";
 import { PAGE } from "@/config/pages/public-page.config";
 import FollowDetailModals from "./FollowDetailModals";
+import LinkButton from "@/components/ui/button/LinkButton";
 
 const data = [
 	{
@@ -132,15 +133,15 @@ const FollowDetail = () => {
 				</Button>
 
 				<div className="w-full flex gap-3">
-					<Button className="bg-white border border-[#E4E4E7] !text-black w-full !px-4">
+					<LinkButton href={PAGE.HISTORY_DELIVERY} className="bg-white border border-[#E4E4E7] !text-black w-full !px-4">
 						История доставок
-					</Button>
-					<Button className="bg-white border border-[#E4E4E7] !text-black w-full !px-4">
+					</LinkButton>
+					<LinkButton href={PAGE.HISTORY_PAYMENT} className="bg-white border border-[#E4E4E7] !text-black w-full !px-4">
 						История оплат
-					</Button>
+					</LinkButton>
 				</div>
 
-				<Button className="bg-white border border-[#E4E4E7] !text-black w-full">
+				<Button   className="bg-white border border-[#E4E4E7] !text-black w-full">
 					Пропустить следующую доставку
 				</Button>
 

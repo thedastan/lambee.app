@@ -1,4 +1,5 @@
 class PublicPage {
+
 	HOME = "/";
 	NOTICE = "/notice";
 	BASKET = "/basket";
@@ -11,6 +12,13 @@ class PublicPage {
 	ANALYTICS = "/profile/analytics";
 	EDITPROFILE = "/profile/edit-profile";
 	MYCHILDREN = "/profile/my-children";
+
+
+
+	/// HISTORY ///
+
+	HISTORY_DELIVERY = "/history/delivery-history";
+	HISTORY_PAYMENT = "/history/payment-history";
 
 
 
