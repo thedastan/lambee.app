@@ -4,9 +4,13 @@ class PublicPage {
 	BASKET = "/basket";
 	MYORDERS = "/my-orders";
 	FOLLOW = "/follow";
+
+	/// PROFILE ///
+	
 	PROFILE = "/profile";
 	ANALYTICS = "/profile/analytics";
 	EDITPROFILE = "/profile/edit-profile";
+	MYCHILDREN = "/profile/my-children";
 
 
 

@@ -172,7 +172,7 @@ const Stories = () => {
 					onClick={closeModal}
 					className="fixed inset-0 bg-black   flex items-center justify-center z-50">
 					<div className="bg-black py-6 rounded-lg max-w-md md:w-full w-full h-[100vh] text-center flex flex-col justify-between">
-						<div className="">
+						<div className="w-full mt-10">
 							<div className="flex justify-between px-6 w-full items-center">
 								<Image
 									width={50}
@@ -191,7 +191,7 @@ const Stories = () => {
 							</div>
 						</div>
 
-						<div className="w-full max-h-[600px]  overflow-hidden flex  justify-start items-start">
+						<div className="w-full max-h-[500px]  overflow-hidden flex  justify-start items-start">
 							<Image
 								className="w-full h-auto   object-cover rounded-none  "
 								src={currentStory.content}
