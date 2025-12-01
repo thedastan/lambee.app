@@ -1,12 +1,12 @@
 'use client'
 import EyeIcon from "@/assets/svg/EyeIcon";
 import EyeOffIcon from "@/assets/svg/EyeOffIcon";
-import React, { forwardRef, useState } from "react";
+import React, { forwardRef, ReactNode, useState } from "react";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
-  label?: string;
-  error?: boolean; // Новый проп для отображения ошибки
+    label?: ReactNode;
+  error?: boolean;  
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -17,14 +17,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       type = "text",
       disabled = false,
       className = "",
-      error = false, // По умолчанию ошибки нет
+      error = false,  
       ...rest  
     },
     ref
   ) => {
     const [showPassword, setShowPassword] = useState(false);
 
-    // Определяем реальный тип инпута
     const inputType = type === "password" && showPassword ? "text" : type;
 
     return (

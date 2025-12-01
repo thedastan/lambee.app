@@ -1,18 +1,22 @@
+"use client";
 import { Description } from "@/components/ui/text/Description";
 import { TitleComponent } from "@/components/ui/text/TitleComponent";
 import statistics from "@/assets/svg/Statistics.svg";
 import Image from "next/image";
 import { Title } from "@/components/ui/text/Title";
-import Input from "@/components/ui/input/Input";
 import PageHeader from "@/components/ui/heading/PageHeader";
 import { PAGE } from "@/config/pages/public-page.config";
+import { useState } from "react";
+import "react-datepicker/dist/react-datepicker.css";
+import DateInput from "@/components/ui/input/DateInput";
 
 const Analytics = () => {
+	const [birthDate, setBirthDate] = useState<Date | null>(null);
+
 	return (
-		<section >
+		<section>
 			<PageHeader
 				href={PAGE.PROFILE}
-				className="hidden md:flex"
 				title="Аналитика"
 			/>
 			<div className="md:p-4 p-0">
@@ -22,7 +26,13 @@ const Analytics = () => {
 						Здесь вы можете посмотреть вашу статистику
 					</Description>
 
-					<Input label="Дата" type="date" />
+					<DateInput
+						label="Дата"
+						required
+						selected={birthDate}
+						onChange={(date) => setBirthDate(date)}
+						placeholderText="Введите дату"
+					/>
 					<div className="flex flex-col gap-4 mt-4">
 						<div className="flex justify-between items-center bg-white rounded-[8px] p-4 border border-[#E4E4E7]">
 							<div className="flex flex-col gap-1">

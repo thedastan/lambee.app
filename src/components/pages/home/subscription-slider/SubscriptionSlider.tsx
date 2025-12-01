@@ -1,6 +1,4 @@
-// components/SubscriptionSlider.tsx
-
-"use client"; // Это клиентский компонент — нужно для Swiper
+"use client";  
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -25,21 +23,21 @@ const SubscriptionSlider = () => {
       link: "#",
     },
     {
-      id: 1,
+      id: 2,
       title: "Скидка 20%",
       subtitle: "На первый месяц подписки",
       image: img,
       link: "#",
     },
     {
-      id: 1,
+      id: 3,
       title: "Скидка 20%",
       subtitle: "На первый месяц подписки",
       image: img,
       link: "#",
     },
     {
-      id: 1,
+      id: 4,
       title: "Скидка 20%",
       subtitle: "На первый месяц подписки",
       image: img,
@@ -61,14 +59,14 @@ const SubscriptionSlider = () => {
         loop={true}
         speed={800}
         autoplay={{
-          delay: 3000, // каждые 3 секунды
-          disableOnInteraction: false, // продолжать автоплей после взаимодействия
+          delay: 3000,  
+          disableOnInteraction: false,  
         }}
         className=" overflow-hidden">
         {slides.map((el) => (
           <SwiperSlide key={el.id}>
             <div className=" w-full pb-10 ">
-              {/* Левая часть — текст */}
+             
               <div className="bg-[#AAA4C2] h-[164px] text-white rounded-[16px] gap-2 relative flex justify-between items-center md:pl-16 pl-5">
                 <div className="flex flex-col gap-3 md:mt-8 mt-6">
                   <TitleComponent>{el.title}</TitleComponent>

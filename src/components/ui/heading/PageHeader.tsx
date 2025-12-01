@@ -37,9 +37,9 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 						<GoChevronLeft size={23} />
 					</Link>
 				)}
-				<div className="flex flex-col gap-1">
+				<div className="flex flex-col  ">
 					{title && <TitleComponent>{title}</TitleComponent>}
-					<Description className="text-[#515151]">{description}</Description>
+					<Description className="text-[#515151] ">{description}</Description>
 				</div>
 			</div>
 		</div>

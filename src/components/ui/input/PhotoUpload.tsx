@@ -1,12 +1,12 @@
 // src/components/ui/PhotoUpload.tsx
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, ReactNode } from "react";
 import { FaCamera } from "react-icons/fa";
 import { Title } from "../text/Title";
 import { Description } from "../text/Description";
 import Image from "next/image";
 
 interface PhotoUploadProps {
-  label?: string;
+  label?: ReactNode;
   value?: File | null; // текущий выбранный файл
   onChange?: (file: File | null) => void;
   maxFileSizeMB?: number; // по умолчанию 5 МБ
