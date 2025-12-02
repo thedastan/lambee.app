@@ -50,7 +50,7 @@ const OrdersCard = ({
 
 	return (
 		<Link
-			href="/follow/detail"
+			href="/my-orders/detail"
 			className="border border-[#E4E4E7] rounded-[16px] p-4 bg-white w-full relative block">
 			{/* Header */}
 			<div className="flex items-center justify-between gap-2 border-b pb-3 border-[#E4E4E7]">
