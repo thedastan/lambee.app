@@ -12,23 +12,21 @@ import CustomRadioGroup from "@/components/ui/radio-choice/CustomRadioGroup";
 import Input from "@/components/ui/input/Input";
 import "react-datepicker/dist/react-datepicker.css";
 import DateInput from "@/components/ui/input/DateInput";
+import Image from "next/image";
 
-// Исходные данные: дети с подписками (отображение)
+import logo from "@/assets/svg/logo.svg";
+
 const initialChildrenData = [
 	{
-		name: "Алия",
-		follow: [{ img: img, title: "Подгузники" }],
+		title: "Подгузники",
+		follow: [{ img: img, name: "Али" }],
 	},
 	{
-		name: "Али",
-		follow: [
-			{ img: img, title: "Трусики" },
-			{ img: img, title: "Салфетки" },
-		],
+		title: "Трусики",
+		follow: [{ img: img, name: "Алия" }],
 	},
 ];
 
-// Зарегистрированные дети (для выбора)
 const initialRegisteredChildren = [
 	{ id: "1", name: "Алия" },
 	{ id: "2", name: "Али" },
@@ -54,37 +52,31 @@ const MyChildren = () => {
 		null
 	);
 
-	// Открыть первую модалку — дата рождения
 	const openDateModal = () => {
 		setBirthDate(null);
 		setModalStep("date");
 	};
 
-	// Перейти ко второй модалке — выбор из списка
 	const openChooseModal = () => {
-		setSelectedChildId(""); // можно оставить пустым или сохранить текущий выбор
+		setSelectedChildId("");
 		setModalStep("choose");
 	};
 
-	// Перейти к третьей — добавление нового
 	const openAddModal = () => {
 		setNewChildName("");
 		setModalStep("add");
 	};
 
-	// Закрыть все модалки
 	const closeModal = () => {
 		setModalStep(null);
 	};
 
-	// Сохранить дату и перейти к выбору
 	const handleDateNext = () => {
 		if (birthDate) {
 			openChooseModal();
 		}
 	};
 
-	// Сохранить нового ребёнка и вернуться к выбору
 	const handleAddChild = () => {
 		if (newChildName.trim()) {
 			const newChild: Child = {
@@ -99,10 +91,11 @@ const MyChildren = () => {
 
 	return (
 		<section>
-			<PageHeader
-				href={PAGE.PROFILE}
-				title="Мои дети"
-			/>
+			<PageHeader href={PAGE.PROFILE} title="Мои дети" />
+
+			<div className="p-20 bg-[#AAA4C2]">
+				<Image width={200} height={200} src={logo} alt="logo" />
+			</div>
 
 			<div className="p-4">
 				<TitleComponent className="text-[24px]">
@@ -118,7 +111,7 @@ const MyChildren = () => {
 							key={index}
 							className="border border-[#E4E4E7] rounded-[8px] p-4 bg-white">
 							<div className="w-full flex items-center justify-between">
-								<TitleComponent>{child.name}</TitleComponent>
+								<TitleComponent>{child.title}</TitleComponent>
 								<Button className="bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0">
 									<FiEdit2 />
 								</Button>
@@ -132,11 +125,11 @@ const MyChildren = () => {
 										<div className="rounded-[8px] overflow-hidden w-[40px] h-[40px]">
 											<img
 												src={item.img.src}
-												alt={item.title}
+												alt={item.name}
 												className="w-full h-full object-cover"
 											/>
 										</div>
-										<Description>{item.title}</Description>
+										<Description>{item.name}</Description>
 									</div>
 								))}
 							</div>
@@ -156,8 +149,6 @@ const MyChildren = () => {
 					onClose={closeModal}
 					title="Дата рождения ребёнка">
 					<div className="flex flex-col gap-4">
-					 
-
 						<DateInput
 							label="Дата рождения"
 							required
