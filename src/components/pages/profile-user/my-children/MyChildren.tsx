@@ -12,9 +12,7 @@ import CustomRadioGroup from "@/components/ui/radio-choice/CustomRadioGroup";
 import Input from "@/components/ui/input/Input";
 import "react-datepicker/dist/react-datepicker.css";
 import DateInput from "@/components/ui/input/DateInput";
-import Image from "next/image";
 
-import logo from "@/assets/svg/logo.svg";
 
 const initialChildrenData = [
 	{
@@ -93,9 +91,7 @@ const MyChildren = () => {
 		<section>
 			<PageHeader href={PAGE.PROFILE} title="Мои дети" />
 
-			<div className="p-20 bg-[#AAA4C2]">
-				<Image width={200} height={200} src={logo} alt="logo" />
-			</div>
+		 
 
 			<div className="p-4">
 				<TitleComponent className="text-[24px]">
