@@ -6,14 +6,14 @@ import { useState } from "react";
 import Image from "next/image";
 import img_story from "@/assets/images/story.png";
 import { IoMdClose } from "react-icons/io";
-import con from "@/assets/images/kids2.png";
+import con from "@/assets/images/kids3.png";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
+import { Description } from "@/components/ui/text/Description";
 
-// Определяем тип для истории
 type Story = {
 	id: number;
 	title: string;
-	image: string | StaticImport; // или StaticImageData, если используете TypeScript 5.5+
+	image: string | StaticImport;
 	content: string | StaticImport;
 	href?: string;
 };
@@ -141,16 +141,16 @@ const Stories = () => {
 	return (
 		<section className="pt-6">
 			<div
-				className="flex items-start gap-4 overflow-x-auto scrollbar-hide   pl-[calc((100%-96%)/3)] pr-[calc((100%-96%)/3)] pb-3"
+				className="flex items-start gap-1 overflow-x-auto scrollbar-hide    py-1 pl-[calc((100%-96%)/3)] pr-[calc((100%-96%)/3)] pb-3"
 				style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
 				{stories.map((story) => (
 					<div
 						key={story.id}
-						className="flex flex-col items-center min-w-[80px] group">
+						className="flex flex-col items-center min-w-[70px] group">
 						<button
 							onClick={() => openModal(story)}
-							className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-white shadow-sm group-hover:scale-105 transition-transform focus:outline-none">
-							<div className="absolute inset-0 bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 rounded-full"></div>
+							className="relative w-16 h-16 rounded-full overflow-hidden border-1 border-white shadow-sm group-hover:scale-105 transition-transform focus:outline-none">
+							<div className="absolute inset-0 bg-gradient-to-br from-[#5900ff] via-[#ffc400] to-[#ff00ff] rounded-full"></div>
 							<Image
 								src={story.image}
 								alt={story.title}
@@ -170,30 +170,36 @@ const Stories = () => {
 			{isModalOpen && currentStory && (
 				<div
 					onClick={closeModal}
-					className="fixed inset-0 bg-black   flex items-center justify-center z-50">
-					<div className="bg-black py-6 rounded-lg max-w-md md:w-full w-full h-[100vh] text-center flex flex-col justify-between">
-						<div className="w-full mt-10">
+					className="fixed inset-0 md:bg-[#131313] bg-black md:py-10 py-0  flex items-center justify-center z-50">
+					<div className="bg-black py-10  rounded-lg max-w-md md:w-full w-full h-full text-center flex flex-col justify-between">
+						<div className="w-full">
+							<div className="w-full px-2 pb-4">
+								<div className="w-full bg-slate-400 h-[2px] rounded-full"></div>
+							</div>
+
 							<div className="flex justify-between px-6 w-full items-center">
-								<Image
-									width={50}
-									height={50}
-									className="rounded-full object-cover border border-white"
-									src={currentStory.image}
-									alt="img"
-								/>
+								<div className="flex items-center gap-2">
+									<Image
+										width={50}
+										height={50}
+										className="rounded-full object-cover border border-white"
+										src={currentStory.image}
+										alt="img"
+									/>
+
+									<Description className="text-white">
+										{currentStory.title}
+									</Description>
+								</div>
 								<button onClick={closeModal} className="text-white">
 									<IoMdClose size={23} />
 								</button>
 							</div>
-
-							<div className="w-full px-2 py-4">
-								<div className="w-full bg-slate-400 h-[2px] rounded-full"></div>
-							</div>
 						</div>
 
-						<div className="w-full max-h-[500px]  overflow-hidden flex  justify-start items-start">
+						<div className="w-full max-h-[500px]  overflow-hidden flex   justify-start items-start">
 							<Image
-								className="w-full h-auto   object-cover rounded-none  "
+								className="w-full h-auto   object-contain rounded-none  "
 								src={currentStory.content}
 								alt="img"
 							/>
