@@ -8,56 +8,42 @@ import { usePathname } from "next/navigation";
 import { PAGE } from "@/config/pages/public-page.config";
 
 interface LayoutProps {
-  children: React.ReactNode;
-  showSidebar?: boolean;
-  showHeader?: boolean;
+	children: React.ReactNode;
+	showSidebar?: boolean;
+	showHeader?: boolean;
 }
 
 const LayoutPage: React.FC<LayoutProps> = ({
-  children,
-  showSidebar = true,
-  showHeader = true,
+	children,
+ 
 }) => {
-  const pathname = usePathname();
+	const pathname = usePathname();
 
-  const isAuthPage = pathname.startsWith(PAGE.AUTH);
- 
-  if (isAuthPage) {
-    return (
-      <main className="w-full min-h-screen ">
-        {children}
-      </main>
-    );
-  }
- 
-  return (
-    <div className="flex h-screen">
-      {showSidebar && (
-        <div className="hidden md:flex">
-          <Sidebar />
-        </div>
-      )}
+	const isAuthPage = pathname.startsWith(PAGE.AUTH);
 
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {showHeader && (
-          <div className="md:hidden block">
-            <Header />
-          </div>
-        )}
+	if (isAuthPage) {
+		return <main className="w-full min-h-screen ">{children}</main>;
+	}
 
-        <main
-          className="flex-1 overflow-y-auto pb-16"
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-        >
-          {children}
-        </main>
+	return (
+		<div className="flex ">
+			<div className="hidden md:flex">
+				<Sidebar />
+			</div>
 
-        <div className="md:hidden flex flex-col justify-end w-full h-[60px]">
-          <MobileBottomNav />
-        </div>
-      </div>
-    </div>
-  );
+			<div className="flex flex-col overflow-hidden">
+				<Header />
+
+				<main
+					className=" overflow-y-auto pb-16"
+					style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+					{children}
+				</main>
+
+				<MobileBottomNav />
+			</div>
+		</div>
+	);
 };
 
 export default LayoutPage;

@@ -33,34 +33,36 @@ const Header = () => {
 	}, []);
 
 	return (
-		<header
-			className={`w-full py-2 transition-all duration-500 ${
-				scrolled
-					? "bg-white border-b border-gray-200"
-					: "bg-transparent border-b border-[#a8a8a8]/30"
-			}`}>
-			<div className="container flex items-center justify-between">
-				<button onClick={toggleBox}>
-					<CgMenu size={28} />
-				</button>
+		<header className="w-full md:h-0 h-[65px]">
+			<div
+				className={`w-full md:hidden fixed z-50 top-0 left-0 block py-2 transition-all duration-300 ${
+					scrolled
+						? "bg-white border-b border-gray-200"
+						: "bg-transparent border-b border-[#a8a8a8]/30"
+				}`}>
+				<div className="container flex items-center justify-between">
+					<button onClick={toggleBox}>
+						<CgMenu size={28} />
+					</button>
 
-				<Link href={PAGE.HOME}>
-					<Image
-						src={logo}
-						alt="logo"
-						width={100}
-						height={25}
-						className="md:w-[150px] w-[100px]"
-					/>
-				</Link>
+					<Link href={PAGE.HOME}>
+						<Image
+							src={logo}
+							alt="logo"
+							width={100}
+							height={25}
+							className="md:w-[150px] w-[100px]"
+						/>
+					</Link>
 
-				<LinkButton
-					href={PAGE.BASKET}
-					className="w-[44px] h-[40px] border border-[#E4E4E7] rounded-[5px] !text-black bg-transparent !px-0">
-					<BasketSvg />
-				</LinkButton>
+					<LinkButton
+						href={PAGE.BASKET}
+						className="w-[44px] h-[40px] border border-[#E4E4E7] rounded-[5px] !text-black bg-transparent !px-0">
+						<BasketSvg />
+					</LinkButton>
+				</div>
+				<BurgerMenu isOpen={isOpen} setIsOpen={setIsOpen} />
 			</div>
-			<BurgerMenu isOpen={isOpen} setIsOpen={setIsOpen} />
 		</header>
 	);
 };
