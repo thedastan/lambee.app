@@ -42,12 +42,14 @@ const Stories = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [currentStory, setCurrentStory] = useState<Story | null>(null);
 	const [dragOffsetY, setDragOffsetY] = useState(0);
+	const dragOffsetYRef = useRef(0); // Для точного условия закрытия
 	const modalRef = useRef<HTMLDivElement>(null);
 
 	const openModal = (story: Story) => {
 		setCurrentStory(story);
 		setIsModalOpen(true);
 		setDragOffsetY(0);
+		dragOffsetYRef.current = 0;
 	};
 
 	const closeModal = () => {
@@ -65,6 +67,7 @@ const Stories = () => {
 			if (e.touches.length !== 1) return;
 			isDragging = true;
 			startY = e.touches[0].clientY;
+			dragOffsetYRef.current = 0;
 			setDragOffsetY(0);
 		};
 
@@ -75,18 +78,21 @@ const Stories = () => {
 			const diff = currentY - startY;
 
 			if (diff > 0) {
+				dragOffsetYRef.current = diff;
 				setDragOffsetY(diff);
-				e.preventDefault();
+				e.preventDefault(); // 🔥 Блокирует pull-to-refresh
 			}
 		};
 
 		const handleTouchEnd = () => {
 			if (!isDragging) return;
 			isDragging = false;
-			if (dragOffsetY > 100) {
+
+			const finalOffset = dragOffsetYRef.current;
+			setDragOffsetY(0); // плавно вернуть на место
+
+			if (finalOffset > 100) {
 				closeModal();
-			} else {
-				setDragOffsetY(0);
 			}
 		};
 
@@ -100,7 +106,7 @@ const Stories = () => {
 			modal.removeEventListener("touchmove", handleTouchMove);
 			modal.removeEventListener("touchend", handleTouchEnd);
 		};
-	}, [isModalOpen, dragOffsetY]);
+	}, [isModalOpen]);
 
 	return (
 		<section className="pt-6">
