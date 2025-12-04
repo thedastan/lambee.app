@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import img_story from "@/assets/images/story.png";
 import { IoMdClose } from "react-icons/io";
@@ -55,7 +55,6 @@ const stories: Story[] = [
 		image: img_story,
 		content: con,
 	},
-
 	{
 		id: 7,
 		title: "Скидки",
@@ -128,6 +127,12 @@ const Stories = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [currentStory, setCurrentStory] = useState<Story | null>(null);
 
+	// Состояния для свайпа
+	const [isDragging, setIsDragging] = useState(false);
+	const [startY, setStartY] = useState(0);
+	const [dragOffsetY, setDragOffsetY] = useState(0);
+	const modalRef = useRef<HTMLDivElement>(null);
+
 	const openModal = (story: Story) => {
 		setCurrentStory(story);
 		setIsModalOpen(true);
@@ -136,20 +141,65 @@ const Stories = () => {
 	const closeModal = () => {
 		setIsModalOpen(false);
 		setCurrentStory(null);
+		setIsDragging(false);
+		setDragOffsetY(0);
+	};
+
+	// Утилита для получения Y-координаты из любого события
+	const getEventY = (
+		e: React.TouchEvent | React.MouseEvent | TouchEvent | MouseEvent
+	): number => {
+		if ("touches" in e && e.touches.length > 0) {
+			return e.touches[0].clientY;
+		}
+		if ("changedTouches" in e && e.changedTouches.length > 0) {
+			return e.changedTouches[0].clientY;
+		}
+		return (e as MouseEvent).clientY;
+	};
+
+	const handleTouchStart = (e: React.TouchEvent | React.MouseEvent) => {
+		const clientY = getEventY(e);
+		setStartY(clientY);
+		setIsDragging(true);
+		setDragOffsetY(0);
+	};
+
+	const handleTouchMove = (e: React.TouchEvent | React.MouseEvent) => {
+		if (!isDragging) return;
+		const clientY = getEventY(e);
+		const diff = clientY - startY;
+		// Разрешаем свайп только вниз (diff > 0)
+		if (diff > 0) {
+			setDragOffsetY(diff);
+		}
+	};
+
+	const handleTouchEnd = () => {
+		if (!isDragging) return;
+		setIsDragging(false);
+		if (dragOffsetY > 100) {
+			closeModal();
+		} else {
+			setDragOffsetY(0); // плавно вернуть
+		}
 	};
 
 	return (
 		<section className="pt-6">
 			<div
-				className="flex items-start gap-1 overflow-x-auto scrollbar-hide    py-1 pl-[calc((100%-96%)/3)] pr-[calc((100%-96%)/3)] pb-3"
-				style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+				className="flex items-start gap-1 overflow-x-auto scrollbar-hide py-1 pl-[calc((100%-96%)/3)] pr-[calc((100%-96%)/3)] pb-3"
+				style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+			>
 				{stories.map((story) => (
 					<div
 						key={story.id}
-						className="flex flex-col items-center min-w-[70px] group">
+						className="flex flex-col items-center min-w-[70px] group"
+					>
 						<button
 							onClick={() => openModal(story)}
-							className="relative w-16 h-16 rounded-full overflow-hidden border-1 border-white shadow-sm group-hover:scale-105 transition-transform focus:outline-none">
+							className="relative w-16 h-16 rounded-full overflow-hidden border-1 border-white shadow-sm group-hover:scale-105 transition-transform focus:outline-none"
+						>
 							<div className="absolute inset-0 bg-gradient-to-br from-[#5900ff] via-[#ffc400] to-[#ff00ff] rounded-full"></div>
 							<Image
 								src={story.image}
@@ -169,9 +219,23 @@ const Stories = () => {
 
 			{isModalOpen && currentStory && (
 				<div
-					onClick={closeModal}
-					className="fixed inset-0 md:bg-[#131313] bg-black md:py-10 py-0  flex items-center justify-center z-50">
-					<div className="bg-black py-10  rounded-lg max-w-md md:w-full w-full h-full text-center flex flex-col justify-between">
+					className="fixed inset-0 md:bg-[#131313] bg-black md:py-10 py-0 flex items-center justify-center z-50"
+					onTouchStart={handleTouchStart}
+					onTouchMove={handleTouchMove}
+					onTouchEnd={handleTouchEnd}
+					onMouseDown={handleTouchStart}
+					onMouseMove={(e) => isDragging && handleTouchMove(e)}
+					onMouseUp={handleTouchEnd}
+					onMouseLeave={() => isDragging && handleTouchEnd()}
+					style={{ cursor: isDragging ? "grabbing" : "default" }}
+				>
+					<div
+						ref={modalRef}
+						className="bg-black py-10 rounded-lg max-w-md md:w-full w-full h-full text-center flex flex-col justify-between transition-transform duration-200"
+						style={{
+							transform: `translateY(${dragOffsetY}px)`,
+						}}
+					>
 						<div className="w-full">
 							<div className="w-full px-2 pb-4">
 								<div className="w-full bg-slate-400 h-[2px] rounded-full"></div>
@@ -184,9 +248,8 @@ const Stories = () => {
 										height={50}
 										className="rounded-full object-cover border border-white"
 										src={currentStory.image}
-										alt="img"
+										alt="avatar"
 									/>
-
 									<Description className="text-white">
 										{currentStory.title}
 									</Description>
@@ -197,11 +260,11 @@ const Stories = () => {
 							</div>
 						</div>
 
-						<div className="w-full max-h-[500px]  overflow-hidden flex   justify-start items-start">
+						<div className="w-full max-h-[500px] overflow-hidden flex justify-start items-start">
 							<Image
-								className="w-full h-auto   object-contain rounded-none  "
+								className="w-full h-auto object-contain rounded-none"
 								src={currentStory.content}
-								alt="img"
+								alt="story content"
 							/>
 						</div>
 

@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import BurgerMenu from "./BurgerMenu";
-import { CgMenu } from "react-icons/cg";
 
 import logo from "@/assets/images/logo.png";
 import BasketSvg from "@/assets/svg/BasketSvg";
@@ -41,9 +40,21 @@ const Header = () => {
 						: "bg-transparent border-b border-[#a8a8a8]/30"
 				}`}>
 				<div className="container flex items-center justify-between">
-					<button onClick={toggleBox}>
-						<CgMenu size={28} />
-					</button>
+			 
+					<div className="w-[40px]"></div>
+
+					<div className="burger__button">
+						<label>
+							<input
+								type="checkbox"
+								checked={isOpen}
+								onChange={toggleBox}
+							/>
+							<span></span>
+							<span></span>
+							<span></span>
+						</label>
+					</div>
 
 					<Link href={PAGE.HOME}>
 						<Image
@@ -61,6 +72,7 @@ const Header = () => {
 						<BasketSvg />
 					</LinkButton>
 				</div>
+
 				<BurgerMenu isOpen={isOpen} setIsOpen={setIsOpen} />
 			</div>
 		</header>

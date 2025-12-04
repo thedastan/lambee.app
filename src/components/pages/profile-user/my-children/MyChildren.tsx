@@ -12,6 +12,7 @@ import CustomRadioGroup from "@/components/ui/radio-choice/CustomRadioGroup";
 import Input from "@/components/ui/input/Input";
 import "react-datepicker/dist/react-datepicker.css";
 import DateInput from "@/components/ui/input/DateInput";
+import Image from "next/image";
 
 
 const initialChildrenData = [
@@ -118,8 +119,9 @@ const MyChildren = () => {
 									<div
 										key={idx}
 										className="flex items-center gap-2 border border-[#E4E4E7] rounded-[8px] p-2 bg-[#FAFAFA]">
-										<div className="rounded-[8px] overflow-hidden w-[40px] h-[40px]">
-											<img
+										<div className="rounded-[8px] overflow-hidden relative w-[40px] h-[40px]">
+											<Image
+											fill
 												src={item.img.src}
 												alt={item.name}
 												className="w-full h-full object-cover"
