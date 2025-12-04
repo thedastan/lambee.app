@@ -135,6 +135,11 @@ body {
 	input[type="checkbox"]:checked ~ span:nth-of-type(3) {
 		transform-origin: bottom;
 		width: 50%;
-		transform: translate(30px, -11px) rotatez(45deg);
+		transform: translate(30px, -9px) rotatez(45deg);
+
 	}
+}
+ 
+html {
+  overscroll-behavior-y: contain;
 }
