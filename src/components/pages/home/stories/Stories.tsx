@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import img_story from "@/assets/images/story.png";
 import { IoMdClose } from "react-icons/io";
@@ -41,59 +41,82 @@ const stories: Story[] = [
 const Stories = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [currentStory, setCurrentStory] = useState<Story | null>(null);
-	const [isDragging, setIsDragging] = useState(false);
-	const [startY, setStartY] = useState(0);
 	const [dragOffsetY, setDragOffsetY] = useState(0);
+	const modalRef = useRef<HTMLDivElement>(null);
 
 	const openModal = (story: Story) => {
 		setCurrentStory(story);
 		setIsModalOpen(true);
+		setDragOffsetY(0);
 	};
 
 	const closeModal = () => {
 		setIsModalOpen(false);
 		setCurrentStory(null);
-		setIsDragging(false);
-		setDragOffsetY(0);
 	};
 
-	const handleTouchStart = (e: React.TouchEvent) => {
-		setStartY(e.touches[0].clientY);
-		setIsDragging(true);
-		setDragOffsetY(0);
-	};
+	useEffect(() => {
+		if (!isModalOpen || !modalRef.current) return;
 
-	const handleTouchMove = (e: React.TouchEvent) => {
-		if (!isDragging) return;
-		const currentY = e.touches[0].clientY;
-		const diff = currentY - startY;
-		if (diff > 0) {
-			setDragOffsetY(diff);
-		}
-	};
+		let startY = 0;
+		let isDragging = false;
 
-	const handleTouchEnd = () => {
-		if (!isDragging) return;
-		setIsDragging(false);
-		if (dragOffsetY > 100) {
-			closeModal();
-		} else {
+		const handleTouchStart = (e: TouchEvent) => {
+			if (e.touches.length !== 1) return;
+			isDragging = true;
+			startY = e.touches[0].clientY;
 			setDragOffsetY(0);
-		}
-	};
+		};
+
+		const handleTouchMove = (e: TouchEvent) => {
+			if (!isDragging || e.touches.length !== 1) return;
+
+			const currentY = e.touches[0].clientY;
+			const diff = currentY - startY;
+
+			if (diff > 0) {
+				setDragOffsetY(diff);
+				e.preventDefault();
+			}
+		};
+
+		const handleTouchEnd = () => {
+			if (!isDragging) return;
+			isDragging = false;
+			if (dragOffsetY > 100) {
+				closeModal();
+			} else {
+				setDragOffsetY(0);
+			}
+		};
+
+		const modal = modalRef.current;
+		modal.addEventListener("touchstart", handleTouchStart, { passive: true });
+		modal.addEventListener("touchmove", handleTouchMove, { passive: false });
+		modal.addEventListener("touchend", handleTouchEnd, { passive: true });
+
+		return () => {
+			modal.removeEventListener("touchstart", handleTouchStart);
+			modal.removeEventListener("touchmove", handleTouchMove);
+			modal.removeEventListener("touchend", handleTouchEnd);
+		};
+	}, [isModalOpen, dragOffsetY]);
 
 	return (
 		<section className="pt-6">
 			<div
 				className="flex items-start gap-1 overflow-x-auto scrollbar-hide py-1 pl-[calc((100%-96%)/3)] pr-[calc((100%-96%)/3)] pb-3"
-				style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+				style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+			>
 				{stories.map((story) => (
 					<div
 						key={story.id}
-						className="flex flex-col items-center min-w-[70px] group">
+						className="flex flex-col items-center min-w-[70px] group"
+					>
 						<button
 							onClick={() => openModal(story)}
-							className="relative w-16 h-16 rounded-full overflow-hidden border-1 border-white shadow-sm group-hover:scale-105 transition-transform focus:outline-none">
+							className="relative w-16 h-16 rounded-full overflow-hidden border-1 border-white shadow-sm group-hover:scale-105 transition-transform focus:outline-none"
+						>
 							<div className="absolute inset-0 bg-gradient-to-br from-[#5900ff] via-[#ffc400] to-[#ff00ff] rounded-full"></div>
 							<Image
 								src={story.image}
@@ -112,13 +135,13 @@ const Stories = () => {
 
 			{isModalOpen && currentStory && (
 				<div
-					className="fixed inset-0 md:bg-[#131313] bg-black md:py-10 py-0 flex items-center justify-center z-50"
-					onTouchStart={handleTouchStart}
-					onTouchMove={handleTouchMove}
-					onTouchEnd={handleTouchEnd}>
+					ref={modalRef}
+					className="fixed inset-0 md:bg-[#131313] bg-black md:py-10 py-0 flex items-center justify-center z-50 touch-none"
+				>
 					<div
 						className="bg-black py-10 rounded-lg max-w-md md:w-full w-full h-full text-center flex flex-col justify-between transition-transform duration-200"
-						style={{ transform: `translateY(${dragOffsetY}px)` }}>
+						style={{ transform: `translateY(${dragOffsetY}px)` }}
+					>
 						<div className="w-full">
 							<div className="w-full px-2 pb-4">
 								<div className="w-full bg-slate-400 h-[2px] rounded-full"></div>
@@ -150,7 +173,7 @@ const Stories = () => {
 							/>
 						</div>
 
-						<div  /> 
+						<div/> 
 					</div>
 				</div>
 			)}
