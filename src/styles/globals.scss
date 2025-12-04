@@ -21,9 +21,9 @@ body {
 body {
 	background: #fafafa;
 }
- 
+
 .swiper-pagination-bullet {
-	background-color: #CDD5DF !important;
+	background-color: #cdd5df !important;
 	opacity: 1 !important;
 	width: 5px !important;
 	height: 5px !important;
@@ -33,50 +33,108 @@ body {
 }
 
 .swiper-pagination-bullet-active {
-	background-color: #AAA4C2 !important;
+	background-color: #aaa4c2 !important;
 	width: 13px !important;
 	height: 5px !important;
 	border-radius: 30% !important;
 	transition: width 0.3s ease, background-color 0.3s ease; // ✅ Плавный переход
 }
- 
+
 ///
 
-
 .swiper-pagination-bullet_dev {
-  background-color: #CDD5DF !important;
-  opacity: 1 !important;
-  width: 5px !important;
-  height: 5px !important;
-  margin: 0 4px !important;
-  border-radius: 50% !important;
-  transition: width 0.3s ease, background-color 0.3s ease;
+	background-color: #cdd5df !important;
+	opacity: 1 !important;
+	width: 5px !important;
+	height: 5px !important;
+	margin: 0 4px !important;
+	border-radius: 50% !important;
+	transition: width 0.3s ease, background-color 0.3s ease;
 }
 
 .swiper-pagination-bullet-active_dev {
-  background-color: #0071E3 !important;
-  width: 13px !important;
-  height: 5px !important;
-  border-radius: 30% !important;
-  transition: width 0.3s ease, background-color 0.3s ease;
+	background-color: #0071e3 !important;
+	width: 13px !important;
+	height: 5px !important;
+	border-radius: 30% !important;
+	transition: width 0.3s ease, background-color 0.3s ease;
 }
 
 .pagination_dev {
-  width: 100%;
-  display: flex;
-  justify-content: center;
+	width: 100%;
+	display: flex;
+	justify-content: center;
 }
 
-
- 
 .my-phone-input {
-  width: 100% !important;
-  max-width: 100% !important;
-  
+	width: 100% !important;
+	max-width: 100% !important;
 
-  input {
-    
-    width: 100% !important;
-  }
+	input {
+		width: 100% !important;
+	}
 }
- 
+
+///
+
+.burger__button {
+	position: absolute;
+	left: 0px;
+
+	overflow: hidden;
+
+	display: block;
+	transform: scale(0.47);
+	z-index: 1000;
+
+	label {
+		display: flex;
+		flex-direction: column;
+		width: 70px;
+		cursor: pointer;
+
+		@media (max-width: 700px) {
+			cursor: default;
+		}
+	}
+
+	label span {
+		background: #000000;
+		border-radius: 10px;
+		height: 5px;
+		margin: 7px 0;
+		transition: 0.3s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+	}
+
+	span:nth-of-type(1) {
+		width: 50%;
+	}
+
+	span:nth-of-type(2) {
+		width: 100%;
+	}
+
+	span:nth-of-type(3) {
+		width: 75%;
+	}
+
+	input[type="checkbox"] {
+		display: none;
+	}
+
+	input[type="checkbox"]:checked ~ span:nth-of-type(1) {
+		transform-origin: bottom;
+		transform: rotatez(45deg) translate(8px, 0px);
+	}
+
+	input[type="checkbox"]:checked ~ span:nth-of-type(2) {
+		transform-origin: top;
+		transform: rotatez(-45deg);
+	}
+
+	input[type="checkbox"]:checked ~ span:nth-of-type(3) {
+		transform-origin: bottom;
+		width: 50%;
+		transform: translate(30px, -11px) rotatez(45deg);
+	}
+}
