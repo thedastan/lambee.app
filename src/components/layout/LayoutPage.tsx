@@ -31,11 +31,11 @@ const LayoutPage: React.FC<LayoutProps> = ({
 				<Sidebar />
 			</div>
 
-			<div className="flex flex-col overflow-hidden">
+			<div className="flex-1 flex flex-col overflow-hidden">
 				<Header />
 
 				<main
-					className=" overflow-y-auto pb-16"
+					className="flex-1 overflow-y-auto pb-16"
 					style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
 					{children}
 				</main>
