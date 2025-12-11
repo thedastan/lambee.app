@@ -1,4 +1,6 @@
+// src/app/reset-password/page.tsx
 "use client";
+
 import PhoneInput from "phone-go";
 import React, { useState, useEffect } from "react";
 import "phone-go/dist/phone-go.css";
@@ -6,28 +8,40 @@ import { Description } from "@/components/ui/text/Description";
 import { GoChevronLeft } from "react-icons/go";
 import { TitleComponent } from "@/components/ui/text/TitleComponent";
 import Link from "next/link";
+import Button from "@/components/ui/button/Button";
 import { PAGE } from "@/config/pages/public-page.config";
 import { PinInput } from "react-input-pin-code";
 import Input from "@/components/ui/input/Input";
+import { useRouter } from "next/navigation";
+import {
+	useResetPassword,
+	useSendForgotCode,
+	useVerifyForgotCode,
+} from "@/redux/hooks/useAuth";
+ 
+import ImageSwipwr from "../ImageSwipwr";
+
+import "alert-go/dist/notifier.css";
+import { toast } from "alert-go";
+
 
 const ResetPassword = () => {
-	const [step, setStep] = useState(1);
+	const [step, setStep] = useState<1 | 2 | 3>(1);
 	const [phone, setPhone] = useState("");
 	const [code, setCode] = useState<string[]>(["", "", "", ""]);
+	const [password, setPassword] = useState("");
 	const [resendTimer, setResendTimer] = useState(60);
 	const [isTimerActive, setIsTimerActive] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 
-	// Запуск таймера при переходе на шаг 2
-	useEffect(() => {
-		if (step === 3 && !isTimerActive) {
-			setIsTimerActive(true);
-		}
-	}, [step, isTimerActive]);
+	const router = useRouter();
 
-	console.log(setStep);
-	
+	const { sendForgotCode, isSending } = useSendForgotCode();
+	const { verifyForgotCode, isVerifying } = useVerifyForgotCode();
+	const { resetPassword, isResetting } = useResetPassword();
 
-	// Таймер обратного отсчёта
+
+	// Таймер
 	useEffect(() => {
 		let timer: NodeJS.Timeout;
 		if (isTimerActive && resendTimer > 0) {
@@ -37,123 +51,277 @@ const ResetPassword = () => {
 		}
 		return () => clearTimeout(timer);
 	}, [resendTimer, isTimerActive]);
- 
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const isValidKyrgyzPhone = (value: string): boolean => {
+		return /^\+996[0-9]{9}$/.test(value);
+	};
+
+	// Шаг 1: отправка кода
+	const handleNext = async () => {
+		setError(null);
+		if (!isValidKyrgyzPhone(phone)) {
+			setError("Введите корректный номер (+996XXXXXXXXX)");
+			return;
+		}
+
+		const cleanPhone = phone.replace(/^\+996/, "");
+
+		try {
+			await sendForgotCode({
+				iso_code_id: 1,
+				phone: cleanPhone,
+			});
+			setStep(2);
+			setResendTimer(60);
+			setIsTimerActive(true);
+		} catch (err: unknown) {
+			let msg = "Не удалось отправить SMS";
+			if (
+				err &&
+				typeof err === "object" &&
+				"response" in err &&
+				err.response &&
+				typeof err.response === "object" &&
+				"data" in err.response &&
+				err.response.data &&
+				typeof err.response.data === "object" &&
+				"detail" in err.response.data
+			) {
+				msg = String(err.response.data.detail);
+			}
+			setError(msg);
+		}
+	};
+
+	// Шаг 2: проверка кода
+	const handleSubmitCode = async (e: React.FormEvent) => {
 		e.preventDefault();
+		setError(null);
 		const fullCode = code.join("");
-		if (fullCode.length !== 4) return;
-		console.log("Submitted data:", { phone, code: fullCode });
-		alert("Регистрация успешна! Добро пожаловать.");
+		if (fullCode.length !== 4) {
+			setError("Введите 4-значный код");
+			return;
+		}
+
+		const cleanPhone = phone.replace(/^\+996/, "");
+
+		try {
+			await verifyForgotCode({
+				iso_code_id: 1,
+				phone: cleanPhone,
+				code: fullCode,
+			});
+			setStep(3);
+		} catch (err: unknown) {
+			let msg = "Неверный код";
+			if (
+				err &&
+				typeof err === "object" &&
+				"response" in err &&
+				err.response &&
+				typeof err.response === "object" &&
+				"data" in err.response &&
+				err.response.data &&
+				typeof err.response.data === "object" &&
+				"detail" in err.response.data
+			) {
+				msg = String(err.response.data.detail);
+			}
+			setError(msg);
+		}
+	};
+
+	// Шаг 3: сброс пароля
+	const handleSubmitPassword = async (e: React.FormEvent) => {
+		e.preventDefault();
+		setError(null);
+		if (!password.trim()) {
+			setError("Введите новый пароль");
+			return;
+		}
+
+		const cleanPhone = phone.replace(/^\+996/, "");
+
+		try {
+			const result = await resetPassword({
+				iso_code_id: 1,
+				phone: cleanPhone,
+				password: password.trim(),
+				code: code.join(""),
+			});
+
+			localStorage.setItem("accessToken", result.detail.access);
+			localStorage.setItem("refreshToken", result.detail.refresh);
+
+			toast.success("Пароль успешно изменён!", { position: "top-center"});
+			
+			router.push("/");
+		} catch (err: unknown) {
+			let msg = "Ошибка при смене пароля";
+			if (
+				err &&
+				typeof err === "object" &&
+				"response" in err &&
+				err.response &&
+				typeof err.response === "object" &&
+				"data" in err.response &&
+				err.response.data &&
+				typeof err.response.data === "object" &&
+				"detail" in err.response.data
+			) {
+				msg = String(err.response.data.detail);
+			}
+			setError(msg);
+		}
 	};
 
 	const handleResendCode = () => {
-		console.log("Отправка нового SMS на", phone);
-		setResendTimer(60);
-		setIsTimerActive(true);
+		setStep(1);
+		setError(null);
 	};
 
-	// Обработчик для PinInput
 	const handlePinChange = (
-		value: string | string[],
-		index: number,
+		_: string | string[],
+		__: number,
 		values: string[]
 	) => {
-		// `values` — это обновлённый массив (уже с новым значением на нужной позиции)
 		setCode(values);
+		if (error) setError(null);
 	};
 
 	return (
-		<section className="bg-white  w-full h-[100vh]">
-			<div className="max-w-md mx-auto px-[20px] flex flex-col justify-between h-screen ">
-				<div className="flex items-center gap-3 mb-4 pt-10 border-b border-[#E4E4E7]">
-					<Link
-						href={PAGE.AUTH_PRE_REGISTRATION}
-						className="flex items-center gap-2 text-[16px] font-[500] pb-4">
-						<GoChevronLeft size={26} />
-						Восстановление аккаунта
-					</Link>
-				</div>
+		<section className="flex justify-between md:flex-row flex-col-reverse bg-[#FFFFFF] w-full h-[100vh]">
+			<div className="md:w-[50%]  w-full md:h-[100vh] h-full flex flex-col justify-center items-center">
+				<Link
+					href={PAGE.AUTH_PRE_REGISTRATION}
+					className="flex items-center gap-2 text-[16px] font-[500] p-4  w-full">
+					<GoChevronLeft size={26} />
+					Восстановление аккаунта
+				</Link>
 
-				<form onSubmit={handleSubmit} className="space-y-4 h-auto -mt-20">
-					{step === 1 && (
-						<div className="flex flex-col gap-2  ">
-							<TitleComponent>Введите номер телефона</TitleComponent>
-							<Description className="text-[#515151] mb-2">
-								Вам придёт sms с кодом
-							</Description>
-
-							<PhoneInput
-								className="my-phone-input"
-								value={phone}
-								onChange={setPhone}
-								defaultCountry="KG"
-							/>
-						</div>
-					)}
-
-					{/* Step 2: Enter SMS Code */}
-					{step === 2 && (
-						<div className="flex flex-col gap-6 text-center">
-							<TitleComponent>Введите код из SMS</TitleComponent>
-
-							<div className="flex justify-center">
-								<PinInput
-									values={code}
-									onChange={handlePinChange}
-									type="number"
-									inputClassName="pin-input-field"
-									mask={false}
-									placeholder=""
-									inputStyle={{
-										width: "64px",
-										height: "64px",
-										border: "1px solid #CDD5DF",
-										borderRadius: "8px",
-										fontSize: "20px",
-										textAlign: "center",
-										background: "transparent",
-										margin: "0 2px",
-										boxShadow: "none",
-									}}
-								/>
+				<div className="w-full h-full flex justify-center md:items-center items-start md:mt-0 mt-10">
+					<div className="max-w-[440px] w-full md:bg-[#FAFAFA] bg-transparent rounded-[16px] mx-auto p-[20px]">
+						{error && (
+							<div className="mb-4 p-3 bg-red-100 text-red-700 rounded text-sm text-center">
+								{error}
 							</div>
+						)}
 
-							<div className="text-center mt-4">
-								{isTimerActive ? (
-									<Description className="text-[#AAA4C2]">
-										Отправить повторно {String(resendTimer).padStart(2, "0")}
+						<form
+							onSubmit={
+								step === 2
+									? handleSubmitCode
+									: step === 3
+									? handleSubmitPassword
+									: undefined
+							}
+							className="space-y-4 bg-white rounded-[16px] md:p-4 p-0">
+							{step === 1 && (
+								<div className="flex flex-col gap-2">
+									<TitleComponent>Введите номер телефона</TitleComponent>
+									<Description className="text-[#515151] mb-2">
+										Вам придёт SMS с кодом
 									</Description>
-								) : (
-									<button
+
+									<PhoneInput
+										className="my-phone-input"
+										value={phone}
+										onChange={setPhone}
+										defaultCountry="KG"
+									/>
+
+									<Button
 										type="button"
-										onClick={handleResendCode}
-										className="text-[#AAA4C2] underline  ">
-										Отправить повторно
-									</button>
-								)}
-							</div>
-						</div>
-					)}
+										onClick={handleNext}
+										disabled={
+											!phone || !isValidKyrgyzPhone(phone) || isSending
+										}>
+										{isSending ? "Отправка..." : "Получить код"}
+									</Button>
+								</div>
+							)}
 
-					{step === 3 && (
-						<div className="flex flex-col gap-6 text-center">
-							<TitleComponent>Создайте новый пароль</TitleComponent>
-							<Description className="text-[#515151] mb-2">
-								Придумайте пароль для защиты <br /> вашего аккаунта
-							</Description>
+							{step === 2 && (
+								<div className="flex flex-col gap-6 text-center">
+									<TitleComponent>Введите код из SMS</TitleComponent>
 
-							<Input
-								placeholder="Введите пароль"
-								className="mt-2"
-								type="password"
-							/>
-						</div>
-					)}
-				</form>
+									<div className="flex justify-center">
+										<PinInput
+											values={code}
+											onChange={handlePinChange}
+											type="number"
+											inputClassName="pin-input-field"
+											mask={false}
+											placeholder=""
+											inputStyle={{
+												width: "64px",
+												height: "64px",
+												border: "1px solid #CDD5DF",
+												borderRadius: "8px",
+												fontSize: "20px",
+												textAlign: "center",
+												background: "transparent",
+												margin: "0 2px",
+												boxShadow: "none",
+											}}
+										/>
+									</div>
 
-				<div />
+									<Button
+										type="submit"
+										disabled={isVerifying || code.some((c) => c === "")}>
+										{isVerifying ? "Проверка..." : "Подтвердить"}
+									</Button>
+
+									<div className="text-center mt-4">
+										{isTimerActive ? (
+											<Description className="text-[#AAA4C2]">
+												Отправить повторно{" "}
+												{String(resendTimer).padStart(2, "0")}
+											</Description>
+										) : (
+											<button
+												type="button"
+												onClick={handleResendCode}
+												className="text-[#AAA4C2] underline">
+												Отправить повторно
+											</button>
+										)}
+									</div>
+								</div>
+							)}
+
+							{step === 3 && (
+								<div className="flex flex-col gap-6 text-center">
+									<TitleComponent>Создайте новый пароль</TitleComponent>
+									<Description className="text-[#515151] mb-2">
+										Придумайте пароль для защиты <br /> вашего аккаунта
+									</Description>
+
+									<Input
+										placeholder="Введите пароль"
+										className="mt-2"
+										type="password"
+										value={password}
+										onChange={(e) => setPassword(e.target.value)}
+										error={!!error}
+									/>
+
+									<Button
+										type="submit"
+										disabled={isResetting || !password.trim()}>
+										{isResetting ? "Сохранение..." : "Сохранить пароль"}
+									</Button>
+								</div>
+							)}
+						</form>
+
+						<div />
+					</div>
+				</div>
 			</div>
+
+			<ImageSwipwr />
 		</section>
 	);
 };

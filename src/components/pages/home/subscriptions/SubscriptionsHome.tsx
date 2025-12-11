@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import img from "@/assets/images/Panties.png";
 import { SubscriptionCard } from "@/components/ui/cards/SubscriptionCard";
 import { TitleComponent } from "@/components/ui/text/TitleComponent";
@@ -82,23 +82,23 @@ const SubscriptionsHome = () => {
 		setOpenMenuId(null);
 	};
 
-		useEffect(() => {
-			const handleClickOutside = (e: MouseEvent) => {
-				const target = e.target as HTMLElement;
-				if (
-					target.closest('[data-menu-trigger="true"]') ||
-					target.closest('[data-menu-content="true"]')
-				) {
-					return;
-				}
-				setOpenMenuId(null);
-			};
-	
-			document.addEventListener("click", handleClickOutside);
-			return () => {
-				document.removeEventListener("click", handleClickOutside);
-			};
-		}, []);
+	useEffect(() => {
+		const handleClickOutside = (e: MouseEvent) => {
+			const target = e.target as HTMLElement;
+			if (
+				target.closest('[data-menu-trigger="true"]') ||
+				target.closest('[data-menu-content="true"]')
+			) {
+				return;
+			}
+			setOpenMenuId(null);
+		};
+
+		document.addEventListener("click", handleClickOutside);
+		return () => {
+			document.removeEventListener("click", handleClickOutside);
+		};
+	}, []);
 
 	return (
 		<section className="pb-6">

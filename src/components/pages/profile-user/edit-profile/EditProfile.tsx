@@ -1,14 +1,27 @@
+// src/app/profile/edit/page.tsx
 "use client";
+
 import Button from "@/components/ui/button/Button";
 import PageHeader from "@/components/ui/heading/PageHeader";
 import Input from "@/components/ui/input/Input";
 import PhotoUpload from "@/components/ui/input/PhotoUpload";
 import { PAGE } from "@/config/pages/public-page.config";
 import PhoneInput from "phone-go";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "phone-go/dist/phone-go.css";
+
+import "alert-go/dist/notifier.css";
+
+
+import {
+	useUpdateProfile,
+	useUpdateProfilePicture,
+	useUserProfile,
+} from "@/redux/hooks/user";
+import { toast } from "alert-go";
+import Skeleton from "@/components/ui/skeleton/Skeleton";
 
 const EditProfile = () => {
 	const [photo, setPhoto] = useState<File | null>(null);
@@ -18,12 +31,100 @@ const EditProfile = () => {
 	const [password, setPassword] = useState("");
 	const [phone, setPhone] = useState("");
 
+	const { profile, isLoading, refetch } = useUserProfile();
+	const { updateProfile, isUpdating: isUpdatingProfile } = useUpdateProfile();
+	const { updateProfilePicture, isUpdating: isUpdatingPhoto } =
+		useUpdateProfilePicture();
+
+	useEffect(() => {
+		if (profile) {
+			setFirstName(profile.name || "");
+			setLastName(profile.surname || "");
+			if (profile.birth_date) {
+				setBirthDate(new Date(profile.birth_date));
+			}
+			setPhone(profile.phone ? `+996${profile.phone}` : "");
+		}
+	}, [profile]);
+
+	if (isLoading) {
+		return (
+			<section>
+				<PageHeader href={PAGE.PROFILE} title="Личные данные" />
+				<div className="m-4 md:p-4 p-0 bg-white rounded-[8px] flex flex-col gap-4">
+					{/* Заголовок */}
+					<div className="flex items-center gap-4">
+						<Skeleton className="rounded-full" width="w-10" height="h-10" />
+						<div className="flex flex-col gap-2 w-full">
+							<Skeleton height="h-5" width="w-1/3" />
+							<Skeleton height="h-4" width="w-1/4" />
+						</div>
+					</div>
+
+
+					{/* Поля */}
+					{[...Array(5)].map((_, i) => (
+						<div key={i} className="flex flex-col gap-2">
+							<Skeleton height="h-4" width="w-1/4" />
+							<Skeleton height="h-12" />
+						</div>
+					))}
+
+					{/* Кнопка */}
+					<Skeleton height="h-12" width="w-full" className="rounded-md" />
+				</div>
+			</section>
+		);
+	}
+
+	if (!profile) {
+		return (
+			<div className="max-w-md mx-auto pt-10 text-center">
+				Профиль не найден.
+			</div>
+		);
+	}
+
+	const handleSave = async () => {
+		if (!firstName || !lastName || !birthDate || !phone) {
+			toast.warning("Заполните обязательные поля", { position: "top-center" });
+			return;
+		}
+
+		const cleanPhone = phone.replace(/^\+996/, "");
+		const formattedBirthDate = birthDate.toISOString().split("T")[0];
+
+		try {
+			// ✅ СНАЧАЛА ФОТО
+			if (photo) {
+				await updateProfilePicture(photo);
+				await refetch();
+			}
+
+			// ✅ ПОТОМ ДАННЫЕ
+			await updateProfile({
+				name: firstName,
+				surname: lastName,
+				birth_date: formattedBirthDate,
+				phone: cleanPhone,
+				...(password ? { password } : {}),
+			});
+
+			await refetch();
+			toast.success("Профиль обновлён", { position: "top-center" });
+		} catch (e) {
+			console.error(e);
+			toast.error("Ошибка обновления профиля", { position: "top-center" });
+		}
+	};
+
+	const handlePhoneChange = (value: string) => {
+		setPhone(value);
+	};
+
 	return (
 		<section>
-			<PageHeader
-				href={PAGE.PROFILE}
-				title="Личные данные"
-			/>
+			<PageHeader href={PAGE.PROFILE} title="Личные данные" />
 			<div className="m-4 md:p-4 p-0 md:bg-white bg-transparent rounded-[8px] flex flex-col gap-3">
 				<PhotoUpload
 					label={
@@ -32,9 +133,11 @@ const EditProfile = () => {
 						</>
 					}
 					value={photo}
+					previewUrl={profile.profile_picture || null}
 					onChange={setPhoto}
 					maxFileSizeMB={5}
 				/>
+
 				<Input
 					placeholder="Введите имя"
 					label="Имя *"
@@ -47,18 +150,17 @@ const EditProfile = () => {
 					value={lastName}
 					onChange={(e) => setLastName(e.target.value)}
 				/>
-				{/* Кастомное поле даты с react-datepicker */}
 				<div>
 					<label className="block text-sm font-medium text-gray-700 mb-2">
 						Дата рождения *
 					</label>
-					<div className="relative w-full ">
+					<div className="relative w-full">
 						<DatePicker
 							selected={birthDate}
-							onChange={(date: Date | null) => setBirthDate(date)}
+							onChange={(date) => setBirthDate(date)}
 							dateFormat="dd.MM.yyyy"
 							placeholderText="Введите дату рождения"
-							className="w-full max-w-full h-[48px] px-4 py-4 rounded-[8px] border outline-none border-[#E4E4E7]    "
+							className="w-full max-w-full h-[48px] px-4 py-4 rounded-[8px] border outline-none border-[#E4E4E7]"
 							calendarClassName="react-datepicker-custom"
 							wrapperClassName="w-full"
 						/>
@@ -72,7 +174,7 @@ const EditProfile = () => {
 							</>
 						}
 						type="password"
-						placeholder="Введите пароль"
+						placeholder="Оставьте пустым, чтобы не менять"
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
 					/>
@@ -83,13 +185,18 @@ const EditProfile = () => {
 						Номер телефона <span className="text-[#FFA655]">*</span>
 					</label>
 					<PhoneInput
-						className="my-phone-input" // если хотите изменить стиль
+						className="my-phone-input"
 						value={phone}
-						onChange={setPhone}
+						onChange={handlePhoneChange}
 						defaultCountry="KG"
 					/>
 				</div>
-				<Button className="h-[48px] mt-3">Сохранить</Button>
+				<Button
+					className="h-[48px] mt-3"
+					onClick={handleSave}
+					disabled={isUpdatingProfile || isUpdatingPhoto}>
+					{isUpdatingProfile || isUpdatingPhoto ? "Сохранение..." : "Сохранить"}
+				</Button>
 			</div>
 		</section>
 	);

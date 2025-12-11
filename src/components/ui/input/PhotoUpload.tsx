@@ -1,5 +1,5 @@
 // src/components/ui/PhotoUpload.tsx
-import React, { useState, useRef, ReactNode } from "react";
+import React, { useState, useRef, ReactNode, useEffect } from "react";
 import { FaCamera } from "react-icons/fa";
 import { Title } from "../text/Title";
 import { Description } from "../text/Description";
@@ -7,64 +7,52 @@ import Image from "next/image";
 
 interface PhotoUploadProps {
   label?: ReactNode;
-  value?: File | null; // текущий выбранный файл
+  value?: File | null; // локальный выбранный файл
+  previewUrl?: string | null; // URL фото с сервера
   onChange?: (file: File | null) => void;
-  maxFileSizeMB?: number; // по умолчанию 5 МБ
+  maxFileSizeMB?: number;
   disabled?: boolean;
   className?: string;
 }
 
 const PhotoUpload = ({
   label = "Фото",
-  value,
+  previewUrl,
   onChange,
   maxFileSizeMB = 5,
   disabled = false,
   className = "",
 }: PhotoUploadProps) => {
-  const [isDragging, setIsDragging] = useState(false);
+  const [localPreview, setLocalPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Очищаем URL объекта при размонтировании
+  useEffect(() => {
+    return () => {
+      if (localPreview) {
+        URL.revokeObjectURL(localPreview);
+      }
+    };
+  }, [localPreview]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
-
-    if (!file) return;
-
-    const maxSize = maxFileSizeMB * 1024 * 1024; // в байтах
-
-    if (file.size > maxSize) {
-      alert(`Размер файла не должен превышать ${maxFileSizeMB} МБ`);
-      return;
-    }
-
-    onChange?.(file);
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-
-    const file = e.dataTransfer.files?.[0];
-
     if (!file) return;
 
     const maxSize = maxFileSizeMB * 1024 * 1024;
-
     if (file.size > maxSize) {
       alert(`Размер файла не должен превышать ${maxFileSizeMB} МБ`);
       return;
     }
 
+    const url = URL.createObjectURL(file);
+    setLocalPreview(url);
     onChange?.(file);
+  };
+
+  const handleRemove = () => {
+    setLocalPreview(null);
+    onChange?.(null);
   };
 
   const handleClick = () => {
@@ -72,11 +60,8 @@ const PhotoUpload = ({
     fileInputRef.current?.click();
   };
 
-  const handleRemove = () => {
-    onChange?.(null);
-  };
-
-  const previewUrl = value ? URL.createObjectURL(value) : null;
+  // Приоритет: локальный файл > серверное фото > ничего
+  const displayPreview = localPreview || previewUrl || null;
 
   return (
     <div className={`w-full ${className}`}>
@@ -85,54 +70,47 @@ const PhotoUpload = ({
           <label className="block text-[14px] font-medium text-[#515151]">
             {label}
           </label>
-          
         </div>
       )}
 
       <div
-        className={`relative w-full bg-white  rounded-[8px] border border-[#E4E4E7] flex items-center justify-between p-4 cursor-pointer transition-colors ${
-          isDragging ? "bg-[#F3F4F6]" : " "
-        } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
+        className={`relative w-full bg-white rounded-[8px] border border-[#E4E4E7] flex items-center justify-between p-4 cursor-pointer transition-colors ${
+          disabled ? "opacity-50 cursor-not-allowed" : ""
+        }`}
         onClick={handleClick}
       >
-        {/* Превью фото */}
-        {previewUrl ? (
+        {displayPreview ? (
           <div className="flex items-center gap-3">
             <Image
-              src={previewUrl}
+              src={displayPreview}
               width={56}
               height={56}
               alt="Превью"
-              className="w-[56px] h-[56px] border-2 border-[#E4E4E7] rounded-full object-cover  "
+              className="w-[56px] h-[56px] border-2 border-[#E4E4E7] rounded-full object-cover"
             />
             <div>
               <div className="font-semibold text-[14px]">Фото</div>
               <div className="text-[12px] text-[#9CA3AF]">
-                Загружено
+                {localPreview ? "Выбрано" : "Загружено"}
               </div>
             </div>
           </div>
         ) : (
-          /* Плейсхолдер */
           <div className="flex items-center gap-3">
-            <div className="w-[56px] h-[56px] border-2 border-[#E4E4E7] rounded-full   flex items-center justify-center">
+            <div className="w-[56px] h-[56px] border-2 border-[#E4E4E7] rounded-full flex items-center justify-center">
               <FaCamera className="w-6 h-6 text-[#9CA3AF]" />
             </div>
             <div>
-               <Title className="!text-[18px] font-[700]">Фото</Title>
+              <Title className="!text-[18px] font-[700]">Фото</Title>
               <Description className="!text-[14px] text-[#515151]">
-              Загрузите фото до 5 МБ
+                Загрузите фото до 5 МБ
               </Description>
             </div>
           </div>
         )}
 
-        {/* Кнопка + или удалить */}
         <div className="flex items-center gap-2">
-          {previewUrl ? (
+          {displayPreview && (
             <button
               type="button"
               onClick={(e) => {
@@ -144,18 +122,9 @@ const PhotoUpload = ({
             >
               ×
             </button>
-          ) : (
-            <button
-              type="button"
-              className="w-8 h-8 rounded-[4px] border border-[#E4E4E7] flex items-center justify-center text-[#9CA3AF] hover:text-[#6B7280] hover:border-[#D1D5DB] transition-colors"
-              aria-label="Добавить фото"
-            >
-              +
-            </button>
           )}
         </div>
 
-        {/* Скрытый инпут для выбора файла */}
         <input
           ref={fileInputRef}
           type="file"

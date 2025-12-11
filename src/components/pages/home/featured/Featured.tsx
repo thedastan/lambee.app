@@ -1,4 +1,4 @@
-import img from "@/assets/images/Panties.png";
+"use client";
 import Button from "@/components/ui/button/Button";
 import { Description } from "@/components/ui/text/Description";
 import { Title } from "@/components/ui/text/Title";
@@ -7,88 +7,46 @@ import Image from "next/image";
 import Link from "next/link";
 
 import img2 from "@/assets/images/discount.png";
+import { useProduct } from "@/redux/hooks/product";
 
 const Featured = () => {
-	const data = [
-		{
-			img: img,
-			title: "Подгузники и салфетки",
-			size: "S,M,M1",
-			price: 14000,
-			old_price: 20000,
-			discount: 15,
-		},
-		{
-			img: img,
-			title: "Салфетки",
-			size: "S,M,M1",
-			price: 14000,
-			old_price: 20000,
-			discount: 15,
-		},
-		{
-			img: img,
-			title: "Салфетки",
-			size: "S,M,M1",
-			price: 14000,
-			old_price: 20000,
-			discount: 15,
-		},
-		{
-			img: img,
-			title: "Трусики и салфетки",
-			size: "S,M,M1",
-			price: 14000,
-			old_price: 20000,
-			discount: 15,
-		},
-		{
-			img: img,
-			title: "Тревелпаки",
-			size: "S,M,M1",
-			price: 14000,
-			old_price: 20000,
-			discount: 15,
-		},
-		{
-			img: img,
-			title: "Тревелпаки",
-			size: "S,M,M1",
-			price: 14000,
-			old_price: 20000,
-			discount: 15,
-		},
-	];
+	const { data } = useProduct();
+
 	return (
 		<section className="pb-10 px-4">
 			<TitleComponent className="w-full md:max-w-full pb-4 max-w-[194px]">
 				Рекомендованные товары
 			</TitleComponent>
 			<div className=" grid md:grid-cols-2 grid-cols-1 gap-2">
-				{data.map((el, index) => (
+				{data?.detail.map((el, index) => (
 					<Link
 						key={index}
-						href={"#"}
+						href={`/detail/${el.id}`}
 						className="p-3 bg-white border border-[#E4E4E7] rounded-[16px]  relative">
 						<div className="flex gap-3">
-							<Image
-								width={114}
-								height={114}
-								objectFit="cover"
-								className=" rounded-[8px]"
-								src={el.img}
-								alt="img"
-							/>
+							<div className=" relative overflow-hidden rounded-[8px] w-[114px] h-[114px]">
+								<Image
+									fill
+									objectFit="cover"
+									src={el.images[0]?.url}
+									alt="img"
+								/>
+							</div>
 							<div className="w-[138px] flex flex-col gap-1">
 								<Title>{el.title}</Title>
 								<Description className="text-[#515151]">
 									По подписке
 								</Description>
-								<Description className="text-[#515151]">
-									Размер:{el.size}
+
+								<Description className="text-[#515151] flex items-center">
+									Размер: {el.sizes.map((item) => item.title).join(", ")}
 								</Description>
+
 								<Description className="text-[#AAA4C2] font-[500] text-[16px]">
-									{el.price} <span className="line-through text-[#515151] text-14px">{el.old_price}</span>
+									{el.discount_price} c{" "}
+									<span className="line-through text-[#515151] text-14px ml-1">
+										{el.price} c
+									</span>
 								</Description>
 							</div>
 
