@@ -40,7 +40,7 @@ export const SubscriptionCard = ({
 
 	return (
 		<Link
-			href={"/detail/" }
+			href={"#" }
 			className="p-3 bg-white border flex-shrink-0 border-[#E4E4E7] rounded-[16px] w-full max-w-[290px]">
 			<div className="flex justify-between items-start gap-2 border-b pb-3 border-[#E4E4E7]">
 				<div className="flex gap-2">

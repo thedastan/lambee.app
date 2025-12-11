@@ -27,7 +27,7 @@ const LayoutPage: React.FC<LayoutProps> = ({
 
 	return (
 		<div className="flex ">
-			<div className="hidden md:flex">
+			<div className="hidden md:flex ">
 				<Sidebar />
 			</div>
 

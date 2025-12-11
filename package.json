@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@fancyapps/ui": "^6.1.5",
+    "@tanstack/react-query": "^5.90.12",
+    "alert-go": "^1.0.12",
     "axios": "^1.13.2",
     "next": "15.0.3",
     "phone-go": "^1.0.4",
