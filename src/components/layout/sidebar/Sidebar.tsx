@@ -11,7 +11,7 @@ const Sidebar: React.FC = () => {
 	const pathname = usePathname();
 
 	return (
-		<aside className="hidden md:flex w-[280px] relative bg-[#ffffff] h-[100vh] border-r">
+		<aside className="hidden md:flex w-[280px] relative bg-[#ffffff] min-h-[100vh] border-r">
 			<div className=" fixed    flex-col p-4 py-6  w-[280px]">
 				<div className="border-b">
 					<Image width={32} height={32} src={logo} alt="logo" />

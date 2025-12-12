@@ -30,7 +30,7 @@ const HeroDetail = ({ product }: HeroDetailProps) => {
 					src={activeImage.url}
 					alt={product.title || "Product image"}
 					fill
-					className="object-cover"
+					className="object-contain"
 					priority
 				/>
 			</div>
