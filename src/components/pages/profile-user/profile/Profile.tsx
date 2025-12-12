@@ -29,6 +29,20 @@ const Profile = () => {
 
 	const { profile } = useUserProfile();
 
+	if (!profile) {
+		return (
+			<section className="p-4 flex flex-col items-center justify-center min-h-[60vh]">
+				<Title className="mb-4 text-center">Сначала авторизуйтесь</Title>
+				<Description className="text-gray-500 mb-6 text-center">
+					Чтобы получить доступ к личному кабинету, войдите в свой аккаунт.
+				</Description>
+				<LinkButton href={PAGE.AUTH_PRE_REGISTRATION} className="!px-6 !py-2">
+					Войти
+				</LinkButton>
+			</section>
+		);
+	}
+
 	return (
 		<section>
 			<PageHeader
