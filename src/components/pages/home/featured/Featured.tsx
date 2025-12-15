@@ -15,7 +15,7 @@ const Featured = () => {
 	return (
 		<section className="pb-10 px-4">
 			<TitleComponent className="w-full md:max-w-full pb-4 max-w-[194px]">
-				Рекомендованные товары
+				Мы рекомендуем
 			</TitleComponent>
 			<div className=" grid md:grid-cols-2 grid-cols-1 gap-2">
 				{data?.detail.map((el, index) => (
