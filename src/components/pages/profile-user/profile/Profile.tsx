@@ -23,11 +23,25 @@ import Input from "@/components/ui/input/Input";
 import { useUserProfile } from "@/redux/hooks/user";
 import ReferralProgram from "./ReferralProgram";
 import ProfileAddress from "./ProfileAddress";
+import { useFinikPay } from "@/redux/hooks/finik-pay";
 
 const Profile = () => {
 	const [isPay, setIsPay] = useState(false);
 
 	const { profile } = useUserProfile();
+
+	const [amount, setAmount] = useState<string>(""); // строка для ввода
+	const { mutate: pay, isPending } = useFinikPay();
+
+	const handlePay = () => {
+		const numAmount = Number(amount.trim());
+		if (isNaN(numAmount) || numAmount <= 0) {
+			 
+			alert("Введите корректную сумму")
+			return;
+		}
+		pay(numAmount);
+	};
 
 	if (!profile) {
 		return (
@@ -194,17 +208,25 @@ const Profile = () => {
 								</>
 							}
 							placeholder="Введите сумму"
+							value={amount}
+							onChange={(e) => setAmount(e.target.value)}
+							type="number"
+							min="1"
 						/>
 						<div className="border-[#E4E4E7] border-b w-full h-[1px]"></div>
 
 						<div className="flex gap-3 w-full">
 							<Button
 								className="w-full border border-[#E4E4E7] bg-transparent !text-black"
-								onClick={() => setIsPay(false)}>
+								onClick={() => setIsPay(false)}
+								disabled={isPending}>
 								Отмена
 							</Button>
-							<Button className="w-full" onClick={() => setIsPay(false)}>
-								Пополнить
+							<Button
+								className="w-full"
+								onClick={handlePay}
+								disabled={isPending || !amount.trim()}>
+								{isPending ? "Обработка..." : "Пополнить"}
 							</Button>
 						</div>
 					</div>
