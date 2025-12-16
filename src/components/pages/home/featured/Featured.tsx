@@ -17,6 +17,7 @@ const Featured = () => {
 			<TitleComponent className="w-full md:max-w-full pb-4 max-w-[194px]">
 				Мы рекомендуем
 			</TitleComponent>
+
 			<div className=" grid md:grid-cols-2 grid-cols-1 gap-2">
 				{data?.detail.map((el, index) => (
 					<Link
@@ -33,26 +34,36 @@ const Featured = () => {
 								/>
 							</div>
 							<div className="w-[138px] flex flex-col gap-1">
-								<Title>{el.title}</Title>
+								<div className="flex gap-1">
+									<Title>{el.title},</Title>
+									<Title>
+										{el.variants.slice(0,1).map((item, index) => (
+											<div key={index}>{item.items_count} шт</div>
+										))}
+									</Title>
+								</div>
 								<Description className="text-[#515151]">
 									По подписке
 								</Description>
 
-								<Description className="text-[#515151] flex items-center">
+								{/* <Description className="text-[#515151] flex items-center">
 									Размер: {el.sizes.map((item) => item.title).join(", ")}
-								</Description>
+								</Description> */}
 
-								<Description className="text-[#AAA4C2] font-[500] text-[16px]">
-									{el.discount_price} c{" "}
-									<span className="line-through text-[#515151] text-14px ml-1">
-										{el.price} c
-									</span>
-								</Description>
+								{el.variants.slice(0,1).map((item, index) => (
+									<div key={index} className="">
+										<Description className="text-[#AAA4C2] font-[500] text-[16px]">
+											{item.discount_percent} c
+											<span className="line-through text-[#515151] text-14px ml-1">
+												{item.price} c
+											</span>
+										</Description>
+										<Description className="text-[#AAA4C2] rounded-[32px] absolute top-0 right-0 border border-[#AAA4C2] p-1 px-2">
+											{item.discount_percent}% Скидка
+										</Description>
+									</div>
+								))}
 							</div>
-
-							<Description className="text-[#AAA4C2] rounded-[32px] absolute top-0 right-0 border border-[#AAA4C2] p-1 px-2">
-								{el.discount}% Скидка
-							</Description>
 						</div>
 						<Button className="mt-3 w-full">В корзину</Button>
 					</Link>

@@ -6,48 +6,62 @@ export interface Detail {
   id: number
   title: string
   description: string
-  sizes: Size[]
-  price: number
-  discount: number
-  discount_price: number
   images: Image[]
-}
-
-export interface Size {
-  id: number
-  title: string
-  description: string
+  benefits: Benefit[]
+  variants: Variant[]
 }
 
 export interface Image {
   url: string
 }
 
+export interface Benefit {
+  id: number
+  title: string
+  icon: string
+}
+
+export interface Variant {
+  id: number
+  title: string
+  weight_range: string
+  items_count: number
+  price: number
+  subscription_price: number
+  discount_percent: number
+}
 
 ///
 
 export interface IProductDetail {
-  detail: ProDetail[]
+  detail: Detail
 }
 
-export interface ProDetail {
+export interface Detail {
   id: number
   title: string
   description: string
-  sizes: Size[]
-  price: number
-  discount: number
-  discount_price: number
   images: Image[]
+  benefits: Benefit[]
+  variants: Variant[]
 }
 
-export interface ProSize {
-  id: number
-  title: string
-  description: string
-}
-
-export interface ProImage {
+export interface Image {
   url: string
 }
 
+export interface Benefit {
+  id: number
+  title: string
+  icon: string
+}
+
+export interface Variant {
+  id: number
+  title: string
+  weight_range: string
+  items_count: number
+  price: number
+  subscription_price: number
+  discount_percent: number
+}

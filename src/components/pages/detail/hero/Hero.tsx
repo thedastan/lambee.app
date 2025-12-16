@@ -76,9 +76,9 @@ const HeroDetail = ({ product }: HeroDetailProps) => {
 				<Description className="w-full max-w-[350px] mt-2">
 					{product.description}
 				</Description>
-				<Title className="font-[600] mt-2">
+				{/* <Title className="font-[600] mt-2">
 					От {product.price.toLocaleString("ru-RU")} с в месяц
-				</Title>
+				</Title> */}
 			</div>
 		</section>
 	);

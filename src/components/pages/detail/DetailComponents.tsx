@@ -33,7 +33,7 @@ const DetailComponents = () => {
 				title={product.title}
 			/>
 			<HeroDetail product={product} />
-			<SizeDetail  />
+			<SizeDetail  product={product}/>
 			<AccordionDetail  />
 		</>
 	);

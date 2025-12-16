@@ -11,7 +11,7 @@ const CategoryHome = () => {
 		return (
 			<section className="pb-6 px-4">
 				<div className="pb-4 h-7 w-48 bg-gray-200 rounded animate-pulse"></div>
-				<div className="grid grid-cols-2 gap-2 mt-3">
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3">
 					{Array.from({ length: 4 }).map((_, i) => (
 						<div
 							key={i}
@@ -28,7 +28,7 @@ const CategoryHome = () => {
 	return (
 		<section className="pb-6 px-4">
 			<TitleComponent className="pb-4">Категории товаров</TitleComponent>
-			<div className=" grid grid-cols-2 gap-2">
+			<div className=" grid grid-cols-1 md:grid-cols-2 gap-2">
 				{data?.detail.map((el, index) => (
 					<div
 						key={index}
