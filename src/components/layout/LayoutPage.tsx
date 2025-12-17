@@ -20,8 +20,10 @@ const LayoutPage: React.FC<LayoutProps> = ({
 	const pathname = usePathname();
 
 	const isAuthPage = pathname.startsWith(PAGE.AUTH);
+	const isPaymentPage = pathname.startsWith(PAGE.PAYMENT);
 
-	if (isAuthPage) {
+
+	if (isAuthPage || isPaymentPage) {
 		return <main className="w-full min-h-screen ">{children}</main>;
 	}
 

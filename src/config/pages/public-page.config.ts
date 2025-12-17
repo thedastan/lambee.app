@@ -31,6 +31,12 @@ class PublicPage {
 	AUTH_FORGOT_PASSWORD = "/auth/forgot-password"
 	AUTH_RESET_PASSWORD = "/auth/reset-password"
 
+	/// PAY ///
+
+	PAYMENT_SUCCESS = "/payment/success";
+	PAYMENT_CANCEL = "/payment/cancel";
+	PAYMENT = "/payment";
+
 
 }
 

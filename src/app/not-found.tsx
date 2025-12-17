@@ -1,4 +1,3 @@
-// src/app/not-found.tsx
 import Link from "next/link";
 import { Title } from "@/components/ui/text/Title";
 import { Description } from "@/components/ui/text/Description";
