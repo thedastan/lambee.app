@@ -30,6 +30,7 @@ class PublicPage {
 	AUTH_LOGIN = "/auth/login"
 	AUTH_FORGOT_PASSWORD = "/auth/forgot-password"
 	AUTH_RESET_PASSWORD = "/auth/reset-password"
+	AUTH_MINI_SURVEY = "/auth/mini-survey"
 
 	/// PAY ///
 

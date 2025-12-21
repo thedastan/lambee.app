@@ -107,7 +107,7 @@ const Login = () => {
 	};
 
 	return (
-		<section className="flex justify-between md:flex-row flex-col-reverse bg-[#FFFFFF] w-full h-[100vh]">
+		<section className="flex justify-between md:flex-row flex-col-reverse md:bg-[#FFFFFF] bg-[#f0f7ff] w-full h-[100vh]">
 			<div className="md:w-[50%]  w-full md:h-[100vh] h-full flex flex-col justify-center items-center">
 				<Link
 					href={PAGE.AUTH_PRE_REGISTRATION}
@@ -120,9 +120,9 @@ const Login = () => {
 					<div className="max-w-[440px] w-full md:bg-[#FAFAFA] bg-transparent rounded-[16px] mx-auto p-[20px]">
 						<form
 							onSubmit={handleSubmit}
-							className="space-y-4 bg-white rounded-[16px] md:p-4 p-0">
+							className="space-y-4 md:bg-white bg-[#f0f7ff] rounded-[16px] md:p-4 p-0">
 							<div className="flex flex-col gap-2">
-								<TitleComponent>Введите номер и пароль</TitleComponent>
+								<TitleComponent className="text-center">Введите номер и пароль</TitleComponent>
 
 								<PhoneInput
 									className="my-phone-input mt-[10px]"

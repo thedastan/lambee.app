@@ -8,10 +8,11 @@ import { IoCheckmark } from "react-icons/io5";
 import Button from "@/components/ui/button/Button";
 import { Detail } from "@/redux/models/product.model";
 import Image from "next/image";
+import { TitleComponent } from "@/components/ui/text/TitleComponent";
 
-interface SizeItem {
-	item: string;
-}
+// interface SizeItem {
+// 	item: string;
+// }
 
 // Убираем SizeData — используем данные напрямую из product.variants
 interface HeroDetailProps {
@@ -19,17 +20,17 @@ interface HeroDetailProps {
 }
 
 const SizeDetail = ({ product }: HeroDetailProps) => {
-	const [selectedSize, setSelectedSize] = useState<any | null>(null); // any временно, или опиши тип правильно
+	// const [selectedSize, setSelectedSize] = useState<any | null>(null);  
 
-	const openModal = (size: any) => {
-		setSelectedSize(size);
-	};
+	// const openModal = (size: any) => {
+	// 	setSelectedSize(size);
+	// };
 
 	return (
-		<section className="p-4">
-			<Description>Выберите свой размер</Description>
+		<section className="p-4 w-full m-4 bg-white rounded-[8px] border">
+			<TitleComponent>Выберите свой размер:</TitleComponent>
 
-			<div className="grid grid-cols-2 gap-3 mt-3">
+			{/* <div className="grid grid-cols-2 gap-3 mt-3">
 				{product.variants.map((el) => (
 					<div
 						key={el.id}
@@ -45,9 +46,9 @@ const SizeDetail = ({ product }: HeroDetailProps) => {
 						</Description>
 					</div>
 				))}
-			</div>
+			</div> */}
 
-			{selectedSize && (
+			{/* {selectedSize && (
 				<div className="flex flex-col justify-center items-center">
 					<Description className="mt-4 pb-3 text-start w-full">
 						Выберите тип заказа:
@@ -72,14 +73,14 @@ const SizeDetail = ({ product }: HeroDetailProps) => {
 								</Description>
 							</div>
 							<div className="list-disc space-y-2 mt-4">
-								{/* <div className="flex items-start justify-start gap-2">
+								<div className="flex items-start justify-start gap-2">
 									<div className="w-8">
 										<IoCheckmark className="text-[#AAA4C2] w-8" size={20} />
 									</div>
 									<Description className="text-[#515151]">
 										{selectedSize.items_count} шт. в упаковке
 									</Description>
-								</div> */}
+								</div>
 								 
 							</div>
 						</div>
@@ -100,22 +101,22 @@ const SizeDetail = ({ product }: HeroDetailProps) => {
 						<Description>{selectedSize.subscription_price} c</Description>
 					</div>
 				</div>
-			)}
+			)} */}
 
 			<div className="flex flex-col justify-center items-center gap-4 mt-6">
 				<Title className="font-[600]">Доставка в течение месяца</Title>
-				<Button className="w-full max-w-full md:max-w-[250px]">
+				<Button className="w-full max-w-full ">
 					Добавить в корзину
 				</Button>
-				<div className="grid grid-cols-2 md:gap-x-32 gap-x-8 gap-y-8 mt-4">
+				<div className="grid grid-cols-2 md:grid-cols-4   gap-2 mt-4 w-full">
 					{product.benefits.map((el, index) => (
 						<div
 							key={index}
-							className="flex flex-col justify-center items-center w-full max-w-[170px]">
+							className="flex flex-col justify-center items-center w-full max-w-full  ">
 							<div className="bg-[#DCDCDC] relative overflow-hidden w-[40px] h-[40px] rounded-[8px]">
 								<Image fill objectFit="cover" src={el.icon.trim()} alt="icon" />
 							</div>
-							<Description>{el.title}</Description>
+							<Description className="text-[#515151] mt-2">{el.title}</Description>
 						</div>
 					))}
 				</div>

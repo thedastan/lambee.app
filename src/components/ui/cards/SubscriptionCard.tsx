@@ -3,6 +3,8 @@ import Link from "next/link";
 import { Description } from "@/components/ui/text/Description";
 import { Title } from "@/components/ui/text/Title";
 import ActionMenuButton from "../button/ActionMenuButton";
+import { LuArrowUpRight } from "react-icons/lu";
+import LinkButton from "../button/LinkButton";
 
 interface SubscriptionCardProps {
 	id: number;
@@ -10,38 +12,22 @@ interface SubscriptionCardProps {
 	title: string;
 	date: string;
 	time: string;
-	price: string;
-	status: boolean;
-  isOpenMenu: boolean;
 	onToggleMenu: (id: number) => void;
 	onAction: (action: string, id: number) => void;
 }
 
 export const SubscriptionCard = ({
-	id,
 	img,
 	title,
 	date,
 	time,
-	price,
-	status,
-  isOpenMenu,
-	onToggleMenu,
-	onAction,
+ 
 }: SubscriptionCardProps) => {
-
-	const handleToggle = () => {
-		onToggleMenu(id);
-	};
-
-  const handleAction = (action: string) => {
-		onAction(action,id);
-	};
+	 
+ 
 
 	return (
-		<Link
-			href={"#" }
-			className="p-3 bg-white border flex-shrink-0 border-[#E4E4E7] rounded-[16px] w-full max-w-[290px]">
+		<div className="p-3 bg-white border flex-shrink-0 border-[#E4E4E7] rounded-[16px] w-full max-w-[290px]">
 			<div className="flex justify-between items-start gap-2 border-b pb-3 border-[#E4E4E7]">
 				<div className="flex gap-2">
 					<Image
@@ -59,39 +45,19 @@ export const SubscriptionCard = ({
 					</div>
 				</div>
 
-				<ActionMenuButton
-					isOpen={isOpenMenu}
-					onToggle={handleToggle}
-					onAction={handleAction}
-				/>
+				<LinkButton
+					href="#"
+					className="border bg-transparent !text-black !px-0 w-[40px]">
+					<LuArrowUpRight size={23} />
+				</LinkButton>
 			</div>
 
-			<div className="bg-[#FAF9FF] flex justify-between items-center p-2 rounded-[8px] mt-3">
+			<div className="bg-[#FAF9FF] flex flex-col  w-full items-start p-2 rounded-[8px] mt-3">
+				<Description>Следующая доставка:</Description>
 				<Description>
-					Следующая <br /> доставка:
-				</Description>
-				<Description>
-					{date} <br />
-					{time}
+					{date} в {time}
 				</Description>
 			</div>
-
-			<div className="bg-[#FAF9FF] flex justify-between items-center p-2 rounded-[8px] mt-3">
-				<Description>
-					Экономия через <br /> подписку:
-				</Description>
-				<Description>{price}</Description>
-			</div>
-
-			{status && (
-				<div className="border border-[#E4E4E7] flex justify-between items-center p-2 rounded-[8px] mt-3">
-					<Description>Статус подписки:</Description>
-
-					<Description className="text-[#067647] bg-[#ECFDF3] border p-1 px-2 rounded-full border-[#ABEFC6]">
-						Активна
-					</Description>
-				</div>
-			)}
-		</Link>
+		</div>
 	);
 };

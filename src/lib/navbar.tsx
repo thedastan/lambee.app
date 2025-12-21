@@ -39,3 +39,26 @@ export const navbar = [
 		link: PAGE.BASKET,
 	},
 ];
+
+export const navbar_mobile = [
+	{
+		icon: HomeSvg,
+		name: "Главная",
+		link: PAGE.HOME,
+	},
+	{
+		icon: MenuSvg,
+		name: "Мои заказы",
+		link: PAGE.MYORDERS,
+	},
+	{
+		icon: FollowSvg,
+		name: "Мои подписки",
+		link: PAGE.FOLLOW,
+	},
+	{
+		icon: UserSvg,
+		name: "Профиль",
+		link: PAGE.PROFILE,
+	},
+];

@@ -31,16 +31,25 @@ const Profile = () => {
 	const { profile } = useUserProfile();
 
 	const [amount, setAmount] = useState<string>(""); // строка для ввода
-	const { mutate: pay, isPending } = useFinikPay();
+	const { mutateAsync: pay, isPending } = useFinikPay();
 
-	const handlePay = () => {
+	const handlePay = async () => {
 		const numAmount = Number(amount.trim());
 		if (isNaN(numAmount) || numAmount <= 0) {
-			 
-			alert("Введите корректную сумму")
+			alert("Введите корректную сумму");
 			return;
 		}
-		pay(numAmount);
+
+		try {
+			const response = await pay(numAmount); // ✅ Теперь response: IFinikPayResponse
+			if (response?.detail) {
+				window.location.href = response.detail;
+			} else {
+				alert("Не удалось получить ссылку на оплату");
+			}
+		} catch {
+			alert("Ошибка при создании платежа");
+		}
 	};
 
 	if (!profile) {

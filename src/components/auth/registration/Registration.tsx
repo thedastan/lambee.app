@@ -116,7 +116,7 @@ const Registration = () => {
 
 			toast.success("Регистрация завершена!", { position: "top-center"});
 
-			router.push("/");
+			router.push(PAGE.AUTH_MINI_SURVEY);
 		} catch (err: unknown) {
 			let msg = "Неверный код";
 			if (
@@ -154,7 +154,7 @@ const Registration = () => {
 	};
 
 	return (
-		<section className="flex justify-between md:flex-row flex-col-reverse bg-[#FFFFFF] w-full h-[100vh]">
+		<section className="flex justify-between md:flex-row flex-col-reverse md:bg-[#FFFFFF] bg-[#f0f7ff] w-full h-[100vh]">
 			<div className="md:w-[50%]  w-full md:h-[100vh] h-full flex flex-col justify-center items-center">
 				<Link
 					href={PAGE.AUTH_PRE_REGISTRATION}
@@ -164,24 +164,18 @@ const Registration = () => {
 				</Link>
 				<div className=" w-full h-full flex justify-center md:items-center items-start md:mt-0 mt-10">
 					<div className="max-w-[440px] w-full md:bg-[#FAFAFA] bg-transparent rounded-[16px] mx-auto p-[20px]">
-						<Description className="text-center">Шаг {step} из 2</Description>
-						<div className="w-full bg-[#DFEFFF] h-[4px] rounded-[8px] mb-6 mt-2">
-							<div
-								className="bg-[#AAA4C2] h-[4px] rounded-[8px] transition-all duration-300"
-								style={{ width: `${step * 50}%` }}></div>
-						</div>
-
+						 
 						{error && (
 							<div className="mb-4 p-3 bg-red-100 text-red-700 rounded text-sm text-center">
-								{error}
+								SMS-код был отправлен слишком много раз.
 							</div>
 						)}
 
 						<form
 							onSubmit={handleSubmit}
-							className="space-y-4 bg-white rounded-[16px] md:p-4 p-0">
+							className="space-y-4 md:bg-white bg-[#f0f7ff] rounded-[16px] md:p-4 p-0">
 							{step === 1 && (
-								<div className="flex flex-col gap-2">
+								<div className="flex flex-col gap-2 text-center">
 									<TitleComponent>Введите номер и пароль</TitleComponent>
 									<Description className="text-[#515151] mb-2">
 										Вам придёт SMS с кодом
@@ -203,7 +197,7 @@ const Registration = () => {
 										className="w-full p-3 border border-gray-300 rounded mt-2"
 									/>
 
-									<Description className="mt-6 !text-[12px] pb-6">
+									<Description className="mt-6 !text-[12px] pb-6 text-start">
 										Регистрируясь вы принимаете{" "}
 										<Link href="#" className="text-[#AAA4C2] hover:underline">
 											Условия использования
@@ -259,6 +253,7 @@ const Registration = () => {
 												background: "transparent",
 												margin: "0 2px",
 												boxShadow: "none",
+												backgroundColor: "white",
 											}}
 										/>
 									</div>

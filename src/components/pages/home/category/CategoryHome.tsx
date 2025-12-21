@@ -3,6 +3,7 @@ import { Title } from "@/components/ui/text/Title";
 import { TitleComponent } from "@/components/ui/text/TitleComponent";
 import { useCategories } from "@/redux/hooks/categories";
 import Image from "next/image";
+import { BsChevronRight } from "react-icons/bs";
 
 const CategoryHome = () => {
 	const { data, isLoading } = useCategories();
@@ -32,11 +33,20 @@ const CategoryHome = () => {
 				{data?.detail.map((el, index) => (
 					<div
 						key={index}
-						className="p-3 bg-white border border-[#E4E4E7] rounded-[8px] flex items-center gap-3">
-						<div className=" relative overflow-hidden rounded-[8px] w-[48px] h-[48px] min-w-[48px] max-w-[48px]">
-							<Image fill objectFit="cover" src={el.image} alt="category-img" />
+						className="p-3 bg-white border border-[#E4E4E7] rounded-[8px] flex justify-between items-center gap-3">
+						<div className="flex items-center gap-3">
+							<div className=" relative overflow-hidden rounded-[8px] w-[48px] h-[48px] min-w-[48px] max-w-[48px]">
+								<Image
+									fill
+									objectFit="cover"
+									src={el.image}
+									alt="category-img"
+								/>
+							</div>
+							<Title>{el.title}</Title>
 						</div>
-						<Title>{el.title}</Title>
+
+						<BsChevronRight />
 					</div>
 				))}
 			</div>

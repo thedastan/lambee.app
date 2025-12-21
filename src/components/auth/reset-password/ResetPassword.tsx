@@ -190,7 +190,7 @@ const ResetPassword = () => {
 	};
 
 	return (
-		<section className="flex justify-between md:flex-row flex-col-reverse bg-[#FFFFFF] w-full h-[100vh]">
+		<section className="flex justify-between md:flex-row flex-col-reverse md:bg-[#FFFFFF] bg-[#f0f7ff] w-full h-[100vh]">
 			<div className="md:w-[50%]  w-full md:h-[100vh] h-full flex flex-col justify-center items-center">
 				<Link
 					href={PAGE.AUTH_PRE_REGISTRATION}
@@ -215,11 +215,11 @@ const ResetPassword = () => {
 									? handleSubmitPassword
 									: undefined
 							}
-							className="space-y-4 bg-white rounded-[16px] md:p-4 p-0">
+							className="space-y-4 md:bg-white bg-[#f0f7ff] rounded-[16px] md:p-4 p-0">
 							{step === 1 && (
 								<div className="flex flex-col gap-2">
-									<TitleComponent>Введите номер телефона</TitleComponent>
-									<Description className="text-[#515151] mb-2">
+									<TitleComponent className="text-center">Введите номер телефона</TitleComponent>
+									<Description className="text-[#515151] mb-2 text-center">
 										Вам придёт SMS с кодом
 									</Description>
 

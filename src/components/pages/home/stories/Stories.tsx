@@ -1,4 +1,3 @@
-// components/Stories.tsx
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -7,6 +6,9 @@ import { IoMdClose } from "react-icons/io";
 import { AiOutlineSound } from "react-icons/ai";
 import { Description } from "@/components/ui/text/Description";
 import { useStories } from "@/redux/hooks/stories";
+import { GoShareAndroid } from "react-icons/go";
+import Button from "@/components/ui/button/Button";
+import LinkButton from "@/components/ui/button/LinkButton";
 
 type Story = {
 	id: number;
@@ -212,7 +214,9 @@ const Stories = () => {
 				{data?.detail.map((el, index) => {
 					const isViewed = viewedStories.has(el.id); // ✅ реактивно!
 					return (
-						<div key={el.id} className="flex flex-col items-center min-w-[70px] group">
+						<div
+							key={el.id}
+							className="flex flex-col items-center min-w-[70px] group">
 							<button
 								onClick={() => openModal(index)}
 								className="relative w-16 h-16 flex justify-center items-center rounded-full overflow-hidden border-1 border-white shadow-sm group-hover:scale-105 transition-transform focus:outline-none">
@@ -221,8 +225,7 @@ const Stories = () => {
 										isViewed
 											? "bg-gradient-to-br from-[#5900ff67] via-[#ffc40056] to-[#ff00ff4f]"
 											: "bg-gradient-to-br from-[#5900ff] via-[#ffc400] to-[#ff00ff]"
-									}`}
-								></div>
+									}`}></div>
 								<div className="w-[57px] h-[57px] border-white border-2 rounded-full relative overflow-hidden flex justify-center items-center">
 									<Image
 										src={el.preview}
@@ -246,11 +249,11 @@ const Stories = () => {
 					ref={modalRef}
 					className="fixed inset-0 md:bg-[#131313] bg-black md:py-10 py-0 flex items-center justify-center z-50 touch-none">
 					<div
-						className="bg-black py-10 rounded-lg max-w-md md:w-full w-full h-full text-center flex flex-col justify-between transition-transform duration-200 relative"
+						className="bg-black overflow-hidden rounded-lg max-w-md md:w-full w-full h-full text-center flex flex-col justify-between transition-transform duration-200 relative"
 						style={{ transform: `translateY(${dragOffsetY}px)` }}>
-						<div>
-							<div className="w-full px-2 pb-4">
-								<div className="w-full bg-slate-400 h-[2px] rounded-full relative overflow-hidden">
+						<div className=" absolute top-0 left-0 w-full z-10 mt-10">
+							<div className="w-full  px-2 pb-4 top-0 left-0">
+								<div className="w-full bg-[#00000044] h-[2px] rounded-full relative overflow-hidden">
 									<div
 										className="bg-white h-full rounded-full absolute left-0 top-0 transition-all duration-50"
 										style={{ width: `${progress}%` }}
@@ -259,29 +262,30 @@ const Stories = () => {
 							</div>
 
 							<div className="flex justify-between px-6 w-full items-center">
-								<div className="flex items-center gap-2">
-									<div className="relative overflow-hidden w-[50px] h-[50px]">
-										<Image
-											fill
-											className="rounded-full object-cover border border-white"
-											src={currentStory.image}
-											alt="avatar"
-										/>
-									</div>
-									<Description className="text-white">
-										{currentStory.title}
-									</Description>
-								</div>
-								<button onClick={closeModal} className="text-white">
+								<button
+									onClick={closeModal}
+									className="text-white bg-[#00000067] rounded-full p-2">
+									<GoShareAndroid size={23} />
+								</button>
+
+								<button
+									onClick={closeModal}
+									className="text-white bg-[#00000067] rounded-full p-2">
 									<IoMdClose size={23} />
 								</button>
 							</div>
 						</div>
 
-						<div className="relative flex-1 max-h-[500px] overflow-hidden">
+						<div className="absolute bottom-8 left-0 w-full z-30 px-[10px]">
+							<LinkButton  href="/asim" className="w-full">
+								Заказать
+							</LinkButton>
+						</div>
+
+						<div className="relative flex  h-full   overflow-hidden">
 							{currentStory.type === "image" ? (
 								<img
-									className="w-full h-auto object-contain"
+									className="w-full h-auto object-cover"
 									src={currentStory.content}
 									alt="story content"
 								/>
@@ -300,9 +304,9 @@ const Stories = () => {
 									{muted && (
 										<button
 											onClick={() => setMuted(false)}
-											className="absolute bottom-4 right-4 z-20 border-2 border-black bg-[#ffffff] bg-opacity-50 rounded-full p-2"
+											className="absolute bottom-20 right-4 z-20 border border-white bg-[#00000044] bg-opacity-50 rounded-full p-2"
 											aria-label="Включить звук">
-											<AiOutlineSound size={22} color="black" />
+											<AiOutlineSound size={22} color="white" />
 										</button>
 									)}
 								</>

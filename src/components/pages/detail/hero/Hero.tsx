@@ -23,21 +23,10 @@ const HeroDetail = ({ product }: HeroDetailProps) => {
 	}
 
 	return (
-		<section className="md:px-4 px-0 md:py-4 py-0 flex justify-center flex-col items-center">
-			{/* Основное изображение */}
-			<div className="w-full h-[390px] md:h-[535px] overflow-hidden relative mb-4">
-				<Image
-					src={activeImage.url}
-					alt={product.title || "Product image"}
-					fill
-					className="object-contain"
-					priority
-				/>
-			</div>
+		<section className="md:px-4 px-0 md:py-4 py-0 w-full max-w-[450px] flex justify-start items-start gap-2">
 
-			{/* Миниатюры */}
 			<div
-				className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide"
+				className="flex flex-col min-w-[40px] gap-2 overflow-x-auto pb-2 scrollbar-hide"
 				style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
 			>
 				{images.map((img, index) => (
@@ -61,7 +50,20 @@ const HeroDetail = ({ product }: HeroDetailProps) => {
 				))}
 			</div>
 
-			<div className="text-center flex flex-col justify-center items-center gap-3 mt-3">
+			<div className="w-full h-[390px] md:h-[375px] max-w-[375px] overflow-hidden rounded-[16px] relative mb-4">
+				<Image
+					src={activeImage.url}
+					alt={product.title || "Product image"}
+					fill
+					className="object-cover"
+					priority
+				/>
+			</div>
+
+			 
+		 
+
+			{/* <div className="text-center flex flex-col justify-center items-center gap-3 mt-3">
 				<TitleComponent className="text-[28px] font-[400]">
 					{product.title}
 				</TitleComponent>
@@ -76,10 +78,8 @@ const HeroDetail = ({ product }: HeroDetailProps) => {
 				<Description className="w-full max-w-[350px] mt-2">
 					{product.description}
 				</Description>
-				{/* <Title className="font-[600] mt-2">
-					От {product.price.toLocaleString("ru-RU")} с в месяц
-				</Title> */}
-			</div>
+				 
+			</div> */}
 		</section>
 	);
 };

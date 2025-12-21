@@ -1,20 +1,21 @@
-import React from "react";
 import Stories from "./stories/Stories";
-import SubscriptionsHome from "./subscriptions/SubscriptionsHome";
+import SubscriptionsHome from "./subscriptions/FollowCardHome";
 import CategoryHome from "./category/CategoryHome";
-import Featured from "./featured/Featured";
-import SubscriptionSlider from "./subscription-slider/SubscriptionSlider";
 import PageHeader from "@/components/ui/heading/PageHeader";
+import Banner from "./banner/Banner";
+import HomeCards from "./featured/HomeCards";
+import FollowCardHome from "./subscriptions/FollowCardHome";
 
 const HomeComponents = () => {
 	return (
 		<>
-			<PageHeader title="Главная" className="md:flex hidden"/>
+			<PageHeader title="Главная" className="md:flex hidden" />
+
 			<Stories />
-			<SubscriptionSlider />
-			<SubscriptionsHome />
+			<Banner />
+			<FollowCardHome />
 			<CategoryHome />
-			<Featured />
+			<HomeCards />
 		</>
 	);
 };

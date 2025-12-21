@@ -18,3 +18,20 @@ export function useProductDetail(id: number) {
 
 	return { data, isLoading };
 }
+
+interface UseProductReviewsProps {
+  productId: number;
+  page: number;
+  pageSize: number;
+}
+
+
+export function useProductReviews({ productId, page, pageSize }: UseProductReviewsProps) {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["product-reviews", productId, page, pageSize],
+    queryFn: () => productService.getProductReviews(productId, page, pageSize),
+    enabled: !!productId,
+  });
+
+  return { reviewsData: data, isLoading, isError };
+}

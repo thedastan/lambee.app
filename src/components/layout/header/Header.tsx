@@ -2,21 +2,16 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import BurgerMenu from "./BurgerMenu";
 
 import logo from "@/assets/images/logo.png";
 import BasketSvg from "@/assets/svg/BasketSvg";
 import LinkButton from "@/components/ui/button/LinkButton";
 import { PAGE } from "@/config/pages/public-page.config";
 import Link from "next/link";
+import { FiBell } from "react-icons/fi";
 
 const Header = () => {
-	const [isOpen, setIsOpen] = useState(false);
 	const [scrolled, setScrolled] = useState(false);
-
-	const toggleBox = () => {
-		setIsOpen((prevState) => !prevState);
-	};
 
 	useEffect(() => {
 		const handleScroll = () => {
@@ -40,21 +35,11 @@ const Header = () => {
 						: "bg-transparent border-b border-[#a8a8a8]/30"
 				}`}>
 				<div className="container flex items-center justify-between">
-			 
-					<div className="w-[40px]"></div>
-
-					<div className="burger__button">
-						<label>
-							<input
-								type="checkbox"
-								checked={isOpen}
-								onChange={toggleBox}
-							/>
-							<span></span>
-							<span></span>
-							<span></span>
-						</label>
-					</div>
+					<LinkButton
+						href={PAGE.NOTICE}
+						className="w-[44px] h-[40px] border border-[#E4E4E7] rounded-[5px] !text-black bg-transparent !px-0">
+						<FiBell  size={23} color="#515151"/>
+					</LinkButton>
 
 					<Link href={PAGE.HOME}>
 						<Image
@@ -69,11 +54,9 @@ const Header = () => {
 					<LinkButton
 						href={PAGE.BASKET}
 						className="w-[44px] h-[40px] border border-[#E4E4E7] rounded-[5px] !text-black bg-transparent !px-0">
-						<BasketSvg />
+						<BasketSvg  />
 					</LinkButton>
 				</div>
-
-				<BurgerMenu isOpen={isOpen} setIsOpen={setIsOpen} />
 			</div>
 		</header>
 	);

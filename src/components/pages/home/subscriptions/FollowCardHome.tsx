@@ -4,7 +4,7 @@ import { SubscriptionCard } from "@/components/ui/cards/SubscriptionCard";
 import { TitleComponent } from "@/components/ui/text/TitleComponent";
 import { useEffect, useState } from "react";
 
-const SubscriptionsHome = () => {
+const FollowCardHome = () => {
 	const data = [
 		{
 			id: 0,
@@ -12,8 +12,7 @@ const SubscriptionsHome = () => {
 			title: "Подгузники",
 			date: "12.10.2025",
 			time: "09:00",
-			price: "1000",
-			status: false,
+			
 		},
 		{
 			id: 1,
@@ -21,8 +20,7 @@ const SubscriptionsHome = () => {
 			title: "Подгузники",
 			date: "12.10.2025",
 			time: "09:00",
-			price: "1000",
-			status: true,
+		
 		},
 		{
 			id: 2,
@@ -30,8 +28,7 @@ const SubscriptionsHome = () => {
 			title: "Подгузники",
 			date: "12.10.2025",
 			time: "09:00",
-			price: "1000",
-			status: true,
+			
 		},
 		{
 			id: 3,
@@ -39,8 +36,6 @@ const SubscriptionsHome = () => {
 			title: "Подгузники",
 			date: "12.10.2025",
 			time: "09:00",
-			price: "1000",
-			status: false,
 		},
 		{
 			id: 4,
@@ -48,8 +43,6 @@ const SubscriptionsHome = () => {
 			title: "Подгузники",
 			date: "12.10.2025",
 			time: "09:00",
-			price: "1000",
-			status: false,
 		},
 		{
 			id: 5,
@@ -57,8 +50,6 @@ const SubscriptionsHome = () => {
 			title: "Подгузники",
 			date: "12.10.2025",
 			time: "09:00",
-			price: "1000",
-			status: false,
 		},
 		{
 			id: 6,
@@ -66,8 +57,6 @@ const SubscriptionsHome = () => {
 			title: "Подгузники",
 			date: "12.10.2025",
 			time: "09:00",
-			price: "1000",
-			status: false,
 		},
 	];
 
@@ -105,12 +94,11 @@ const SubscriptionsHome = () => {
 			<TitleComponent className="px-4">Ваши подписки</TitleComponent>
 			<div
 				style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-				className="flex items-start gap-3   h-[310px] mt-3 overflow-x-auto scrollbar-hide   pl-[calc((100%-90%)/3)] pr-[calc((100%-90%)/3)]">
+				className="flex items-start gap-3   h-[180px] mt-3 overflow-x-auto scrollbar-hide  md:pl-[calc((100%-96%)/3)] md:pr-[calc((100%-96%)/3)]   pl-[calc((100%-90%)/3)] pr-[calc((100%-90%)/3)]">
 				{data.map((item) => (
 					<SubscriptionCard
 						key={item.id}
 						{...item}
-						isOpenMenu={openMenuId === item.id}
 						onToggleMenu={toggleMenu}
 						onAction={handleAction}
 					/>
@@ -120,4 +108,4 @@ const SubscriptionsHome = () => {
 	);
 };
 
-export default SubscriptionsHome;
+export default FollowCardHome;

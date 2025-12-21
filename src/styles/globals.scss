@@ -25,19 +25,19 @@ body {
 .swiper-pagination-bullet {
 	background-color: #cdd5df !important;
 	opacity: 1 !important;
-	width: 5px !important;
-	height: 5px !important;
+	width: 10px !important;
+	height: 10px !important;
 	margin: 0 4px !important;
 	border-radius: 50% !important;
-	transition: width 0.3s ease, background-color 0.3s ease; // ✅ Плавный переход
+	transition: width 0.3s ease, background-color 0.3s ease;  
 }
 
 .swiper-pagination-bullet-active {
 	background-color: #aaa4c2 !important;
-	width: 13px !important;
-	height: 5px !important;
-	border-radius: 30% !important;
-	transition: width 0.3s ease, background-color 0.3s ease; // ✅ Плавный переход
+	width: 10px !important;
+	height: 10px !important;
+	border-radius: 50% !important;
+	transition: width 0.3s ease, background-color 0.3s ease;  
 }
 
 ///
