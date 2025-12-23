@@ -2,10 +2,6 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { IoStarSharp } from "react-icons/io5";
-import { TitleComponent } from "@/components/ui/text/TitleComponent";
-import { Description } from "@/components/ui/text/Description";
-import { Title } from "@/components/ui/text/Title";
 import { Detail } from "@/redux/models/product.model";
 
 interface HeroDetailProps {
@@ -23,10 +19,10 @@ const HeroDetail = ({ product }: HeroDetailProps) => {
 	}
 
 	return (
-		<section className="md:px-4 px-0 md:py-4 py-0 w-full max-w-[450px] flex justify-start items-start gap-2">
+		<section className="  w-full max-w-[435px] flex md:flex-row flex-col-reverse md:justify-start justify-center md:items-start items-center gap-2">
 
 			<div
-				className="flex flex-col min-w-[40px] gap-2 overflow-x-auto pb-2 scrollbar-hide"
+				className="flex md:flex-col flex-row min-w-[40px] gap-2 overflow-x-auto pb-2 scrollbar-hide"
 				style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
 			>
 				{images.map((img, index) => (
@@ -63,23 +59,7 @@ const HeroDetail = ({ product }: HeroDetailProps) => {
 			 
 		 
 
-			{/* <div className="text-center flex flex-col justify-center items-center gap-3 mt-3">
-				<TitleComponent className="text-[28px] font-[400]">
-					{product.title}
-				</TitleComponent>
-				<Description className="flex items-center gap-1">
-					<IoStarSharp />
-					<IoStarSharp />
-					<IoStarSharp />
-					<IoStarSharp />
-					<IoStarSharp />
-					<span className="text-[#515151] ml-2">4500 отзывов</span>
-				</Description>
-				<Description className="w-full max-w-[350px] mt-2">
-					{product.description}
-				</Description>
-				 
-			</div> */}
+			 
 		</section>
 	);
 };
