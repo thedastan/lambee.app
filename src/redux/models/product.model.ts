@@ -58,24 +58,15 @@ export interface BenefitPro {
 }
 
 ///
-
-export interface IProductReview {
-  id: number;
-  user: {
-    name: string;
-    surname: string;
-    birth_date: string; // или Date, если парсите
-  };
-  rating: number;
-  text: string;
-  created_at: string;
-}
-
-export interface IProductReviewsResponse {
-  detail: {
-    count: number;
-    next: string | null;
-    previous: string | null;
-    results: IProductReview[];
-  };
+ 
+export interface IReview {
+	id: number;
+	user: {
+		name: string;
+		surname: string;
+		birth_date: string | null;
+	};
+	rating: string; // "5.0", "4.0" и т.д.
+	text: string;
+	created_at: string; // ISO 8601
 }

@@ -2,11 +2,13 @@
 import { Title } from "@/components/ui/text/Title";
 import { TitleComponent } from "@/components/ui/text/TitleComponent";
 import { useCategories } from "@/redux/hooks/categories";
+// import { useProduct } from "@/redux/hooks/product";
 import Image from "next/image";
 import { BsChevronRight } from "react-icons/bs";
 
 const CategoryHome = () => {
 	const { data, isLoading } = useCategories();
+	// const { data:card } = useProduct();
 
 	if (isLoading) {
 		return (
@@ -26,6 +28,11 @@ const CategoryHome = () => {
 		);
 	}
 
+	// console.log(data,"category");
+
+	// console.log(card,"card");
+	
+	
 	return (
 		<section className="pb-6 px-4">
 			<TitleComponent className="pb-4">Категории товаров</TitleComponent>

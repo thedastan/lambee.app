@@ -11,6 +11,7 @@ import { FiEdit2 } from "react-icons/fi";
 import { SlLocationPin } from "react-icons/sl";
 
 const PROFILE_ADDRESS_KEY = "selectedShippingAddressId";
+const PROFILE_ADDRESS_LABEL_KEY = "selectedShippingAddressLabel"; // ← вынесем в константу
 
 const ProfileAddress = () => {
   const { profile } = useUserProfile();
@@ -24,19 +25,15 @@ const ProfileAddress = () => {
   useEffect(() => {
     if (profile?.shipping_addresses) {
       const savedId = localStorage.getItem(PROFILE_ADDRESS_KEY);
+      const savedLabel = localStorage.getItem(PROFILE_ADDRESS_LABEL_KEY);
       if (savedId && profile.shipping_addresses.some(addr => String(addr.id) === savedId)) {
         setSelectedAddress(savedId);
       }
+      // Даже если ID не найден, но label есть — можно использовать (опционально)
     }
   }, [profile?.shipping_addresses]);
 
-  // 2. Сохраняем в localStorage при изменении selectedAddress
-  useEffect(() => {
-    if (selectedAddress) {
-      localStorage.setItem(PROFILE_ADDRESS_KEY, selectedAddress);
-    }
-  }, [selectedAddress]);
-
+  // 2. Вычисляем опции адресов
   const addressOptions = useMemo(() => {
     if (!profile?.shipping_addresses) return [];
     return profile.shipping_addresses.map((addr) => ({
@@ -44,6 +41,18 @@ const ProfileAddress = () => {
       label: addr.address,
     }));
   }, [profile?.shipping_addresses]);
+
+  // 3. При изменении selectedAddress — сохраняем и ID, и label
+  useEffect(() => {
+    if (selectedAddress) {
+      localStorage.setItem(PROFILE_ADDRESS_KEY, selectedAddress);
+      // Теперь addressOptions уже определён (благодаря порядку объявления!)
+      const label = addressOptions.find(a => a.id === selectedAddress)?.label;
+      if (label) {
+        localStorage.setItem(PROFILE_ADDRESS_LABEL_KEY, label);
+      }
+    }
+  }, [selectedAddress, addressOptions]); // ✅ Теперь addressOptions объявлен выше — ошибки нет
 
   const openSelectModal = () => setModalType("select");
   const openAddModal = () => {
@@ -66,6 +75,11 @@ const ProfileAddress = () => {
 
   const selectedLabel =
     addressOptions.find((a) => a.id === selectedAddress)?.label || "Не выбран";
+
+  // Обработчик выбора адреса — можно дополнительно сохранять здесь, но useEffect достаточно
+  const handleAddressChange = (id: string) => {
+    setSelectedAddress(id);
+  };
 
   return (
     <div>
@@ -95,7 +109,7 @@ const ProfileAddress = () => {
             options={addressOptions}
             name="deliveryAddress"
             value={selectedAddress}
-            onChange={(id) => setSelectedAddress(id)}
+            onChange={handleAddressChange} // ← используем обработчик
           />
 
           <div className="border-[#E4E4E7] border-b w-full h-[1px]"></div>

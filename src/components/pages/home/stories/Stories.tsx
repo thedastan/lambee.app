@@ -49,6 +49,8 @@ const Stories = () => {
 
 	const { data, isLoading } = useStories();
 
+	console.log(data);
+
 	// ✅ Инициализируем при монтировании
 	useEffect(() => {
 		setViewedStories(getViewedStoriesFromStorage());
@@ -262,11 +264,17 @@ const Stories = () => {
 							</div>
 
 							<div className="flex justify-between px-6 w-full items-center">
-								<button
-									onClick={closeModal}
-									className="text-white bg-[#00000067] rounded-full p-2">
-									<GoShareAndroid size={23} />
-								</button>
+								<div className="flex items-center gap-1">
+									<div className=" relative w-10 h-10 rounded-full overflow-hidden border-2 border-white flex justify-center items-center">
+										<Image
+											fill
+											objectFit="cover"
+											src={currentStory.image}
+											alt="ava"
+										/>
+									</div>
+									<Description className="text-[#ffffff] shadow-sm">{currentStory.title}</Description>
+								</div>
 
 								<button
 									onClick={closeModal}
@@ -277,7 +285,7 @@ const Stories = () => {
 						</div>
 
 						<div className="absolute bottom-8 left-0 w-full z-30 px-[10px]">
-							<LinkButton  href="/asim" className="w-full">
+							<LinkButton href="/asim" className="w-full">
 								Заказать
 							</LinkButton>
 						</div>

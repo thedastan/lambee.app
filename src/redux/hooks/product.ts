@@ -18,20 +18,13 @@ export function useProductDetail(id: number) {
 
 	return { data, isLoading };
 }
+ 
+export function useProductReviews(productId: number) {
+	const { data, isLoading } = useQuery({
+		queryKey: ["product-reviews", productId],
+		queryFn: () => productService.getProductReviewsAll(productId), // ← без page
+		enabled: !!productId,
+	});
 
-interface UseProductReviewsProps {
-  productId: number;
-  page: number;
-  pageSize: number;
-}
-
-
-export function useProductReviews({ productId, page, pageSize }: UseProductReviewsProps) {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["product-reviews", productId, page, pageSize],
-    queryFn: () => productService.getProductReviews(productId, page, pageSize),
-    enabled: !!productId,
-  });
-
-  return { reviewsData: data, isLoading, isError };
+	return { data, isLoading };
 }
