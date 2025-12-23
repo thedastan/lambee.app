@@ -1,30 +1,14 @@
+'use client'
 import { Description } from "@/components/ui/text/Description";
 import { Title } from "@/components/ui/text/Title";
 import logo from "@/assets/svg/logo-white.svg";
 import Image from "next/image";
 import PageHeader from "@/components/ui/heading/PageHeader";
+import { useNotifications } from "@/redux/hooks/useNotifications";
 
 const Notice = () => {
-	const data = [
-		{
-			title: "Акция!",
-			description: "Получите 6ую бесплатную доставку",
-		},
-		{
-			title: "О подписке",
-			description:
-				"У вас заканчивается подписка на “Подгузники”. Не забудьте пополнить баланс",
-		},
-		{
-			title: "Акция!",
-			description: "Получите 6ую бесплатную доставку",
-		},
-		{
-			title: "О подписке",
-			description:
-				"У вас заканчивается подписка на “Подгузники”. Не забудьте пополнить баланс",
-		},
-	];
+	const { data } =  useNotifications();
+
 	return (
 		<section>
 			<PageHeader
@@ -33,7 +17,7 @@ const Notice = () => {
 			/>
 			
 			<div className="md:p-4 p-0 mt-4 md:mt-0">
-				{data.map((el, index) => (
+				{data?.data.detail.map((el, index) => (
 					<div
 						key={index}
 						className="bg-white p-8 border-b border-[#E4E4E7] flex gap-2">

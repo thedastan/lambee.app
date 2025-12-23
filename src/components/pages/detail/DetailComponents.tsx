@@ -17,11 +17,9 @@ const DetailComponents = () => {
 	const { data: productData } = useProductDetail(id);
 	const product = productData?.detail;
 
-	// const { data: ordersData } = useOrders();
-	// const { data: not } =  useNotifications();
+	const { data: ordersData } = useOrders();
 
-	// console.log("ordersData", ordersData);
-	// console.log("notifications", not);
+	console.log("ordersData", ordersData);
 	
 
 

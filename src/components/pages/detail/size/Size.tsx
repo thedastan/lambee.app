@@ -134,7 +134,7 @@ const SizeDetail = ({ product, productId }: HeroDetailProps) => {
             }`}
           >
             <Title className="font-[600] w-full max-w-[185px]">
-              По подписке - {product.items_count} штук
+              По подписке - {product.items_count} шт
             </Title>
             <div className="flex items-center gap-1">
               <Title className="font-medium">{product.subscription_price} сом в месяц</Title>
@@ -168,7 +168,7 @@ const SizeDetail = ({ product, productId }: HeroDetailProps) => {
             <div className="flex justify-between">
               <Description className="font-[600]">
                 {selectedOption === "one-time" ? (
-                  <span>Разовый заказ (выбрано)</span>
+                  <span>Разовый заказ</span>
                 ) : (
                   "Разовый заказ"
                 )}
