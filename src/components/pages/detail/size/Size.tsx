@@ -129,7 +129,7 @@ const SizeDetail = ({ product, productId }: HeroDetailProps) => {
             onClick={() => setSelectedOption("subscription")}
             className={`p-3 rounded-[8px] relative flex flex-col gap-2 cursor-pointer transition-all duration-200 ${
               selectedOption === "subscription"
-                ? "border border-[#7668AD] bg-[#AAA4C2] text-white"
+                ? "border border-[#7668AD] bg-[#0071E3] text-white"
                 : "border border-gray-300 bg-white text-gray-800"
             }`}
           >
@@ -150,7 +150,7 @@ const SizeDetail = ({ product, productId }: HeroDetailProps) => {
               className={`px-2 py-[1px] uppercase text-[15px] font-[600] rounded-[7px] rounded-tl-none absolute top-0 right-0 ${
                 selectedOption === "subscription"
                   ? "bg-white text-[#000000] "
-                  : "bg-[#AAA4C2] text-white"
+                  : "bg-[#0071E3] text-white"
               }`}
             >
               Скидка 10%
@@ -161,7 +161,7 @@ const SizeDetail = ({ product, productId }: HeroDetailProps) => {
             onClick={() => setSelectedOption("one-time")}
             className={`p-3 rounded-[8px] relative cursor-pointer transition-all duration-200 ${
               selectedOption === "one-time"
-                ? "border border-[#7668AD] bg-[#AAA4C2] text-white"
+                ? "border border-[#7668AD] bg-[#0071E3] text-white"
                 : "border border-gray-300 bg-white text-gray-800"
             }`}
           >

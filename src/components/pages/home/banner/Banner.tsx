@@ -78,7 +78,7 @@ const Banner = () => {
 							className="w-full h-[164px] rounded-[16px] relative p-4"
 							style={{
 								background:
-									"linear-gradient(to right, #9483D7 70%, #189D62 90%)",
+									"linear-gradient(to right, #0071E3 70%, #189D62 90%)",
 							}}>
 							<div className="text-white flex flex-col justify-between h-full">
 								<div>

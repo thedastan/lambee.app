@@ -153,20 +153,20 @@ const Login = () => {
 
 								<Description className="mt-6 !text-[12px] pb-6">
 									Вы принимаете{" "}
-									<Link href="#" className="text-[#AAA4C2] hover:underline">
+									<Link href="#" className="text-[#0071E3] hover:underline">
 										Условия использования
 									</Link>
 									.
 									<br />
-									<Link href="#" className="text-[#AAA4C2] hover:underline">
+									<Link href="#" className="text-[#0071E3] hover:underline">
 										Оферта
 									</Link>{" "}
 									·{" "}
-									<Link href="#" className="text-[#AAA4C2] hover:underline">
+									<Link href="#" className="text-[#0071E3] hover:underline">
 										Политика
 									</Link>{" "}
 									·{" "}
-									<Link href="#" className="text-[#AAA4C2] hover:underline">
+									<Link href="#" className="text-[#0071E3] hover:underline">
 										Соглашение
 									</Link>
 								</Description>
@@ -178,7 +178,7 @@ const Login = () => {
 						</form>
 						<Link
 							href={PAGE.AUTH_RESET_PASSWORD}
-							className="flex justify-center mt-4 text-[14px] font-[500] text-[#AAA4C2] hover:underline">
+							className="flex justify-center mt-4 text-[14px] font-[500] text-[#0071E3] hover:underline">
 							Забыли пароль?
 						</Link>
 					</div>

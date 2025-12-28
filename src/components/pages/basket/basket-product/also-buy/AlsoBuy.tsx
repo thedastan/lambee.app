@@ -89,7 +89,7 @@ const AlsoBuy = () => {
 									</Description>
 								</div>
 								<div className="w-full flex justify-end">
-									<button className="text-[#AAA4C2] border-b border-[#AAA4C2] text-[12px] font-[600]">
+									<button className="text-[#0071E3] border-b border-[#0071E3] text-[12px] font-[600]">
 										Добавить в корзину
 									</button>
 								</div>

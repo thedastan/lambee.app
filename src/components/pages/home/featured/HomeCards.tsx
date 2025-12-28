@@ -74,13 +74,13 @@ const HomeCards = () => {
 								</Description>
 
 								<div key={index} className="">
-									<Description className="text-[#AAA4C2] font-[500] text-[16px]">
+									<Description className="text-[#0071E3] font-[500] text-[16px]">
 										{el.subscription_price} c
 										<span className="line-through text-[#515151] text-14px ml-1">
 											{el.price} c
 										</span>
 									</Description>
-									<Description className="text-[#AAA4C2] rounded-[32px] absolute top-0 right-0 border border-[#AAA4C2] p-1 px-2">
+									<Description className="text-[#0071E3] rounded-[32px] absolute top-0 right-0 border border-[#0071E3] p-1 px-2">
 										{el.discount_percent}% Скидка
 									</Description>
 								</div>

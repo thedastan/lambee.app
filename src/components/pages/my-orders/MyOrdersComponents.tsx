@@ -139,14 +139,14 @@ const MyOrdersComponents = () => {
 				<div className="bg-white flex justify-between items-center w-full rounded-[8px]">
 					<Button
 						className={`w-full py-3 rounded-[8px] font-medium transition-all duration-300 ease-in-out ${
-							activeTab === "urgent" ? " " : "bg-white !text-[#1D1D1F] "
+							activeTab === "urgent" ? " " : "!bg-white !text-[#1D1D1F] "
 						}`}
 						onClick={() => setActiveTab("urgent")}>
 						Срочные
 					</Button>
 					<Button
 						className={`w-full py-3 rounded-[8px] font-medium transition-all duration-300 ease-in-out ${
-							activeTab === "follow" ? " " : " bg-white !text-[#1D1D1F]  "
+							activeTab === "follow" ? " " : " !bg-white !text-[#1D1D1F]  "
 						}`}
 						onClick={() => setActiveTab("follow")}>
 						Подписочные

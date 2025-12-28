@@ -109,7 +109,7 @@ const MyChildren = () => {
 							className="border border-[#E4E4E7] rounded-[8px] p-4 bg-white">
 							<div className="w-full flex items-center justify-between">
 								<TitleComponent>{child.title}</TitleComponent>
-								<Button className="bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0">
+								<Button className="!bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0">
 									<FiEdit2 />
 								</Button>
 							</div>
@@ -137,7 +137,7 @@ const MyChildren = () => {
 
 				<Button
 					onClick={openDateModal}
-					className="bg-white w-full mt-4 border border-[#E4E4E7] !text-black">
+					className="!bg-white w-full mt-4 border border-[#E4E4E7] !text-black">
 					Добавить ребенка
 				</Button>
 
@@ -157,7 +157,7 @@ const MyChildren = () => {
 
 						<div className="flex gap-3 w-full">
 							<Button
-								className="w-full border border-[#E4E4E7] bg-transparent !text-black"
+								className="w-full border border-[#E4E4E7] !bg-transparent !text-black"
 								onClick={closeModal}>
 								Отмена
 							</Button>
@@ -190,14 +190,14 @@ const MyChildren = () => {
 						<div className="border-[#E4E4E7] border-b w-full h-[1px]"></div>
 
 						<Button
-							className="w-full border border-[#E4E4E7] bg-transparent !text-black"
+							className="w-full border border-[#E4E4E7] !bg-transparent !text-black"
 							onClick={openAddModal}>
 							Добавить нового ребёнка
 						</Button>
 
 						<div className="flex gap-3 w-full">
 							<Button
-								className="w-full border border-[#E4E4E7] bg-transparent !text-black"
+								className="w-full border border-[#E4E4E7] !bg-transparent !text-black"
 								onClick={openDateModal}>
 								Назад
 							</Button>
@@ -227,7 +227,7 @@ const MyChildren = () => {
 
 						<div className="flex gap-3 w-full">
 							<Button
-								className="w-full border border-[#E4E4E7] bg-transparent !text-black"
+								className="w-full border border-[#E4E4E7] !bg-transparent !text-black"
 								onClick={openChooseModal}>
 								Назад
 							</Button>

@@ -199,20 +199,20 @@ const Registration = () => {
 
 									<Description className="mt-6 !text-[12px] pb-6 text-start">
 										Регистрируясь вы принимаете{" "}
-										<Link href="#" className="text-[#AAA4C2] hover:underline">
+										<Link href="#" className="text-[#0071E3] hover:underline">
 											Условия использования
 										</Link>
 										.
 										<br />
-										<Link href="#" className="text-[#AAA4C2] hover:underline">
+										<Link href="#" className="text-[#0071E3] hover:underline">
 											Оферта
 										</Link>{" "}
 										·{" "}
-										<Link href="#" className="text-[#AAA4C2] hover:underline">
+										<Link href="#" className="text-[#0071E3] hover:underline">
 											Политика
 										</Link>{" "}
 										·{" "}
-										<Link href="#" className="text-[#AAA4C2] hover:underline">
+										<Link href="#" className="text-[#0071E3] hover:underline">
 											Соглашение
 										</Link>
 									</Description>
@@ -260,7 +260,7 @@ const Registration = () => {
 
 									<div className="text-center mt-4">
 										{isTimerActive ? (
-											<Description className="text-[#AAA4C2]">
+											<Description className="text-[#0071E3]">
 												Отправить повторно{" "}
 												{String(resendTimer).padStart(2, "0")}
 											</Description>
@@ -268,7 +268,7 @@ const Registration = () => {
 											<button
 												type="button"
 												onClick={handleResendCode}
-												className="text-[#AAA4C2] underline">
+												className="text-[#0071E3] underline">
 												Отправить повторно
 											</button>
 										)}

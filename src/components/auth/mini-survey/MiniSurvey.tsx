@@ -54,7 +54,7 @@ const MiniSurvey = () => {
 						<>
 							<div className="w-full bg-[#DFEFFF] h-[4px] rounded-[8px] mb-6 mt-2">
 								<div
-									className="bg-[#AAA4C2] h-[4px] rounded-[8px] transition-all duration-300"
+									className="bg-[#0071E3] h-[4px] rounded-[8px] transition-all duration-300"
 									style={{ width: `${step * 25}%` }}></div>
 							</div>
 						</>
@@ -75,7 +75,7 @@ const MiniSurvey = () => {
 										onClick={() => handleAgeSelect(String(age))}
 										className={`h-[48px] w-[48px] flex items-center justify-center text-lg font-medium rounded-lg transition-colors ${
 											answers.q1 === String(age)
-												? "bg-[#AAA4C2] text-white"
+												? "bg-[#0071E3] text-white"
 												: "bg-white border border-gray-300 hover:bg-gray-50"
 										}`}>
 										{age}
@@ -108,7 +108,7 @@ const MiniSurvey = () => {
 											onClick={() => handleWeightSelect(String(weight))}
 											className={`h-[48px] w-[48px] flex items-center justify-center text-lg font-medium rounded-lg transition-colors ${
 												answers.q2 === String(weight)
-													? "bg-[#AAA4C2] text-white"
+													? "bg-[#0071E3] text-white"
 													: "bg-white border border-gray-300 hover:bg-gray-50"
 											}`}>
 											{weight}
@@ -144,7 +144,7 @@ const MiniSurvey = () => {
 											onClick={() => handleUsageSelect(String(usage))}
 											className={`h-[48px] w-[48px] flex items-center justify-center text-lg font-medium rounded-lg transition-colors ${
 												answers.q3 === String(usage)
-													? "bg-[#AAA4C2] text-white"
+													? "bg-[#0071E3] text-white"
 													: "bg-white border border-gray-300 hover:bg-gray-50"
 											}`}>
 											{usage}
@@ -174,7 +174,7 @@ const MiniSurvey = () => {
 							<label
 								className={`flex mt-5 text-start items-center gap-3 p-3 border rounded-lg mb-3 cursor-pointer transition-colors ${
 									answers.q4 === "comfort"
-										? "bg-[#FAF9FF] border-[#AAA4C2]"
+										? "bg-[#FAF9FF] border-[#0071E3]"
 										: "bg-white border-gray-300 hover:bg-gray-50"
 								}`}>
 								<input
@@ -190,7 +190,7 @@ const MiniSurvey = () => {
 										size={20}
 										className={
 											answers.q4 === "comfort"
-												? "text-[#AAA4C2]"
+												? "text-[#0071E3]"
 												: "text-gray-400"
 										}
 									/>
@@ -199,7 +199,7 @@ const MiniSurvey = () => {
 									<p
 										className={` text-[14px] font-[500] ${
 											answers.q4 === "comfort"
-												? "text-[#AAA4C2]"
+												? "text-[#0071E3]"
 												: "text-[#3F3F46]"
 										}`}>
 										Максимальный комфорт
@@ -207,7 +207,7 @@ const MiniSurvey = () => {
 									<p
 										className={`text-[12px] font-[400] ${
 											answers.q4 === "comfort"
-												? "text-[#AAA4C2]"
+												? "text-[#0071E3]"
 												: "text-[#7D7D8A]"
 										}`}>
 										Премиальные материалы и функции
@@ -215,7 +215,7 @@ const MiniSurvey = () => {
 								</div>
 								{answers.q4 === "comfort" && (
 									<div className="w-5 h-5 flex items-center justify-center">
-										<span className="p-2 bg-[#AAA4C2] text-white rounded-[8px] flex items-center justify-center text-xs font-bold">
+										<span className="p-2 bg-[#0071E3] text-white rounded-[8px] flex items-center justify-center text-xs font-bold">
 											<FaCheck size={10} />
 										</span>
 									</div>
@@ -226,7 +226,7 @@ const MiniSurvey = () => {
 							<label
 								className={`flex items-center text-start gap-3 p-3 border rounded-lg mb-3 cursor-pointer transition-colors ${
 									answers.q4 === "budget"
-										? "bg-[#FAF9FF] border-[#AAA4C2]"
+										? "bg-[#FAF9FF] border-[#0071E3]"
 										: "bg-white border-gray-300 hover:bg-gray-50"
 								}`}>
 								<input
@@ -242,7 +242,7 @@ const MiniSurvey = () => {
 										size={24}
 										className={
 											answers.q4 === "budget"
-												? "text-[#AAA4C2]"
+												? "text-[#0071E3]"
 												: "text-gray-400"
 										}
 									/>
@@ -251,7 +251,7 @@ const MiniSurvey = () => {
 									<p
 										className={`text-[14px] font-[500] ${
 											answers.q4 === "budget"
-												? "text-[#AAA4C2]"
+												? "text-[#0071E3]"
 												: "text-[#3F3F46]"
 										}`}>
 										Маленькая сумка
@@ -259,7 +259,7 @@ const MiniSurvey = () => {
 									<p
 										className={`text-[12px] font-[400] ${
 											answers.q4 === "budget"
-												? "text-[#AAA4C2]"
+												? "text-[#0071E3]"
 												: "text-[#7D7D8A]"
 										}`}>
 										Отличное качество по доступным ценам
@@ -267,7 +267,7 @@ const MiniSurvey = () => {
 								</div>
 								{answers.q4 === "budget" && (
 									<div className="w-5 h-5 flex items-center justify-center">
-										<span className="p-2 bg-[#AAA4C2] text-white rounded-[8px] flex items-center justify-center text-xs font-bold">
+										<span className="p-2 bg-[#0071E3] text-white rounded-[8px] flex items-center justify-center text-xs font-bold">
 											<FaCheck size={10} />
 										</span>
 									</div>
@@ -294,7 +294,7 @@ const MiniSurvey = () => {
 									xmlns="http://www.w3.org/2000/svg">
 									<path
 										d="M2.00043 21.882L21.2849 31.5242C21.5472 31.6554 21.6784 31.721 21.816 31.7468C21.9379 31.7696 22.063 31.7696 22.1848 31.7468C22.3224 31.721 22.4536 31.6554 22.716 31.5242L42.0004 21.882M2.00043 31.882L21.2849 41.5242C21.5472 41.6554 21.6784 41.721 21.816 41.7468C21.9379 41.7696 22.063 41.7696 22.1848 41.7468C22.3224 41.721 22.4536 41.6554 22.716 41.5242L42.0004 31.882M2.00043 11.882L21.2849 2.23974C21.5472 2.10855 21.6784 2.04296 21.816 2.01715C21.9379 1.99428 22.063 1.99428 22.1848 2.01715C22.3224 2.04296 22.4536 2.10855 22.716 2.23974L42.0004 11.882L22.716 21.5242C22.4536 21.6554 22.3224 21.721 22.1848 21.7468C22.063 21.7696 21.9379 21.7696 21.816 21.7468C21.6784 21.721 21.5472 21.6554 21.2849 21.5242L2.00043 11.882Z"
-										stroke="#AAA4C2"
+										stroke="#0071E3"
 										strokeWidth="4"
 										strokeLinecap="round"
 										strokeLinejoin="round"

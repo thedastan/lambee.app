@@ -151,7 +151,7 @@ const PaymentHistory = () => {
 								</div>
 							</div>
 
-              <Button className="bg-transparent border border-[#E4E4E7] !text-black w-full mt-4">Скачать чек</Button>
+              <Button className="!bg-transparent border border-[#E4E4E7] !text-black w-full mt-4">Скачать чек</Button>
 						</div>
 					))}
 				</div>

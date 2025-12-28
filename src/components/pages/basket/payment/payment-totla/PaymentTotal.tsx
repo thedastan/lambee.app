@@ -53,7 +53,7 @@ const PaymentTotal = () => {
 			<div className="flex flex-col gap-3 ">
 				<div className="flex items-center justify-between">
 					<Description className="text-[12px]">Сумма заказа</Description>
-					<Description className="text-[#AAA4C2] font-[500] text-[12px] flex gap-2">
+					<Description className="text-[#0071E3] font-[500] text-[12px] flex gap-2">
 						<span className="line-through  text-[#515151] ">16 000 с</span>
 						14 000 с
 					</Description>

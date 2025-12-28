@@ -19,7 +19,7 @@ const LinkButton: React.FC<LinkButtonProps> = ({
   onClick,
 }) => {
   const baseClasses =
-    "flex items-center bg-[#AAA4C2] px-8 h-[40px] text-[14px] text-md justify-center font-[600] text-white rounded-[8px]";
+    "flex items-center bg-[#0071E3] px-8 h-[40px] text-[14px] text-md justify-center font-[600] text-white rounded-[8px]";
 
   if (disabled) {
     return (

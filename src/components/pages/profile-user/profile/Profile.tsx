@@ -24,6 +24,7 @@ import { useUserProfile } from "@/redux/hooks/user";
 import ReferralProgram from "./ReferralProgram";
 import ProfileAddress from "./ProfileAddress";
 import { useFinikPay } from "@/redux/hooks/finik-pay";
+import { CiLogout } from "react-icons/ci";
 
 const Profile = () => {
 	const [isPay, setIsPay] = useState(false);
@@ -93,7 +94,7 @@ const Profile = () => {
 					</div>
 					<LinkButton
 						href={PAGE.EDITPROFILE}
-						className="bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0">
+						className="!bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0">
 						<FiEdit2 />
 					</LinkButton>
 				</div>
@@ -118,7 +119,7 @@ const Profile = () => {
 							</Description>
 							<Title className="text-[#0171E3]">5000 с</Title>
 							<div className="flex items-center gap-2">
-								<AiOutlinePercentage color="#AAA4C2" size={19} />
+								<AiOutlinePercentage color="#0071E3" size={19} />
 								<Description>
 									За розницу вы <br /> потратили бы больше
 								</Description>
@@ -140,7 +141,7 @@ const Profile = () => {
 							</Description>
 							<Title className="text-[#0171E3]">500 часов</Title>
 							<div className="flex items-center gap-2">
-								<MdOutlineWatchLater color="#AAA4C2" size={19} />
+								<MdOutlineWatchLater color="#0071E3" size={19} />
 								<Description>
 									За походы в магазин вы <br /> потратили бы 1000 часов
 								</Description>
@@ -164,7 +165,7 @@ const Profile = () => {
 					</div>
 					<Button
 						onClick={() => setIsPay(true)}
-						className="bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0">
+						className="!bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0">
 						<IoAdd size={25} />
 					</Button>
 				</div>
@@ -183,7 +184,7 @@ const Profile = () => {
 					</div>
 					<LinkButton
 						href={PAGE.ANALYTICS}
-						className="bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0">
+						className="!bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0">
 						<GoChevronRight size={25} />
 					</LinkButton>
 				</div>
@@ -198,9 +199,18 @@ const Profile = () => {
 					</div>
 					<LinkButton
 						href={PAGE.MYCHILDREN}
-						className="bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0">
+						className="!bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0">
 						<GoChevronRight size={25} />
 					</LinkButton>
+				</div>
+
+				<div className="border border-[#E4E4E7] bg-white rounded-[16px] flex items-center justify-between gap-4 p-4">
+					<div className="flex gap-3 items-center text-[#fa5d5d]">
+						<CiLogout size={32}/>
+						<div className="flex flex-col gap-1">
+							<Title className="font-[700]">Выйти</Title>
+						</div>
+					</div>
 				</div>
 
 				<ReferralProgram />
@@ -226,7 +236,7 @@ const Profile = () => {
 
 						<div className="flex gap-3 w-full">
 							<Button
-								className="w-full border border-[#E4E4E7] bg-transparent !text-black"
+								className="w-full border border-[#E4E4E7] !bg-transparent !text-black"
 								onClick={() => setIsPay(false)}
 								disabled={isPending}>
 								Отмена

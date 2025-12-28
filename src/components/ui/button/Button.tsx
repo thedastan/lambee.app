@@ -16,7 +16,7 @@ const Button: React.FC<ButtonProps> = ({
 	...rest // <- пропускаем остальные HTML-пропсы (включая type)
 }) => {
 	const baseClasses =
-		"flex items-center bg-[#AAA4C2] px-8 h-[40px] text-[14px] text-md justify-center font-[600] text-white rounded-[8px]";
+		"flex items-center bg-[#0071E3] px-8 h-[40px] text-[14px] text-md justify-center font-[600] text-white rounded-[8px]";
 
 	return (
 		<button

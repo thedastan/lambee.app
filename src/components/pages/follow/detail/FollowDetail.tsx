@@ -95,7 +95,7 @@ const FollowDetail = () => {
 					</div>
 					<Button
 						onClick={() => setIsModalDateOpen(true)}
-						className="bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0">
+						className="!bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0">
 						<FiEdit2 />
 					</Button>
 				</div>
@@ -109,7 +109,7 @@ const FollowDetail = () => {
 					</div>
 					<Button
 						onClick={() => setIsSelectWeek(true)}
-						className="bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0">
+						className="!bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0">
 						<FiEdit2 />
 					</Button>
 				</div>
@@ -123,7 +123,7 @@ const FollowDetail = () => {
 					</div>
 					<Button
 						onClick={() => setIsModalOpen(true)}
-						className="bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0">
+						className="!bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0">
 						<FiEdit2 />
 					</Button>
 				</div>
@@ -133,15 +133,15 @@ const FollowDetail = () => {
 				</Button>
 
 				<div className="w-full flex gap-3">
-					<LinkButton href={PAGE.HISTORY_DELIVERY} className="bg-white border border-[#E4E4E7] !text-black w-full !px-4">
+					<LinkButton href={PAGE.HISTORY_DELIVERY} className="!bg-white border border-[#E4E4E7] !text-black w-full !px-4">
 						История доставок
 					</LinkButton>
-					<LinkButton href={PAGE.HISTORY_PAYMENT} className="bg-white border border-[#E4E4E7] !text-black w-full !px-4">
+					<LinkButton href={PAGE.HISTORY_PAYMENT} className="!bg-white border border-[#E4E4E7] !text-black w-full !px-4">
 						История оплат
 					</LinkButton>
 				</div>
 
-				<Button   className="bg-white border border-[#E4E4E7] !text-black w-full">
+				<Button   className="!bg-white border border-[#E4E4E7] !text-black w-full">
 					Пропустить следующую доставку
 				</Button>
 
@@ -154,7 +154,7 @@ const FollowDetail = () => {
 					</div>
 					<Button
 						onClick={() => setIsPay(true)}
-						className="bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0">
+						className="!bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0">
 						<FiEdit2 />
 					</Button>
 				</div>
@@ -182,7 +182,7 @@ const FollowDetail = () => {
 							</div>
 							<Button
 								onClick={() => setIsModalOpen(true)}
-								className="bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0">
+								className="!bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0">
 								<FiEdit2 />
 							</Button>
 						</div>

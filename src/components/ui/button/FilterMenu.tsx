@@ -32,7 +32,7 @@ export default function FilterMenu() {
   return (
     <div className="relative" ref={menuRef}>
       <Button
-        className="bg-white h-[40px] min-w-[40px] rounded-[8px] border border-[#E4E4E7] !px-0"
+        className="!bg-white h-[40px] min-w-[40px] rounded-[8px] border border-[#E4E4E7] !px-0"
         onClick={() => setOpen(!open)}
       >
         <svg

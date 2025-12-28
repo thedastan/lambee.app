@@ -65,7 +65,7 @@ const MyOrdersDetail = () => {
 									<Title>{el.price}</Title>
 								</div>
 							</div>
-							<Button className="bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0">
+							<Button className="!bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0">
 								<FiEdit2 />
 							</Button>
 						</div>
@@ -121,7 +121,7 @@ const MyOrdersDetail = () => {
 					</div>
 					<Button
 						onClick={() => setIsModalOpen(true)}
-						className="bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0">
+						className="!bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0">
 						<FiEdit2 />
 					</Button>
 				</div>
@@ -144,7 +144,7 @@ const MyOrdersDetail = () => {
 
 					<div className="flex gap-3 w-full">
 						<Button
-							className="w-full border border-[#E4E4E7] bg-transparent !text-black"
+							className="w-full border border-[#E4E4E7] !bg-transparent !text-black"
 							onClick={() => setIsModalOpen(false)}>
 							Отмена
 						</Button>

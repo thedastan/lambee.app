@@ -37,7 +37,7 @@ const Header = () => {
 				<div className="container flex items-center justify-between">
 					<LinkButton
 						href={PAGE.NOTICE}
-						className="w-[44px] h-[40px] border border-[#E4E4E7] rounded-[5px] !text-black bg-transparent !px-0">
+						className="w-[44px] h-[40px] border border-[#E4E4E7] rounded-[5px] !text-black !bg-transparent !px-0">
 						<FiBell  size={23} color="#515151"/>
 					</LinkButton>
 
@@ -53,7 +53,7 @@ const Header = () => {
 
 					<LinkButton
 						href={PAGE.BASKET}
-						className="w-[44px] h-[40px] border border-[#E4E4E7] rounded-[5px] !text-black bg-transparent !px-0">
+						className="w-[44px] h-[40px] border border-[#E4E4E7] rounded-[5px] !text-black !bg-transparent !px-0">
 						<BasketSvg  />
 					</LinkButton>
 				</div>

@@ -98,7 +98,7 @@ const DeliveryHistory = () => {
 													Размер: {item.size}
 												</Description>
 												<Title className="flex gap-3">
-													<span className="text-[#AAA4C2] font-[500]">
+													<span className="text-[#0071E3] font-[500]">
 														{item.new_price}c
 													</span>
 													<span className="line-through text-[#515151]">

@@ -54,7 +54,7 @@ const CustomRadioGroup: React.FC<CustomRadioGroupProps> = ({
               border rounded-lg transition-all duration-200
               ${
 								isSelected
-									? "border-[#AAA4C2] bg-indigo-50"
+									? "border-[#0071E3] bg-indigo-50"
 									: "border-gray-200 bg-white"
 							}
               ${option.disabled ? "opacity-60 cursor-not-allowed" : ""}
@@ -91,7 +91,7 @@ const CustomRadioGroup: React.FC<CustomRadioGroupProps> = ({
                     w-5 h-5 rounded-full border-2 flex items-center justify-center
                     ${
 											isSelected
-												? "border-[#AAA4C2] bg-[#AAA4C2]"
+												? "border-[#0071E3] bg-[#0071E3]"
 												: "border-gray-300"
 										}
                     transition-colors duration-200

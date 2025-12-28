@@ -47,7 +47,7 @@ export const SubscriptionCard = ({
 
 				<LinkButton
 					href="#"
-					className="border bg-transparent !text-black !px-0 w-[40px]">
+					className="border !bg-transparent !text-black !px-0 w-[40px]">
 					<LuArrowUpRight size={23} />
 				</LinkButton>
 			</div>

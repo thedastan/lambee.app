@@ -62,7 +62,7 @@ const FollowDetailModals: React.FC<FollowDetailModalsProps> = ({
 
 					<div className="flex gap-3 w-full">
 						<Button
-							className="w-full border border-[#E4E4E7] bg-transparent !text-black"
+							className="w-full border border-[#E4E4E7] !bg-transparent !text-black"
 							onClick={() => setIsModalDateOpen(false)}>
 							Отмена
 						</Button>
@@ -94,7 +94,7 @@ const FollowDetailModals: React.FC<FollowDetailModalsProps> = ({
 
 					<div className="flex gap-3 w-full">
 						<Button
-							className="w-full border border-[#E4E4E7] bg-transparent !text-black"
+							className="w-full border border-[#E4E4E7] !bg-transparent !text-black"
 							onClick={() => setIsModalOpen(false)}>
 							Отмена
 						</Button>
@@ -122,7 +122,7 @@ const FollowDetailModals: React.FC<FollowDetailModalsProps> = ({
 
 					<div className="flex gap-3 w-full">
 						<Button
-							className="w-full border border-[#E4E4E7] bg-transparent !text-black"
+							className="w-full border border-[#E4E4E7] !bg-transparent !text-black"
 							onClick={() => setIsSelectWeek(false)}>
 							Отмена
 						</Button>
@@ -170,7 +170,7 @@ const FollowDetailModals: React.FC<FollowDetailModalsProps> = ({
 
 					<div className="flex gap-3 w-full">
 						<Button
-							className="w-full border border-[#E4E4E7] bg-transparent !text-black"
+							className="w-full border border-[#E4E4E7] !bg-transparent !text-black"
 							onClick={() => setIsModalOpen(false)}>
 							Отмена
 						</Button>
@@ -201,7 +201,7 @@ const FollowDetailModals: React.FC<FollowDetailModalsProps> = ({
 
 					<div className="flex gap-3 w-full">
 						<Button
-							className="w-full border border-[#E4E4E7] bg-transparent !text-black"
+							className="w-full border border-[#E4E4E7] !bg-transparent !text-black"
 							onClick={() => setIsPay(false)}>
 							Отмена
 						</Button>

@@ -93,7 +93,7 @@ const ProfileAddress = () => {
         </div>
         <Button
           onClick={openSelectModal}
-          className="bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0"
+          className="!bg-transparent !text-[#515151] border border-[#E4E4E7] rounded-[5px] w-[40px] h-[40px] !px-0"
         >
           <FiEdit2 />
         </Button>
@@ -115,7 +115,7 @@ const ProfileAddress = () => {
           <div className="border-[#E4E4E7] border-b w-full h-[1px]"></div>
 
           <Button
-            className="w-full border border-[#E4E4E7] bg-transparent !text-black"
+            className="w-full border border-[#E4E4E7] !bg-transparent !text-black"
             onClick={openAddModal}
           >
             Добавить ещё адрес
@@ -123,7 +123,7 @@ const ProfileAddress = () => {
 
           <div className="flex gap-3 w-full">
             <Button
-              className="w-full border border-[#E4E4E7] bg-transparent !text-black"
+              className="w-full border border-[#E4E4E7] !bg-transparent !text-black"
               onClick={closeModal}
             >
               Отмена
@@ -156,7 +156,7 @@ const ProfileAddress = () => {
 
           <div className="flex gap-3 w-full">
             <Button
-              className="w-full border border-[#E4E4E7] bg-transparent !text-black"
+              className="w-full border border-[#E4E4E7] !bg-transparent !text-black"
               onClick={closeModal}
             >
               Отмена

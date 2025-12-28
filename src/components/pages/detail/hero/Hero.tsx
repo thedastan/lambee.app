@@ -31,8 +31,8 @@ const HeroDetail = ({ product }: HeroDetailProps) => {
 						onClick={() => setActiveIndex(index)}
 						className={`relative w-[40px] h-[40px] rounded-[4px] overflow-hidden border transition-all ${
 							index === activeIndex
-								? "border-[#AAA4C2] bg-[#F0F0F0]"
-								: "border-[#E4E4E7] hover:border-[#AAA4C2]"
+								? "border-[#0071E3] bg-[#F0F0F0]"
+								: "border-[#E4E4E7] hover:border-[#0071E3]"
 						}`}
 						aria-label={`Посмотреть изображение ${index + 1}`}
 					>

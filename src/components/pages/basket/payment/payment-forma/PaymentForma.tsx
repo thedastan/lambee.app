@@ -35,7 +35,7 @@ const PaymentForma = () => {
 	return (
 		<section className="flex flex-col gap-2">
 			<div className="bg-[#FFF3E0] flex justify-between items-center px-4 border-b border-[#F0DBB6] h-[64px]">
-				<Description className="text-[#AAA4C2]">Итого</Description>
+				<Description className="text-[#0071E3]">Итого</Description>
 				<Title className="font-[600]">14 200 с</Title>
 			</div>
 
@@ -71,14 +71,14 @@ const PaymentForma = () => {
 					<div className="border-[#E4E4E7] border-b w-full h-[1px]"></div>
 
 					<Button
-						className="w-full border border-[#E4E4E7] bg-transparent !text-black"
+						className="w-full border border-[#E4E4E7] !bg-transparent !text-black"
 						onClick={() => setIsModalOpen(false)}>
 						Добавить ещё адрес
 					</Button>
 
 					<div className="flex gap-3 w-full">
 						<Button
-							className="w-full border border-[#E4E4E7] bg-transparent !text-black"
+							className="w-full border border-[#E4E4E7] !bg-transparent !text-black"
 							onClick={() => setIsModalOpen(false)}>
 							Отмена
 						</Button>
@@ -119,7 +119,7 @@ const PaymentForma = () => {
 					<div
 						className={`flex items-center justify-between px-4 py-3 cursor-pointer border ${
 							isSelected("finikPay")
-								? "border-[#AAA4C2]" // Выбранный элемент
+								? "border-[#0071E3]" // Выбранный элемент
 								: "border-[#DEDEDE]"
 						} rounded-tr-[8px] rounded-tl-[8px] rounded-[0]`}
 						onClick={() => handleSelect("finikPay")}>
@@ -135,7 +135,7 @@ const PaymentForma = () => {
 								<span
 									className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
 										isSelected("finikPay")
-											? "border-[#AAA4C2] bg-[#AAA4C2]" // Стили для выбранного
+											? "border-[#0071E3] bg-[#0071E3]" // Стили для выбранного
 											: "border-[#DEDEDE]"
 									}`}>
 									<span
@@ -147,7 +147,7 @@ const PaymentForma = () => {
 							</label>
 						</div>
 
-						<span className="bg-[#AAA4C2] text-white text-[12px] px-2 py-1 rounded-[6px] font-[500]">
+						<span className="bg-[#0071E3] text-white text-[12px] px-2 py-1 rounded-[6px] font-[500]">
 							КЭШБЕК 5%
 						</span>
 					</div>
@@ -156,7 +156,7 @@ const PaymentForma = () => {
 					<div
 						className={`flex items-center justify-between border ${
 							isSelected("lambeeBalance")
-								? "border-[#AAA4C2]" // Выбранный элемент
+								? "border-[#0071E3]" // Выбранный элемент
 								: "border-[#DEDEDE]"
 						} px-4 py-3 cursor-pointer`}
 						onClick={() => handleSelect("lambeeBalance")}>
@@ -172,7 +172,7 @@ const PaymentForma = () => {
 								<span
 									className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
 										isSelected("lambeeBalance")
-											? "border-[#AAA4C2] bg-[#AAA4C2]" // Стили для выбранного
+											? "border-[#0071E3] bg-[#0071E3]" // Стили для выбранного
 											: "border-[#DEDEDE]"
 									}`}>
 									<span
@@ -186,7 +186,7 @@ const PaymentForma = () => {
 							</label>
 						</div>
 
-						<span className="bg-[#AAA4C2] text-white text-[12px] px-2 py-1 rounded-[6px] font-[500]">
+						<span className="bg-[#0071E3] text-white text-[12px] px-2 py-1 rounded-[6px] font-[500]">
 							КЭШБЕК 5%
 						</span>
 					</div>
@@ -195,7 +195,7 @@ const PaymentForma = () => {
 					<div
 						className={`flex items-center justify-between px-4 py-3 cursor-pointer border ${
 							isSelected("bonuses")
-								? "border-[#AAA4C2]" // Выбранный элемент
+								? "border-[#0071E3]" // Выбранный элемент
 								: "border-[#DEDEDE]"
 						} rounded-br-[8px] rounded-bl-[8px] rounded-[0]`}
 						onClick={() => handleSelect("bonuses")}>
@@ -211,7 +211,7 @@ const PaymentForma = () => {
 								<span
 									className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
 										isSelected("bonuses")
-											? "border-[#AAA4C2] bg-[#AAA4C2]" // Стили для выбранного
+											? "border-[#0071E3] bg-[#0071E3]" // Стили для выбранного
 											: "border-[#DEDEDE]"
 									}`}>
 									<span
