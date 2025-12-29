@@ -25,13 +25,15 @@ import ReferralProgram from "./ReferralProgram";
 import ProfileAddress from "./ProfileAddress";
 import { useFinikPay } from "@/redux/hooks/finik-pay";
 import { CiLogout } from "react-icons/ci";
+import { useRouter } from "next/navigation";
 
 const Profile = () => {
+	const router = useRouter();
 	const [isPay, setIsPay] = useState(false);
 
 	const { profile } = useUserProfile();
 
-	const [amount, setAmount] = useState<string>(""); // строка для ввода
+	const [amount, setAmount] = useState<string>("");
 	const { mutateAsync: pay, isPending } = useFinikPay();
 
 	const handlePay = async () => {
@@ -42,7 +44,7 @@ const Profile = () => {
 		}
 
 		try {
-			const response = await pay(numAmount); // ✅ Теперь response: IFinikPayResponse
+			const response = await pay(numAmount);
 			if (response?.detail) {
 				window.location.href = response.detail;
 			} else {
@@ -51,6 +53,14 @@ const Profile = () => {
 		} catch {
 			alert("Ошибка при создании платежа");
 		}
+	};
+
+	const handleLogout = () => {
+		localStorage.removeItem("accessToken");
+		localStorage.removeItem("refreshToken");
+		 
+
+		window.location.href = PAGE.AUTH_PRE_REGISTRATION;
 	};
 
 	if (!profile) {
@@ -171,7 +181,6 @@ const Profile = () => {
 				</div>
 
 				{/* Delivery Address */}
-
 				<ProfileAddress />
 
 				{/* Analytics */}
@@ -204,9 +213,12 @@ const Profile = () => {
 					</LinkButton>
 				</div>
 
-				<div className="border border-[#E4E4E7] bg-white rounded-[16px] flex items-center justify-between gap-4 p-4">
+				{/* Logout */}
+				<div
+					onClick={handleLogout}
+					className="border border-[#E4E4E7] bg-white rounded-[16px] flex items-center justify-between gap-4 p-4 cursor-pointer hover:bg-gray-50 transition-colors">
 					<div className="flex gap-3 items-center text-[#fa5d5d]">
-						<CiLogout size={32}/>
+						<CiLogout size={32} />
 						<div className="flex flex-col gap-1">
 							<Title className="font-[700]">Выйти</Title>
 						</div>
