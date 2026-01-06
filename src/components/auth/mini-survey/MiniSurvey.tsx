@@ -14,8 +14,8 @@ import LinkButton from "@/components/ui/button/LinkButton";
 const MiniSurvey = () => {
 	const [step, setStep] = useState(1);
 	const [answers, setAnswers] = useState({
-		q1: "",
-		q2: "",
+		q1: "", // возраст в месяцах
+		q2: "", // вес в кг
 		q3: "",
 		q4: "",
 	});
@@ -24,7 +24,7 @@ const MiniSurvey = () => {
 		if (step < 4) {
 			setStep(step + 1);
 		} else {
-			setStep(5); // Переход на шаг "успешно"
+			setStep(5); // успешный результат
 		}
 	};
 
@@ -38,6 +38,23 @@ const MiniSurvey = () => {
 
 	const handleUsageSelect = (usage: string) => {
 		setAnswers({ ...answers, q3: usage });
+	};
+
+	// Функция для определения рекомендуемого размера
+	const getRecommendedSize = (): string => {
+		const age = Number(answers.q1);
+		const weight = Number(answers.q2);
+
+		if (isNaN(age) || isNaN(weight)) return "—";
+
+		// Стандартные рекомендации по размерам подгузников
+		if (weight >= 2 && weight <= 4 && age >= 0 && age <= 3) return "S";
+		if (weight >= 3 && weight <= 6 && age >= 2 && age <= 6) return "M";
+		if (weight >= 5 && weight <= 8 && age >= 4 && age <= 10) return "L";
+		if (weight > 7) return "XL";
+
+		// fallback
+		return "L";
 	};
 
 	return (
@@ -67,7 +84,6 @@ const MiniSurvey = () => {
 								Это поможет нам рекомендовать <br /> правильный выбор
 							</Description>
 
-							{/* Сетка выбора возраста */}
 							<div className="flex flex-wrap justify-center gap-2 mb-4">
 								{[3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((age) => (
 									<button
@@ -170,7 +186,6 @@ const MiniSurvey = () => {
 								Выберите ваш приоритет
 							</Description>
 
-							{/* Вариант 1: Максимальный комфорт */}
 							<label
 								className={`flex mt-5 text-start items-center gap-3 p-3 border rounded-lg mb-3 cursor-pointer transition-colors ${
 									answers.q4 === "comfort"
@@ -222,7 +237,6 @@ const MiniSurvey = () => {
 								)}
 							</label>
 
-							{/* Вариант 2: Маленькая сумка */}
 							<label
 								className={`flex items-center text-start gap-3 p-3 border rounded-lg mb-3 cursor-pointer transition-colors ${
 									answers.q4 === "budget"
@@ -284,7 +298,7 @@ const MiniSurvey = () => {
 					)}
 
 					{step === 5 && (
-						<div className="flex flex-col w-full  text-center items-center">
+						<div className="flex flex-col w-full text-center items-center">
 							<div className="bg-white w-[91px] h-[91px] rounded-[16px] flex justify-center items-center">
 								<svg
 									width="44"
@@ -314,7 +328,7 @@ const MiniSurvey = () => {
 									<Description className="text-[#515151]">
 										Рекомендуемый размер:
 									</Description>
-									<Description>L</Description>
+									<Description>{getRecommendedSize()}</Description>
 								</div>
 
 								<div className="flex items-center justify-between gap-3 border-b py-3 border-[#E4E4E7]">
@@ -324,7 +338,7 @@ const MiniSurvey = () => {
 									<Description>5</Description>
 								</div>
 
-								<div className="flex items-center justify-between gap-3  py-3">
+								<div className="flex items-center justify-between gap-3 py-3">
 									<Description className="text-[#515151]">
 										Частота доставки:
 									</Description>
@@ -332,7 +346,9 @@ const MiniSurvey = () => {
 								</div>
 							</div>
 
-							<LinkButton href="/" className=" mt-4 w-full">Продолжить</LinkButton>
+							<LinkButton href="/" className="mt-4 w-full">
+								Продолжить
+							</LinkButton>
 						</div>
 					)}
 				</div>
