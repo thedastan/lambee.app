@@ -1,8 +1,5 @@
-// src/app/login/page.tsx
 "use client";
 
-import PhoneInput from "phone-go";
-import "phone-go/dist/phone-go.css";
 import { Description } from "@/components/ui/text/Description";
 import { GoChevronLeft } from "react-icons/go";
 import { TitleComponent } from "@/components/ui/text/TitleComponent";
@@ -13,14 +10,12 @@ import { useState } from "react";
 import Input from "@/components/ui/input/Input";
 import { useLogin } from "@/redux/hooks/useAuth";
 import { useRouter } from "next/navigation";
- 
 import ImageSwipwr from "../ImageSwipwr";
 import { toast } from "alert-go";
 import "alert-go/dist/notifier.css";
 
-
 const Login = () => {
-	const [phone, setPhone] = useState("");
+	const [phone, setPhone] = useState(""); // всегда в формате "+996XXXXXXXXX"
 	const [password, setPassword] = useState("");
 	const [phoneError, setPhoneError] = useState<string | null>(null);
 	const [passwordError, setPasswordError] = useState<string | null>(null);
@@ -28,14 +23,6 @@ const Login = () => {
 	const router = useRouter();
 	const { login, isLoggingIn } = useLogin();
 
-
-	// Сброс ошибки при изменении телефона
-	const handlePhoneChange = (value: string) => {
-		setPhone(value);
-		if (phoneError) setPhoneError(null);
-	};
-
-	// Сброс ошибки при изменении пароля
 	const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value;
 		setPassword(value);
@@ -45,24 +32,20 @@ const Login = () => {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
-		// Очищаем предыдущие ошибки
 		setPhoneError(null);
 		setPasswordError(null);
 
-		// Валидация телефона
-		if (!phone || phone.length < 13) {
+		// Валидация: телефон должен быть +996 + 9 цифр
+		const cleanPhone = phone.replace(/^\+996/, "");
+		if (cleanPhone.length !== 9 || !/^\d{9}$/.test(cleanPhone)) {
 			setPhoneError("Введите корректный номер телефона!");
 			return;
 		}
 
-		// Валидация пароля
 		if (!password.trim()) {
 			setPasswordError("Пароль не может быть пустым!");
 			return;
 		}
-
-		// Убираем +996
-		const cleanPhone = phone.replace(/^\+996/, "");
 
 		try {
 			const result = await login({
@@ -74,17 +57,16 @@ const Login = () => {
 			if (result?.access && result?.refresh) {
 				localStorage.setItem("accessToken", result.access);
 				localStorage.setItem("refreshToken", result.refresh);
-				toast.success("Успешный вход!", { position: "top-center"});
+				toast.success("Успешный вход!", { position: "top-center" });
 				router.push("/");
 			} else {
 				setPasswordError("Неожиданный ответ от сервера");
 			}
 		} catch (err: unknown) {
 			console.error("Ошибка входа:", err);
-		
-			 
+
 			let msg = "Неверный номер или пароль";
-		
+
 			if (
 				err &&
 				typeof err === "object" &&
@@ -98,20 +80,20 @@ const Login = () => {
 			) {
 				msg = String(err.response.data.detail);
 			}
-		
+
 			const displayMessage =
 				msg === "Invalid credentials" ? "Неверный номер или пароль" : msg;
-		
+
 			setPasswordError(displayMessage);
 		}
 	};
 
 	return (
 		<section className="flex justify-between md:flex-row flex-col-reverse md:bg-[#FFFFFF] bg-[#f0f7ff] w-full h-[100vh]">
-			<div className="md:w-[50%]  w-full md:h-[100vh] h-full flex flex-col justify-center items-center">
+			<div className="md:w-[50%] w-full md:h-[100vh] h-full flex flex-col justify-center items-center">
 				<Link
 					href={PAGE.AUTH_PRE_REGISTRATION}
-					className="flex items-center gap-2 text-[16px] font-[500] p-4  w-full">
+					className="flex items-center gap-2 text-[16px] font-[500] p-4 w-full">
 					<GoChevronLeft size={26} />
 					Авторизация
 				</Link>
@@ -122,19 +104,37 @@ const Login = () => {
 							onSubmit={handleSubmit}
 							className="space-y-4 md:bg-white bg-[#f0f7ff] rounded-[16px] md:p-4 p-0">
 							<div className="flex flex-col gap-2">
-								<TitleComponent className="text-center">Введите номер и пароль</TitleComponent>
+								<TitleComponent className="text-center">
+									Введите номер и пароль
+								</TitleComponent>
 
-								<PhoneInput
-									className="my-phone-input mt-[10px]"
-									value={phone}
-									onChange={handlePhoneChange}
-									defaultCountry="KG"
-								/>
-								{phoneError && (
-									<p className="text-red-500 text-sm mt-1 text-left">
-										{phoneError}
-									</p>
-								)}
+								{/* === КАСТОМНЫЙ ТЕЛЕФОН БЕЗ PHONE-GO === */}
+								<div className="w-full">
+									<label className="block text-sm font-medium text-gray-700 mb-2">
+										Номер телефона <span className="text-[#FFA655]">*</span>
+									</label>
+									<div className="relative flex items-center">
+										<span className="text-gray-700 h-[48px] bg-white rounded-tr-none rounded-br-none border-t border-b border-l border-[#E4E4E7] rounded-[8px] flex justify-center items-center px-3 text-[16px] font-medium min-w-[70px]">
+											+996
+										</span>
+										<input
+											type="tel"
+											inputMode="numeric"
+											maxLength={9}
+											value={phone.replace(/^\+996/, "")}
+											onChange={(e) => {
+												const digitsOnly = e.target.value.replace(/\D/g, "");
+												if (digitsOnly.length <= 9) {
+													setPhone(`+996${digitsOnly}`);
+												}
+											}}
+											className="w-full h-[48px] rounded-tl-none rounded-bl-none rounded-[8px] border border-[#E4E4E7] outline-none px-3  "
+										/>
+									</div>
+									{phoneError && (
+										<p className="text-red-500 text-sm mt-1 text-left">{phoneError}</p>
+									)}
+								</div>
 
 								<div className="w-full max-w-full mt-2">
 									<Input

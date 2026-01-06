@@ -1,4 +1,3 @@
-// src/app/profile/edit/page.tsx
 "use client";
 
 import Button from "@/components/ui/button/Button";
@@ -6,14 +5,10 @@ import PageHeader from "@/components/ui/heading/PageHeader";
 import Input from "@/components/ui/input/Input";
 import PhotoUpload from "@/components/ui/input/PhotoUpload";
 import { PAGE } from "@/config/pages/public-page.config";
-import PhoneInput from "phone-go";
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import "phone-go/dist/phone-go.css";
-
 import "alert-go/dist/notifier.css";
-
 
 import {
 	useUpdateProfile,
@@ -29,7 +24,7 @@ const EditProfile = () => {
 	const [lastName, setLastName] = useState("");
 	const [birthDate, setBirthDate] = useState<Date | null>(null);
 	const [password, setPassword] = useState("");
-	const [phone, setPhone] = useState("");
+	const [phone, setPhone] = useState(""); // всегда в формате "+996XXXXXXXXX"
 
 	const { profile, isLoading, refetch } = useUserProfile();
 	const { updateProfile, isUpdating: isUpdatingProfile } = useUpdateProfile();
@@ -43,6 +38,7 @@ const EditProfile = () => {
 			if (profile.birth_date) {
 				setBirthDate(new Date(profile.birth_date));
 			}
+			// profile.phone приходит без +996, например: "708771849"
 			setPhone(profile.phone ? `+996${profile.phone}` : "");
 		}
 	}, [profile]);
@@ -60,7 +56,6 @@ const EditProfile = () => {
 							<Skeleton height="h-4" width="w-1/4" />
 						</div>
 					</div>
-
 
 					{/* Поля */}
 					{[...Array(5)].map((_, i) => (
@@ -91,22 +86,30 @@ const EditProfile = () => {
 			return;
 		}
 
+		// Валидация номера: должен быть +996 + 9 цифр
 		const cleanPhone = phone.replace(/^\+996/, "");
+		if (cleanPhone.length !== 9 || !/^\d{9}$/.test(cleanPhone)) {
+			toast.warning("Номер телефона должен содержать 9 цифр после +996", {
+				position: "top-center",
+			});
+			return;
+		}
+
 		const formattedBirthDate = birthDate.toISOString().split("T")[0];
 
 		try {
-			// ✅ СНАЧАЛА ФОТО
+			// Сначала фото
 			if (photo) {
 				await updateProfilePicture(photo);
 				await refetch();
 			}
 
-			// ✅ ПОТОМ ДАННЫЕ
+			// Потом данные
 			await updateProfile({
 				name: firstName,
 				surname: lastName,
 				birth_date: formattedBirthDate,
-				phone: cleanPhone,
+				phone: cleanPhone, // отправляем БЕЗ +996
 				...(password ? { password } : {}),
 			});
 
@@ -116,10 +119,6 @@ const EditProfile = () => {
 			console.error(e);
 			toast.error("Ошибка обновления профиля", { position: "top-center" });
 		}
-	};
-
-	const handlePhoneChange = (value: string) => {
-		setPhone(value);
 	};
 
 	return (
@@ -168,11 +167,7 @@ const EditProfile = () => {
 				</div>
 				<div className="w-full md:max-w-[343px] max-w-full">
 					<Input
-						label={
-							<>
-								Пароль <span className="text-[#FFA655]">*</span>
-							</>
-						}
+						label="Пароль"
 						type="password"
 						placeholder="Оставьте пустым, чтобы не менять"
 						value={password}
@@ -180,17 +175,32 @@ const EditProfile = () => {
 					/>
 				</div>
 
+				{/* === ЗАМЕНА PHONE-GO НА ОБЫЧНЫЙ INPUT === */}
 				<div className="w-full">
 					<label className="block text-sm font-medium text-gray-700 mb-2">
 						Номер телефона <span className="text-[#FFA655]">*</span>
 					</label>
-					<PhoneInput
-						className="my-phone-input"
-						value={phone}
-						onChange={handlePhoneChange}
-						defaultCountry="KG"
-					/>
+					<div className="relative flex items-center">
+						<span className="  text-gray-700 h-[48px] bg-white rounded-tr-none rounded-br-none border-r border-r-transparent rounded-[8px] border border-[#E4E4E7] flex justify-center items-center px-2">
+							+996
+						</span>
+						<input
+							type="tel"
+							inputMode="numeric"
+							maxLength={9}
+							value={phone.replace(/^\+996/, "")}
+							onChange={(e) => {
+								const digitsOnly = e.target.value.replace(/\D/g, "");
+								if (digitsOnly.length <= 9) {
+									setPhone(`+996${digitsOnly}`);
+								}
+							}}
+							 
+							className="w-full pl-2 pr-4 h-[48px] rounded-tl-none rounded-bl-none rounded-[8px] border border-[#E4E4E7] outline-none  "
+						/>
+					</div>
 				</div>
+
 				<Button
 					className="h-[48px] mt-3"
 					onClick={handleSave}

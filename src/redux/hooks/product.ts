@@ -40,3 +40,14 @@ export function useCreateProductReview(productId: number) {
 		},
 	});
 }
+
+export function useDeleteMyProductReview(productId: number) {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: () => productService.deleteMyProductReview(productId),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["product-reviews", productId] });
+		},
+	});
+}

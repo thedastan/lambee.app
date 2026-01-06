@@ -62,6 +62,7 @@ export interface BenefitPro {
 export interface IReview {
 	id: number;
 	user: {
+    id: number;
 		name: string;
 		surname: string;
 		birth_date: string | null;

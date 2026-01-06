@@ -1,9 +1,6 @@
-// src/app/reset-password/page.tsx
 "use client";
 
-import PhoneInput from "phone-go";
 import React, { useState, useEffect } from "react";
-import "phone-go/dist/phone-go.css";
 import { Description } from "@/components/ui/text/Description";
 import { GoChevronLeft } from "react-icons/go";
 import { TitleComponent } from "@/components/ui/text/TitleComponent";
@@ -18,16 +15,13 @@ import {
 	useSendForgotCode,
 	useVerifyForgotCode,
 } from "@/redux/hooks/useAuth";
- 
 import ImageSwipwr from "../ImageSwipwr";
-
 import "alert-go/dist/notifier.css";
 import { toast } from "alert-go";
 
-
 const ResetPassword = () => {
 	const [step, setStep] = useState<1 | 2 | 3>(1);
-	const [phone, setPhone] = useState("");
+	const [phone, setPhone] = useState(""); // "+996XXXXXXXXX"
 	const [code, setCode] = useState<string[]>(["", "", "", ""]);
 	const [password, setPassword] = useState("");
 	const [resendTimer, setResendTimer] = useState(60);
@@ -39,7 +33,6 @@ const ResetPassword = () => {
 	const { sendForgotCode, isSending } = useSendForgotCode();
 	const { verifyForgotCode, isVerifying } = useVerifyForgotCode();
 	const { resetPassword, isResetting } = useResetPassword();
-
 
 	// Таймер
 	useEffect(() => {
@@ -153,8 +146,8 @@ const ResetPassword = () => {
 			localStorage.setItem("accessToken", result.detail.access);
 			localStorage.setItem("refreshToken", result.detail.refresh);
 
-			toast.success("Пароль успешно изменён!", { position: "top-center"});
-			
+			toast.success("Пароль успешно изменён!", { position: "top-center" });
+
 			router.push("/");
 		} catch (err: unknown) {
 			let msg = "Ошибка при смене пароля";
@@ -180,21 +173,17 @@ const ResetPassword = () => {
 		setError(null);
 	};
 
-	const handlePinChange = (
-		_: string | string[],
-		__: number,
-		values: string[]
-	) => {
+	const handlePinChange = (_: string | string[], __: number, values: string[]) => {
 		setCode(values);
 		if (error) setError(null);
 	};
 
 	return (
 		<section className="flex justify-between md:flex-row flex-col-reverse md:bg-[#FFFFFF] bg-[#f0f7ff] w-full h-[100vh]">
-			<div className="md:w-[50%]  w-full md:h-[100vh] h-full flex flex-col justify-center items-center">
+			<div className="md:w-[50%] w-full md:h-[100vh] h-full flex flex-col justify-center items-center">
 				<Link
 					href={PAGE.AUTH_PRE_REGISTRATION}
-					className="flex items-center gap-2 text-[16px] font-[500] p-4  w-full">
+					className="flex items-center gap-2 text-[16px] font-[500] p-4 w-full">
 					<GoChevronLeft size={26} />
 					Восстановление аккаунта
 				</Link>
@@ -218,24 +207,40 @@ const ResetPassword = () => {
 							className="space-y-4 md:bg-white bg-[#f0f7ff] rounded-[16px] md:p-4 p-0">
 							{step === 1 && (
 								<div className="flex flex-col gap-2">
-									<TitleComponent className="text-center">Введите номер телефона</TitleComponent>
+									<TitleComponent className="text-center">
+										Введите номер телефона
+									</TitleComponent>
 									<Description className="text-[#515151] mb-2 text-center">
 										Вам придёт SMS с кодом
 									</Description>
 
-									<PhoneInput
-										className="my-phone-input"
-										value={phone}
-										onChange={setPhone}
-										defaultCountry="KG"
-									/>
+									{/* === КАСТОМНЫЙ ТЕЛЕФОН БЕЗ PHONE-GO === */}
+									<div className="w-full">
+										<div className="relative flex items-center">
+										<span className="text-gray-700 h-[48px] bg-white rounded-tr-none rounded-br-none border-t border-b border-l border-[#E4E4E7] rounded-[8px] flex justify-center items-center px-3 text-[16px] font-medium min-w-[70px]">
+												+996
+											</span>
+											<input
+												type="tel"
+												inputMode="numeric"
+												maxLength={9}
+												value={phone.replace(/^\+996/, "")}
+												onChange={(e) => {
+													const digitsOnly = e.target.value.replace(/\D/g, "");
+													if (digitsOnly.length <= 9) {
+														setPhone(`+996${digitsOnly}`);
+													}
+												}}
+												 
+												className="w-full h-[48px] rounded-tl-none rounded-bl-none rounded-[8px] border border-[#E4E4E7] outline-none px-3  "
+											/>
+										</div>
+									</div>
 
 									<Button
 										type="button"
 										onClick={handleNext}
-										disabled={
-											!phone || !isValidKyrgyzPhone(phone) || isSending
-										}>
+										disabled={!phone || !isValidKyrgyzPhone(phone) || isSending}>
 										{isSending ? "Отправка..." : "Получить код"}
 									</Button>
 								</div>
@@ -263,6 +268,7 @@ const ResetPassword = () => {
 												background: "transparent",
 												margin: "0 2px",
 												boxShadow: "none",
+												backgroundColor: "white",
 											}}
 										/>
 									</div>
@@ -276,8 +282,7 @@ const ResetPassword = () => {
 									<div className="text-center mt-4">
 										{isTimerActive ? (
 											<Description className="text-[#0071E3]">
-												Отправить повторно{" "}
-												{String(resendTimer).padStart(2, "0")}
+												Отправить повторно {String(resendTimer).padStart(2, "0")}
 											</Description>
 										) : (
 											<button
@@ -315,8 +320,6 @@ const ResetPassword = () => {
 								</div>
 							)}
 						</form>
-
-						<div />
 					</div>
 				</div>
 			</div>

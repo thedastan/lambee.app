@@ -35,6 +35,13 @@ class ProductService {
 		);
 		return response.data;
 	}
+
+	async deleteMyProductReview(productId: number) {
+		const response = await PRIVATE_API.delete(
+			`${this.BASE_URL}products/products/${productId}/reviews/`
+		);
+		return response.data; // обычно DELETE возвращает 204 No Content → data = undefined
+	}
 }
 
 export const productService = new ProductService();
