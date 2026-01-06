@@ -43,9 +43,10 @@ const HomeCards = () => {
 
 	return (
 		<section className="pb-10 px-4">
-			<TitleComponent className="w-full md:max-w-full pb-4 max-w-[194px]">
-				Мы рекомендуем
+			<TitleComponent className="w-full md:max-w-full pb-2  ">
+			Рекомендовано для вашего ребёнка
 			</TitleComponent>
+			<Description className="!text-[#515151] pb-4">Размер подобран по возрасту и весу</Description>
 
 			<div className=" grid md:grid-cols-2 grid-cols-1 gap-2">
 				{data?.detail.map((el, index) => (

@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { productService } from "../services/product.service";
 
 export function useProduct() {
@@ -27,4 +27,16 @@ export function useProductReviews(productId: number) {
 	});
 
 	return { data, isLoading };
+}
+
+export function useCreateProductReview(productId: number) {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (payload: { rating: number; text: string }) =>
+			productService.createProductReview(productId, payload),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["product-reviews", productId] });
+		},
+	});
 }

@@ -29,15 +29,15 @@ body {
 	height: 10px !important;
 	margin: 0 4px !important;
 	border-radius: 50% !important;
-	transition: width 0.3s ease, background-color 0.3s ease;  
+	transition: width 0.3s ease, background-color 0.3s ease;
 }
 
 .swiper-pagination-bullet-active {
-	background-color: #0071E3 !important;
+	background-color: #0071e3 !important;
 	width: 10px !important;
 	height: 10px !important;
 	border-radius: 50% !important;
-	transition: width 0.3s ease, background-color 0.3s ease;  
+	transition: width 0.3s ease, background-color 0.3s ease;
 }
 
 ///
@@ -136,12 +136,26 @@ body {
 		transform-origin: bottom;
 		width: 50%;
 		transform: translate(30px, -9px) rotatez(45deg);
-
 	}
 }
- 
-
 
 html {
-  overscroll-behavior-y: contain;
+	overscroll-behavior-y: contain;
+}
+
+.notify.warning {
+	background: #f59e0b !important;
+	color: #ffffff !important;
+	text-align: center;
+	width: 100% !important;
+	max-width: 300px !important;
+	min-width: 350px !important;
+}
+
+.notify.success {
+	text-align: center;
+}
+
+.notify.error {
+	text-align: center;
 }

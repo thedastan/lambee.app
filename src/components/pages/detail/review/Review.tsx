@@ -5,10 +5,15 @@ import { Description } from "@/components/ui/text/Description";
 import { Title } from "@/components/ui/text/Title";
 import { TitleComponent } from "@/components/ui/text/TitleComponent";
 import { IoStarSharp } from "react-icons/io5";
-import { useProductReviews } from "@/redux/hooks/product"; // без page
+import { useCreateProductReview, useProductReviews } from "@/redux/hooks/product";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { GoChevronLeft, GoChevronRight } from "react-icons/go";
+import ModalBottom from "@/components/ui/modal/ModalBottom";
+import Button from "@/components/ui/button/Button";
+import { FaStar } from "react-icons/fa";
+import { toast } from "alert-go";
+import 'alert-go/dist/notifier.css';
 
 interface ReviewProps {
 	productId: number;
@@ -16,14 +21,18 @@ interface ReviewProps {
 
 const Review = ({ productId }: ReviewProps) => {
 	const [currentPage, setCurrentPage] = useState(1);
-	const { data, isLoading } = useProductReviews(productId); // ← без page
+	const { data, isLoading } = useProductReviews(productId);
+	const createReview = useCreateProductReview(productId);
+
+	const [isModal, setIsModal] = useState(false);
+	const [rating, setRating] = useState(0);
+	const [text, setText] = useState("");
 
 	const allReviews = data?.detail.results || [];
 	const reviewCount = allReviews.length;
 	const REVIEWS_PER_PAGE = 5;
-
-	// Пагинация на фронте
 	const totalPages = Math.ceil(reviewCount / REVIEWS_PER_PAGE);
+
 	const paginatedReviews = useMemo(() => {
 		const start = (currentPage - 1) * REVIEWS_PER_PAGE;
 		return allReviews.slice(start, start + REVIEWS_PER_PAGE);
@@ -33,10 +42,10 @@ const Review = ({ productId }: ReviewProps) => {
 		return format(new Date(isoDate), "LLLL d, yyyy", { locale: ru });
 	};
 
-	const renderStars = (rating: string) => {
-		const stars = Number(rating);
-		const fullStars = Math.floor(stars);
-		const hasHalf = stars % 1 >= 0.5;
+	const renderStars = (ratingStr: string) => {
+		const rating = Number(ratingStr);
+		const fullStars = Math.floor(rating);
+		const hasHalf = rating % 1 >= 0.5;
 		const emptyStars = 5 - fullStars - (hasHalf ? 1 : 0);
 
 		return (
@@ -62,6 +71,40 @@ const Review = ({ productId }: ReviewProps) => {
 
 	const handleNext = () => {
 		if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
+	};
+
+	const handleStarClick = (star: number) => {
+		setRating(star);
+	};
+
+	const handleSubmit = async () => {
+		if (rating === 0) {
+			toast.warning("Пожалуйста, выберите рейтинг.", { position: "top-center" });
+			return;
+		}
+		if (!text.trim()) {
+			toast.warning("Пожалуйста, напишите комментарий.", { position: "top-center" });
+			return;
+		}
+	
+		try {
+			await createReview.mutateAsync({ rating, text });
+			setIsModal(false);
+			setRating(0);
+			setText("");
+			toast.success("Отзыв успешно опубликован!", { position: "top-center" });
+		} catch (error: any) {
+			console.error("Ошибка при отправке отзыва:", error);
+	
+			// Обработка ошибки от бэкенда
+			if (error.response?.data?.detail === "Review already exists") {
+				toast.warning("Вы уже оставляли отзыв на этот товар.", { position: "top-center" });
+			} else if (error.response?.status === 401) {
+				toast.warning("Авторизуйтесь, чтобы оставить отзыв.", { position: "top-center" });
+			} else {
+				toast.error("Не удалось отправить отзыв. Попробуйте позже.", { position: "top-center" });
+			}
+		}
 	};
 
 	if (!productId) return null;
@@ -92,11 +135,18 @@ const Review = ({ productId }: ReviewProps) => {
 
 	return (
 		<div className="flex flex-col md:flex-row gap-4 p-4">
-			<div className="text-center flex md:flex-col flex-row md:py-4 py-0 md:justify-start justify-between md:items-start items-center gap-1 w-full max-w-[435px]">
-				<TitleComponent className="md:!text-[28px] !text-[16px] w-full max-w-[100px] md:max-w-full text-start font-[400]">
+			<div className="text-center flex flex-col md:py-4 py-0 justify-start gap-3 md:items-start items-center w-full max-w-[435px]">
+				<TitleComponent className="md:!text-[28px] !text-[16px] w-full max-w-full text-start font-[400]">
 					Что думают родители:
 				</TitleComponent>
-				<div className="flex md:flex-row flex-col md:items-center items-start gap-1 md:bg-transparent bg-white border md:border-none rounded-[8px] md:p-0 p-2">
+
+				<button
+					onClick={() => setIsModal(true)}
+					className="flex flex-col w-full md:items-center items-center gap-1 bg-white border rounded-[8px] p-2">
+					Оставить отзыв
+				</button>
+
+				<div className="flex md:flex-row flex-col w-full md:items-center items-center gap-1 md:bg-transparent bg-white border md:border-none rounded-[8px] md:p-0 p-2">
 					<div className="flex items-center gap-1">
 						<IoStarSharp />
 						<IoStarSharp />
@@ -112,9 +162,7 @@ const Review = ({ productId }: ReviewProps) => {
 
 			<div className="w-full flex flex-col gap-3 border bg-white p-4 rounded-[8px]">
 				{paginatedReviews.length === 0 ? (
-					<div className="text-gray-500 text-center py-6">
-						Отзывов пока нет.
-					</div>
+					<div className="text-gray-500 text-center py-6">Отзывов пока нет.</div>
 				) : (
 					paginatedReviews.map((review) => {
 						const userName =
@@ -141,7 +189,6 @@ const Review = ({ productId }: ReviewProps) => {
 					})
 				)}
 
-				{/* Пагинация */}
 				{totalPages > 1 && (
 					<div className="w-full flex justify-center items-center gap-2 pt-2">
 						<button
@@ -152,11 +199,9 @@ const Review = ({ productId }: ReviewProps) => {
 							}`}>
 							<GoChevronLeft size={22} color="#515151" />
 						</button>
-
 						<span className="text-[#515151] min-w-[18px] text-center">
 							{currentPage}
 						</span>
-
 						<button
 							onClick={handleNext}
 							disabled={currentPage === totalPages}
@@ -168,6 +213,60 @@ const Review = ({ productId }: ReviewProps) => {
 					</div>
 				)}
 			</div>
+
+			<ModalBottom
+				isOpen={isModal}
+				onClose={() => {
+					setIsModal(false);
+					setRating(0);
+					setText("");
+				}}
+				title="Оставить отзыв">
+				<div className="flex flex-col gap-3">
+					<Description className="font-[500] !text-[16px] text-center pt-3">
+						Выберите от 1 до 5
+					</Description>
+					<div className="flex justify-center items-center gap-1">
+						{[1, 2, 3, 4, 5].map((star) => (
+							<FaStar
+								key={star}
+								size={26}
+								color={star <= rating ? "#0071E3" : "#1783ee73"}
+								onClick={() => handleStarClick(star)}
+								className="cursor-pointer"
+							/>
+						))}
+					</div>
+
+					<div className="flex flex-col gap-1 pb-4 border-b">
+						<p className="text-[#515151]">Комментарий</p>
+						<textarea
+							value={text}
+							onChange={(e) => setText(e.target.value)}
+							className="border rounded-[8px] w-full h-[120px] p-3 outline-none"
+							placeholder="Можете написать комментарий"
+						/>
+					</div>
+
+					<div className="flex gap-3 w-full mt-1">
+						<Button
+							className="w-full border border-[#E4E4E7] !bg-transparent !text-black"
+							onClick={() => {
+								setIsModal(false);
+								setRating(0);
+								setText("");
+							}}>
+							Отмена
+						</Button>
+						<Button
+							className="w-full"
+							disabled={createReview.isPending}
+							onClick={handleSubmit}>
+							{createReview.isPending ? "Отправка..." : "Опубликовать"}
+						</Button>
+					</div>
+				</div>
+			</ModalBottom>
 		</div>
 	);
 };

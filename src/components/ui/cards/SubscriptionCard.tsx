@@ -27,8 +27,8 @@ export const SubscriptionCard = ({
  
 
 	return (
-		<div className="p-3 bg-white border flex-shrink-0 border-[#E4E4E7] rounded-[16px] w-full max-w-[290px]">
-			<div className="flex justify-between items-start gap-2 border-b pb-3 border-[#E4E4E7]">
+		<div className="p-3 bg-[#FEFFDE] flex-shrink-0   rounded-[16px] w-full max-w-[290px]">
+			<div className="flex justify-between items-start gap-2  pb-3  ">
 				<div className="flex gap-2">
 					<Image
 						width={48}
@@ -47,12 +47,12 @@ export const SubscriptionCard = ({
 
 				<LinkButton
 					href="#"
-					className="border !bg-transparent !text-black !px-0 w-[40px]">
+					className="border !bg-white !text-black !px-0 w-[40px]">
 					<LuArrowUpRight size={23} />
 				</LinkButton>
 			</div>
 
-			<div className="bg-[#FAF9FF] flex flex-col  w-full items-start p-2 rounded-[8px] mt-3">
+			<div className="bg-[#B8BA8B] text-white flex flex-col  w-full items-start p-2 rounded-[8px] mt-3">
 				<Description>Следующая доставка:</Description>
 				<Description>
 					{date} в {time}

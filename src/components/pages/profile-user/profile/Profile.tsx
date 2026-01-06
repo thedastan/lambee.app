@@ -216,11 +216,11 @@ const Profile = () => {
 				{/* Logout */}
 				<div
 					onClick={handleLogout}
-					className="border border-[#E4E4E7] bg-white rounded-[16px] flex items-center justify-between gap-4 p-4 cursor-pointer hover:bg-gray-50 transition-colors">
-					<div className="flex gap-3 items-center text-[#fa5d5d]">
+					className="border border-[#E4E4E7] bg-white rounded-[16px] flex items-center justify-center gap-4 p-4 cursor-pointer hover:bg-gray-50 transition-colors">
+					<div className="flex gap-3 items-center  ">
 						<CiLogout size={32} />
 						<div className="flex flex-col gap-1">
-							<Title className="font-[700]">Выйти</Title>
+							<Title className="font-[700]">Выйти с аккаунта</Title>
 						</div>
 					</div>
 				</div>
