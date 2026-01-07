@@ -19,16 +19,17 @@ import Button from "@/components/ui/button/Button";
 import { FaStar } from "react-icons/fa";
 import { toast } from "alert-go";
 import "alert-go/dist/notifier.css";
+import { useUserProfile } from "@/redux/hooks/user";
 
 interface ReviewProps {
   productId: number;
 }
 
 const Review = ({ productId }: ReviewProps) => {
-  // ← ВРЕМЕННОЕ РЕШЕНИЕ: получаем имя и фамилию текущего пользователя
-  // Замените на реальные данные из вашего Redux/AuthContext
-  const currentUserName = "Asim";       // ← ваше имя
-  const currentUserSurname = "Makhmudov"; // ← ваша фамилия
+  const { profile } = useUserProfile();
+
+  const currentUserName = profile?.name;
+const currentUserSurname = profile?.surname;
 
   const [currentPage, setCurrentPage] = useState(1);
   const { data, isLoading } = useProductReviews(productId);
