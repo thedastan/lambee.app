@@ -38,6 +38,9 @@ importers:
       react-dom:
         specifier: 19.2.1
         version: 19.2.1(react@19.2.1)
+      react-easy-swipe:
+        specifier: ^0.0.23
+        version: 0.0.23
       react-hook-form:
         specifier: ^7.66.0
         version: 7.66.0(react@19.2.1)
@@ -1752,6 +1755,10 @@ packages:
     resolution: {integrity: sha512-ibrK8llX2a4eOskq1mXKu/TGZj9qzomO+sNfO98M6d9zIPOEhlBkMkBUBLd1vgS0gQsLDBzA+8jJBVXDnfHmJg==}
     peerDependencies:
       react: ^19.2.1
+
+  react-easy-swipe@0.0.23:
+    resolution: {integrity: sha512-bOSwpZQVPbckL3aN2HdcvYD0j+mgAgISS+AGHmdhpPoNh3Mh3l3NfNQ0mVHuWGyBBvH+VIrU/6GbS1XoST9Pxw==}
+    engines: {node: '>= 6'}
 
   react-hook-form@7.66.0:
     resolution: {integrity: sha512-xXBqsWGKrY46ZqaHDo+ZUYiMUgi8suYu5kdrS20EG8KiL7VRQitEbNjm+UcrDYrNi1YLyfpmAeGjCZYXLT9YBw==}
@@ -3877,6 +3884,10 @@ snapshots:
     dependencies:
       react: 19.2.1
       scheduler: 0.27.0
+
+  react-easy-swipe@0.0.23:
+    dependencies:
+      prop-types: 15.8.1
 
   react-hook-form@7.66.0(react@19.2.1):
     dependencies:

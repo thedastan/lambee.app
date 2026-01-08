@@ -131,15 +131,22 @@ const Review = ({ productId }: ReviewProps) => {
 	};
 
 	const handleDelete = async () => {
-		try {
-			await deleteReview.mutateAsync();
-			toast.success("Отзыв удалён", { position: "top-center" });
-		} catch (error: any) {
-			toast.error("Не удалось удалить отзыв", { position: "top-center" });
-		} finally {
-			setIsModalOpen(false);
-		}
-	};
+    try {
+      await deleteReview.mutateAsync();
+      toast.success("Отзыв удалён", { position: "top-center" });
+      
+      // ⏳ Небольшая задержка для показа тоста
+      setTimeout(() => {
+        window.location.reload(); // ← ПЕРЕЗАГРУЗКА СТРАНИЦЫ
+      }, 900);
+    } catch (error: any) {
+      toast.error("Не удалось удалить отзыв", { position: "top-center" });
+    } finally {
+      setIsModalOpen(false);
+    }
+  };
+
+  
 
 	if (!productId) return null;
 
