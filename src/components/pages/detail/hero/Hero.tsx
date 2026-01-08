@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import { Detail } from "@/redux/models/product.model";
 
@@ -8,9 +8,11 @@ interface HeroDetailProps {
 	product: Detail;
 }
 
-const Hero = ({ product }: HeroDetailProps) => {
+const HeroDetail = ({ product }: HeroDetailProps) => {
 	const [activeIndex, setActiveIndex] = useState(0);
-	const [isZoomed, setIsZoomed] = useState(false); // true = увеличено
+	const [scale, setScale] = useState(1);
+
+	const startY = useRef<number | null>(null);
 
 	const images = product.images || [];
 	const activeImage = images[activeIndex] || { url: "" };
@@ -19,84 +21,72 @@ const Hero = ({ product }: HeroDetailProps) => {
 		return <div>Изображения недоступны</div>;
 	}
 
-	// Обработчик свайпа
-	const handleTouchMove = (e: React.TouchEvent) => {
-		if (e.touches.length !== 1) return;
+	// 🔹 начало свайпа
+	const handleStart = (y: number) => {
+		startY.current = y;
+	};
 
-		const touch = e.touches[0];
-		const startY = e.currentTarget.getBoundingClientRect().top;
-		const currentY = touch.clientY;
+	// 🔹 движение
+	const handleMove = (y: number) => {
+		if (startY.current === null) return;
 
-		// Свайп вверх → увеличить
-		if (currentY < startY - 300) {
-			setIsZoomed(true);
-			e.preventDefault(); // ← отменяем обновление страницы
-			return;
-		}
-
-		// Свайп вниз → уменьшить
-		if (currentY > startY + 300) {
-			setIsZoomed(false);
-			e.preventDefault(); // ← отменяем прокрутку/обновление
-			return;
+		const delta = startY.current - y; // вверх = +
+		if (delta > 0) {
+			const newScale = Math.min(1 + delta / 300, 1.5); // максимум 1.5
+			setScale(newScale);
 		}
 	};
 
-	const resetZoom = () => {
-		setIsZoomed(false);
+	// 🔹 конец свайпа
+	const handleEnd = () => {
+		startY.current = null;
 	};
 
 	return (
-		<section className="w-full max-w-[435px] flex md:flex-row flex-col-reverse md:justify-start justify-center md:items-start items-center gap-2">
-			{/* Миниатюры */}
-			<div
-				className="flex md:flex-col flex-row min-w-[40px] gap-2 overflow-x-auto pb-2 scrollbar-hide"
-				style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-			>
+		<section className="w-full max-w-[435px] flex md:flex-row flex-col-reverse gap-2">
+			{/* thumbnails */}
+			<div className="flex md:flex-col flex-row min-w-[40px] gap-2 overflow-x-auto pb-2 scrollbar-hide">
 				{images.map((img, index) => (
 					<button
 						key={index}
 						onClick={() => {
 							setActiveIndex(index);
-							setIsZoomed(false); // сброс при смене
+							setScale(1);
 						}}
-						className={`relative w-[40px] h-[40px] rounded-[4px] overflow-hidden border transition-all ${
+						className={`relative w-[40px] h-[40px] rounded-[4px] overflow-hidden border ${
 							index === activeIndex
-								? "border-[#0071E3] bg-[#F0F0F0]"
-								: "border-[#E4E4E7] hover:border-[#0071E3]"
+								? "border-[#0071E3]"
+								: "border-[#E4E4E7]"
 						}`}
-						aria-label={`Посмотреть изображение ${index + 1}`}
 					>
-						<Image
-							src={img.url}
-							alt={`${product.title || "Product"} - изображение ${index + 1}`}
-							fill
-							className="object-cover"
-						/>
+						<Image src={img.url} alt="" fill className="object-cover" />
 					</button>
 				))}
 			</div>
 
-			{/* Основное изображение */}
+			{/* main image */}
 			<div
-				className="w-full h-[390px] md:h-[375px] max-w-[375px] overflow-hidden rounded-[16px] relative mb-4"
-				onTouchMove={handleTouchMove}
-				onTouchEnd={resetZoom} // при отпускании — можно вернуть (опционально)
-				onClick={resetZoom}
-				style={{ touchAction: "none" }}
+				className="w-full h-[390px] max-w-[375px] overflow-hidden rounded-[16px] relative touch-none"
+				onTouchStart={(e) => handleStart(e.touches[0].clientY)}
+				onTouchMove={(e) => handleMove(e.touches[0].clientY)}
+				onTouchEnd={handleEnd}
+				onMouseDown={(e) => handleStart(e.clientY)}
+				onMouseMove={(e) => handleMove(e.clientY)}
+				onMouseUp={handleEnd}
 			>
 				<Image
 					src={activeImage.url}
 					alt={product.title || "Product image"}
 					fill
-					className={`object-cover transition-transform duration-200 ${
-						isZoomed ? "scale-150" : "scale-100"
-					}`}
 					priority
+					className="object-cover transition-transform duration-100"
+					style={{
+						transform: `scale(${scale})`,
+					}}
 				/>
 			</div>
 		</section>
 	);
 };
 
-export default Hero;
+export default HeroDetail;
