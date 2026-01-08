@@ -28,14 +28,14 @@ const Hero = ({ product }: HeroDetailProps) => {
 		const currentY = touch.clientY;
 
 		// Свайп вверх → увеличить
-		if (currentY < startY - 30) {
+		if (currentY < startY - 300) {
 			setIsZoomed(true);
 			e.preventDefault(); // ← отменяем обновление страницы
 			return;
 		}
 
 		// Свайп вниз → уменьшить
-		if (currentY > startY + 30) {
+		if (currentY > startY + 300) {
 			setIsZoomed(false);
 			e.preventDefault(); // ← отменяем прокрутку/обновление
 			return;
