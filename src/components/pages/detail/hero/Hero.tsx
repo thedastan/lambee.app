@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { Detail } from "@/redux/models/product.model";
 
@@ -8,12 +8,9 @@ interface HeroDetailProps {
 	product: Detail;
 }
 
-const HeroDetail = ({ product }: HeroDetailProps) => {
+const Hero = ({ product }: HeroDetailProps) => {
 	const [activeIndex, setActiveIndex] = useState(0);
-	const [zoom, setZoom] = useState(1);
-	const imageRef = useRef<HTMLDivElement>(null);
-	const touchStartY = useRef<number | null>(null);
-	const isSwiping = useRef(false);
+	const [isZoomed, setIsZoomed] = useState(false); // true = увеличено
 
 	const images = product.images || [];
 	const activeImage = images[activeIndex] || { url: "" };
@@ -22,63 +19,32 @@ const HeroDetail = ({ product }: HeroDetailProps) => {
 		return <div>Изображения недоступны</div>;
 	}
 
-	const handleTouchStart = (e: React.TouchEvent) => {
-		touchStartY.current = e.touches[0].clientY;
-		isSwiping.current = false;
-	};
-
+	// Обработчик свайпа
 	const handleTouchMove = (e: React.TouchEvent) => {
-		if (touchStartY.current === null) return;
+		if (e.touches.length !== 1) return;
 
-		const currentY = e.touches[0].clientY;
-		const diff = touchStartY.current - currentY;
-
-		// Если разница > 20 пикселей — начинаем свайп
-		if (Math.abs(diff) > 20) {
-			isSwiping.current = true;
-		}
+		const touch = e.touches[0];
+		const startY = e.currentTarget.getBoundingClientRect().top;
+		const currentY = touch.clientY;
 
 		// Свайп вверх → увеличить
-		if (diff > 0 && zoom < 2) {
-			setZoom((prev) => Math.min(prev + 0.05, 2));
+		if (currentY < startY - 30) {
+			setIsZoomed(true);
+			e.preventDefault(); // ← отменяем обновление страницы
+			return;
 		}
+
 		// Свайп вниз → уменьшить
-		else if (diff < 0 && zoom > 1) {
-			setZoom((prev) => Math.max(prev - 0.05, 1));
+		if (currentY > startY + 30) {
+			setIsZoomed(false);
+			e.preventDefault(); // ← отменяем прокрутку/обновление
+			return;
 		}
-
-		// Отменяем дефолтное поведение (pull-to-refresh)
-		e.preventDefault();
-		e.stopPropagation();
-	};
-
-	const handleTouchEnd = () => {
-		touchStartY.current = null;
 	};
 
 	const resetZoom = () => {
-		setZoom(1);
+		setIsZoomed(false);
 	};
-
-	// Отключаем pull-to-refresh для всего body (можно вынести в layout)
-	useEffect(() => {
-		const preventPullToRefresh = (e: TouchEvent) => {
-			if (e.target === document.body) {
-				e.preventDefault();
-			}
-		};
-		document.body.addEventListener("touchstart", preventPullToRefresh, { passive: false });
-		document.body.addEventListener("touchmove", preventPullToRefresh, { passive: false });
-
-		return () => {
-			document.body.removeEventListener("touchstart", preventPullToRefresh);
-			document.body.removeEventListener("touchmove", preventPullToRefresh);
-		};
-	}, []);
-
-	if (images.length === 0) {
-		return <div>Изображения недоступны</div>;
-	}
 
 	return (
 		<section className="w-full max-w-[435px] flex md:flex-row flex-col-reverse md:justify-start justify-center md:items-start items-center gap-2">
@@ -92,7 +58,7 @@ const HeroDetail = ({ product }: HeroDetailProps) => {
 						key={index}
 						onClick={() => {
 							setActiveIndex(index);
-							setZoom(1); // сброс зума при смене изображения
+							setIsZoomed(false); // сброс при смене
 						}}
 						className={`relative w-[40px] h-[40px] rounded-[4px] overflow-hidden border transition-all ${
 							index === activeIndex
@@ -114,36 +80,23 @@ const HeroDetail = ({ product }: HeroDetailProps) => {
 			{/* Основное изображение */}
 			<div
 				className="w-full h-[390px] md:h-[375px] max-w-[375px] overflow-hidden rounded-[16px] relative mb-4"
-				onTouchStart={handleTouchStart}
 				onTouchMove={handleTouchMove}
-				onTouchEnd={handleTouchEnd}
+				onTouchEnd={resetZoom} // при отпускании — можно вернуть (опционально)
 				onClick={resetZoom}
-				style={{
-					cursor: "zoom-in",
-					touchAction: "none",
-				}}
+				style={{ touchAction: "none" }}
 			>
-				<div
-					ref={imageRef}
-					className="w-full h-full"
-					style={{
-						transform: `scale(${zoom})`,
-						transformOrigin: "center",
-						transition: "transform 0.1s ease-out",
-						overflow: "hidden",
-					}}
-				>
-					<Image
-						src={activeImage.url}
-						alt={product.title || "Product image"}
-						fill
-						className="object-cover"
-						priority
-					/>
-				</div>
+				<Image
+					src={activeImage.url}
+					alt={product.title || "Product image"}
+					fill
+					className={`object-cover transition-transform duration-200 ${
+						isZoomed ? "scale-150" : "scale-100"
+					}`}
+					priority
+				/>
 			</div>
 		</section>
 	);
 };
 
-export default HeroDetail;
+export default Hero;
