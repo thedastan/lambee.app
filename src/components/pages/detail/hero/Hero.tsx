@@ -11,31 +11,31 @@ interface HeroDetailProps {
 const HeroDetail = ({ product }: HeroDetailProps) => {
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [scale, setScale] = useState(1);
-	const [isDragging, setIsDragging] = useState(false);
 
 	const startY = useRef(0);
+	const dragging = useRef(false);
 
 	const images = product.images || [];
-	const activeImage = images[activeIndex] || { url: "" };
+	const activeImage = images[activeIndex];
 
 	if (!images.length) return <div>Изображения недоступны</div>;
 
-	const start = (y: number) => {
-		startY.current = y;
-		setIsDragging(true);
+	const onPointerDown = (e: React.PointerEvent) => {
+		dragging.current = true;
+		startY.current = e.clientY;
 	};
 
-	const move = (y: number) => {
-		if (!isDragging) return;
+	const onPointerMove = (e: React.PointerEvent) => {
+		if (!dragging.current) return;
 
-		const delta = startY.current - y;
+		const delta = startY.current - e.clientY;
 		const nextScale = 1 + delta / 250;
 
 		setScale(Math.min(Math.max(nextScale, 1), 1.5));
 	};
 
-	const end = () => {
-		setIsDragging(false);
+	const onPointerUp = () => {
+		dragging.current = false;
 	};
 
 	return (
@@ -49,11 +49,10 @@ const HeroDetail = ({ product }: HeroDetailProps) => {
 							setActiveIndex(index);
 							setScale(1);
 						}}
-						className={`relative w-[40px] h-[40px] rounded overflow-hidden border ${
-							index === activeIndex
+						className={`relative w-[40px] h-[40px] rounded overflow-hidden border transition
+							${index === activeIndex
 								? "border-[#0071E3]"
-								: "border-[#E4E4E7]"
-						}`}
+								: "border-[#E4E4E7]"}`}
 					>
 						<Image src={img.url} alt="" fill className="object-cover" />
 					</button>
@@ -62,27 +61,20 @@ const HeroDetail = ({ product }: HeroDetailProps) => {
 
 			{/* main image */}
 			<div
-				className="w-full h-[390px] max-w-[375px] overflow-hidden rounded-[16px] relative touch-none select-none"
-				onTouchStart={(e) => start(e.touches[0].clientY)}
-				onTouchMove={(e) => {
-					e.preventDefault();
-					move(e.touches[0].clientY);
-				}}
-				onTouchEnd={end}
-				onMouseDown={(e) => start(e.clientY)}
-				onMouseMove={(e) => move(e.clientY)}
-				onMouseUp={end}
-				onMouseLeave={end}
+				className="relative w-full h-[390px] max-w-[375px] overflow-hidden rounded-[16px]"
+				style={{ touchAction: "none" }} // ❗ важно
+				onPointerDown={onPointerDown}
+				onPointerMove={onPointerMove}
+				onPointerUp={onPointerUp}
+				onPointerLeave={onPointerUp}
 			>
 				<Image
 					src={activeImage.url}
 					alt={product.title || "Product image"}
 					fill
 					priority
-					className="object-cover transition-transform duration-150 will-change-transform"
-					style={{
-						transform: `scale(${scale})`,
-					}}
+					className="object-cover transition-transform duration-100 will-change-transform"
+					style={{ transform: `scale(${scale})` }}
 				/>
 			</div>
 		</section>
