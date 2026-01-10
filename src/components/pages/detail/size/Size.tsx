@@ -11,6 +11,7 @@ import { useProductReviews } from "@/redux/hooks/product";
 import Button from "@/components/ui/button/Button";
 import { toast } from "alert-go";
 import 'alert-go/dist/notifier.css';
+import { useCart } from "@/redux/hooks/useCart";
 
 interface CartItem {
 	id: number;
@@ -40,65 +41,47 @@ const SizeDetail = ({ product, productId }: HeroDetailProps) => {
 	const [selectedOrderType, setSelectedOrderType] = useState<"one-time" | "subscription" | null>(null);
 
 	const selectedVariant = product.variants.find((v) => v.id === selectedVariantId);
+	const { addItem } = useCart();  
 
-  const handleAddToCart = () => {
-    if (selectedVariantId === null || selectedOrderType === null || !selectedVariant) {
-      toast.warning("Пожалуйста, выберите размер и тип заказа",{position:"top-center"});
-      return;
-    }
-  
-    // Убедимся, что цены — числа
-    const priceNum = Number(selectedVariant.price);
-    const subPriceNum = selectedVariant.subscription_price
-      ? Number(selectedVariant.subscription_price)
-      : undefined;
-  
-    if (isNaN(priceNum) || (subPriceNum !== undefined && isNaN(subPriceNum))) {
-      console.error("Invalid price values:", selectedVariant);
-      toast.error("Ошибка: некорректная цена товара",{position:"top-center"});
-      return;
-    }
-  
-    const cartItem: CartItem = {
-      id: Date.now(),
-      productId: productId,
-      productTitle: product.title,
-      variantId: selectedVariant.id,
-      variantTitle: selectedVariant.title,
-      type: selectedOrderType,
-      price: selectedOrderType === "subscription" && subPriceNum !== undefined
-        ? subPriceNum
-        : priceNum,
-      itemsCount: selectedVariant.items_count,
-      subscriptionPrice: subPriceNum,
-      discountPercent: selectedVariant.discount_percent,
-      quantity: 1,
-    };
-  
-    try {
-      const raw = localStorage.getItem("cart");
-      const existingCart = raw ? JSON.parse(raw) : [];
-  
-      const isDuplicate = existingCart.some(
-        (item: CartItem) =>
-          item.productId === cartItem.productId &&
-          item.variantId === cartItem.variantId &&
-          item.type === cartItem.type
-      );
-  
-      if (isDuplicate) {
-        toast.warning("Этот товар уже добавлен в корзину!",{position:"top-center"});
-      } else {
-        const newCart = [...existingCart, cartItem];
-        localStorage.setItem("cart", JSON.stringify(newCart, null, 2)); // + отступы для дебага
-        toast.success("Товар добавлен в корзину!",{position:"top-center"});
-				window.dispatchEvent(new Event("cartUpdated"));
-      }
-    } catch (err) {
-      console.error("Failed to save cart", err);
-      toast.error("Не удалось сохранить товар в корзину",{position:"top-center"});
-    }
-  };
+
+	const handleAddToCart = () => {
+		if (selectedVariantId === null || selectedOrderType === null || !selectedVariant) {
+			toast.warning("Пожалуйста, выберите размер и тип заказа", { position: "top-center" });
+			return;
+		}
+
+		const priceNum = Number(selectedVariant.price);
+		const subPriceNum = selectedVariant.subscription_price
+			? Number(selectedVariant.subscription_price)
+			: undefined;
+
+		if (isNaN(priceNum) || (subPriceNum !== undefined && isNaN(subPriceNum))) {
+			toast.error("Ошибка: некорректная цена товара", { position: "top-center" });
+			return;
+		}
+
+		const newItem = {
+			productId: productId,
+			productTitle: product.title,
+			variantId: selectedVariant.id,
+			variantTitle: selectedVariant.title,
+			type: selectedOrderType,
+			price: selectedOrderType === "subscription" && subPriceNum !== undefined
+				? subPriceNum
+				: priceNum,
+			itemsCount: selectedVariant.items_count,
+			subscriptionPrice: subPriceNum,
+			discountPercent: selectedVariant.discount_percent,
+			quantity: 1,
+		};
+
+		try {
+			addItem(newItem);
+			toast.success("Товар добавлен в корзину!", { position: "top-center" });
+		} catch (err: any) {
+			toast.warning(err.message || "Товар уже в корзине", { position: "top-center" });
+		}
+	};
 
 	return (
 		<section className="p-4 w-full bg-white rounded-[8px] border">

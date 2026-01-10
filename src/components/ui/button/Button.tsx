@@ -13,7 +13,7 @@ const Button: React.FC<ButtonProps> = ({
 	onClick,
 	disabled = false,
 	className = "",
-	...rest // <- пропускаем остальные HTML-пропсы (включая type)
+	...rest  
 }) => {
 	const baseClasses =
 		"flex items-center bg-[#0071E3] px-8 h-[40px] text-[14px] text-md justify-center font-[600] text-white rounded-[8px]";
@@ -23,7 +23,7 @@ const Button: React.FC<ButtonProps> = ({
 			onClick={onClick}
 			disabled={disabled}
 			className={`${baseClasses} ${className}`}
-			{...rest} // <- передаём type="submit" и другие атрибуты
+			{...rest}  
 		>
 			{children}
 		</button>

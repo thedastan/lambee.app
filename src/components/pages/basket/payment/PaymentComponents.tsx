@@ -1,16 +1,18 @@
 // src/app/(main)/payment/PaymentComponents.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import PaymentTotal from "./payment-totla/PaymentTotal";
 import PaymentForma from "./payment-forma/PaymentForma";
 import 'alert-go/dist/notifier.css';
 import { toast } from "alert-go";
 import { orderService } from "@/redux/services/orders.service";
+import { useCart } from "@/redux/hooks/useCart";
 
 const PaymentComponents = () => {
 	const [selectedAddressLabel, setSelectedAddressLabel] = useState<string>("Не выбран");
 	const [isLoading, setIsLoading] = useState(false);
+	const { cart, clear } = useCart(); // ← получаем корзину и метод очистки
 
 	// Обработчик изменения адреса из PaymentForma
 	const handleAddressChange = (label: string) => {
@@ -20,28 +22,17 @@ const PaymentComponents = () => {
 	// Обработчик оформления заказа
 	const handleCheckout = async () => {
 		if (!selectedAddressLabel || selectedAddressLabel === "Не выбран") {
-			toast.error("Пожалуйста, выберите адрес доставки",{position:"top-center"});
+			toast.error("Пожалуйста, выберите адрес доставки", { position: "top-center" });
 			return;
 		}
 
-		// Загружаем корзину из localStorage
-		const rawCart = localStorage.getItem("cart");
-		if (!rawCart) {
-			toast.error("Корзина пуста",{position:"top-center"});
-			return;
-		}
-
-		let cartItems: any[];
-		try {
-			cartItems = JSON.parse(rawCart);
-		} catch (e) {
-			console.error("Failed to parse cart", e);
-			toast.error("Ошибка чтения корзины",{position:"top-center"});
+		if (cart.length === 0) {
+			toast.error("Корзина пуста", { position: "top-center" });
 			return;
 		}
 
 		// Формируем payload для отправки
-		const items = cartItems.map((item: any) => ({
+		const items = cart.map((item) => ({
 			product_variant_id: item.variantId,
 			quantity: item.quantity,
 		}));
@@ -53,29 +44,25 @@ const PaymentComponents = () => {
 
 		setIsLoading(true);
 		try {
-			// Отправляем запрос на создание заказа
 			const response = await orderService.createOneTimeOrder(payload);
-
-			// Ожидаем, что бэкенд вернёт URL оплаты в response.data.detail
 			const paymentUrl = response.data?.detail;
 
 			if (typeof paymentUrl === "string" && paymentUrl.trim().startsWith("http")) {
-				// Редирект на внешний URL (Finik QR)
+				// Успешно → очищаем корзину
+				clear();
+				// Редирект на оплату
 				window.location.href = paymentUrl;
 			} else {
 				toast.error("Некорректный ответ от сервера: не получен URL оплаты");
 			}
 		} catch (error: any) {
 			console.error("Order creation failed", error);
-
-			// Пытаемся извлечь сообщение об ошибке
 			let message = "Не удалось оформить заказ";
 			if (error?.response?.data?.detail) {
 				message = error.response.data.detail;
 			} else if (error?.message) {
 				message = error.message;
 			}
-
 			toast.error(String(message));
 		} finally {
 			setIsLoading(false);

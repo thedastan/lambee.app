@@ -6,6 +6,7 @@ import BasketCards from "./basket-cards/BasketCards";
 import AlsoBuy from "./also-buy/AlsoBuy";
 import AccordionDetail from "../../detail/accordion/Accordion";
 import Total from "./total/Total";
+import { useCart } from "@/redux/hooks/useCart";
 
 // Тот же интерфейс
 interface CartItem {
@@ -27,53 +28,7 @@ interface BasketComponentsProps {
 }
 
 const BasketComponents: React.FC<BasketComponentsProps> = ({ onProceedToCheckout }) => {
-	const [cart, setCart] = useState<CartItem[]>([]);
-
-	useEffect(() => {
-		const saved = localStorage.getItem("cart");
-		if (saved) {
-			try {
-				setCart(JSON.parse(saved));
-			} catch (e) {
-				console.error("Failed to parse cart", e);
-			}
-		}
-	}, []);
-
-	 
-
-	const updateQuantity = (id: number, quantity: number) => {
-		if (quantity < 1) return;
-		const updated = cart.map((item) =>
-			item.id === id ? { ...item, quantity } : item
-		);
-		setCart(updated);
-		localStorage.setItem("cart", JSON.stringify(updated)); // ✅ сохраняем явно
-	};
-
-	const removeItem = (id: number) => {
-		const updated = cart.filter((item) => item.id !== id);
-		setCart(updated);
-		localStorage.setItem("cart", JSON.stringify(updated)); // ✅ сохраняем явно
-	};
-	
-	const getTotalAmount = () => {
-		return cart.reduce((sum, item) => {
-			const price = item.type === "subscription" && item.subscriptionPrice !== undefined
-				? item.subscriptionPrice
-				: item.price;
-			return sum + price * item.quantity;
-		}, 0);
-	};
-
-	const getSavedAmount = () => {
-		return cart.reduce((sum, item) => {
-			if (item.type === "subscription" && item.subscriptionPrice !== undefined) {
-				return sum + (item.price - item.subscriptionPrice) * item.quantity;
-			}
-			return sum;
-		}, 0);
-	};
+	const { cart, updateQuantity, removeItem, getTotalAmount, getSavedAmount } = useCart();
 
 	return (
 		<div className="md:p-4 bg-white md:bg-transparent p-0 flex flex-col md:flex-row justify-between items-start h-full gap-8 relative">

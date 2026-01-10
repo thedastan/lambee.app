@@ -1,5 +1,4 @@
 import Stories from "./stories/Stories";
-import SubscriptionsHome from "./subscriptions/FollowCardHome";
 import CategoryHome from "./category/CategoryHome";
 import PageHeader from "@/components/ui/heading/PageHeader";
 import Banner from "./banner/Banner";
