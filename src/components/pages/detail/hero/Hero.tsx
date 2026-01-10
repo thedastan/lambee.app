@@ -2,10 +2,10 @@
 
 import { useState, useRef } from "react";
 import Image from "next/image";
-import { Detail } from "@/redux/models/product.model";
+import { Detail, DetailPro } from "@/redux/models/product.model";
 
 interface HeroDetailProps {
-	product: Detail;
+	product: DetailPro;
 }
 
 const HeroDetail = ({ product }: HeroDetailProps) => {

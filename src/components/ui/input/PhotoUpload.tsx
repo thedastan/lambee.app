@@ -4,6 +4,8 @@ import { FaCamera } from "react-icons/fa";
 import { Title } from "../text/Title";
 import { Description } from "../text/Description";
 import Image from "next/image";
+import 'alert-go/dist/notifier.css';
+import { toast } from "alert-go";
 
 interface PhotoUploadProps {
   label?: ReactNode;
@@ -41,7 +43,7 @@ const PhotoUpload = ({
 
     const maxSize = maxFileSizeMB * 1024 * 1024;
     if (file.size > maxSize) {
-      alert(`Размер файла не должен превышать ${maxFileSizeMB} МБ`);
+      toast.warning(`Размер файла не должен превышать ${maxFileSizeMB} МБ`);
       return;
     }
 

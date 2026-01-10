@@ -1,74 +1,171 @@
+// PaymentTotal.tsx
+"use client";
+
+import { useState, useEffect } from "react";
 import Button from "@/components/ui/button/Button";
 import { Description } from "@/components/ui/text/Description";
 import img from "@/assets/images/Diapers.png";
 import Image from "next/image";
 
-const PaymentTotal = () => {
+interface CartItem {
+	id: number;
+	variantId: number;
+	variantTitle: string;
+	type: "one-time" | "subscription";
+	price: number;
+	quantity: number;
+	itemsCount: number;
+	subscriptionPrice?: number;
+	discountPercent?: number;
+	productId: number;
+	productTitle: string;
+}
+
+interface PaymentTotalProps {
+	onCheckout: () => void; // ← новый пропс
+	isLoading?: boolean;
+}
+
+const PaymentTotal = ({ onCheckout, isLoading = false }: PaymentTotalProps) => {
+	const [cartItems, setCartItems] = useState<CartItem[]>([]);
+	const [orderTotal, setOrderTotal] = useState(0);
+	const [deliveryCost, setDeliveryCost] = useState(0);
+	const [totalWithDelivery, setTotalWithDelivery] = useState(0);
+
+	useEffect(() => {
+		const loadCart = () => {
+			try {
+				const raw = localStorage.getItem("cart");
+				if (!raw) {
+					setCartItems([]);
+					setOrderTotal(0);
+					setDeliveryCost(0);
+					setTotalWithDelivery(0);
+					return;
+				}
+
+				const items: CartItem[] = JSON.parse(raw);
+				setCartItems(items);
+
+				let orderSum = 0;
+				items.forEach((item) => {
+					const price =
+						item.type === "subscription" && item.subscriptionPrice !== undefined
+							? item.subscriptionPrice
+							: item.price;
+					orderSum += price * item.quantity;
+				});
+
+				const delivery = orderSum >= 15000 ? 0 : 0; // у вас сейчас всегда 0
+				setOrderTotal(orderSum);
+				setDeliveryCost(delivery);
+				setTotalWithDelivery(orderSum + delivery);
+			} catch (e) {
+				console.error("Failed to load cart in PaymentTotal", e);
+				setCartItems([]);
+				setOrderTotal(0);
+				setDeliveryCost(0);
+				setTotalWithDelivery(0);
+			}
+		};
+
+		loadCart();
+	}, []);
+
+	const formatPrice = (price: number) => `${price.toLocaleString()} сом`;
+
+	// Экспортируем cartItems для родителя (опционально, но лучше передавать через колбэк)
+	useEffect(() => {
+		// Ничего не делаем — данные остаются внутри
+	}, []);
+
 	return (
 		<section className="bg-[#FFFDFA] p-4">
-			<Description className="text-[16px]">По подписке</Description>
+			{cartItems.length > 0 && (
+				<Description className="text-[16px]">
+					{cartItems.some((item) => item.type === "subscription")
+						? "По подписке"
+						: "Разовый заказ"}
+				</Description>
+			)}
 
-			<div className="py-2 flex justify-between items-center">
-				<div className="flex items-center justify-start gap-3">
-					<div className=" relative overflow-hidden w-[100px] h-[100px] flex justify-center items-center">
-						<Image
-							className="rounded-[8px] w-[75px] h-[75px]"
-							objectFit="cover"
-							src={img}
-							alt=""
-						/>
-						<div className="bg-black border-2 border-gray-300 text-white  py-0  px-2 rounded-[8px] absolute top-0 right-0">
-							1
+			{cartItems.map((item) => {
+				const originalPrice = item.price * item.quantity;
+				const actualPrice =
+					item.type === "subscription" && item.subscriptionPrice !== undefined
+						? item.subscriptionPrice * item.quantity
+						: originalPrice;
+
+				return (
+					<div key={item.id} className="py-2 flex justify-between items-center">
+						<div className="flex items-center justify-start gap-3">
+							<div className="relative overflow-hidden w-[100px] h-[100px] flex justify-center items-center">
+								<Image
+									className="rounded-[8px] w-[75px] h-[75px] object-cover"
+									src={img}
+									alt={item.productTitle}
+									fill
+								/>
+								<div className="bg-black border-2 border-gray-300 text-white py-0 px-2 rounded-[8px] absolute top-0 right-0">
+									{item.quantity}
+								</div>
+							</div>
+							<div>
+								<Description>{item.productTitle}</Description>
+								<Description className="text-[#515151]">
+									{item.type === "subscription" ? "Подписка" : "Разовый заказ"}
+								</Description>
+							</div>
 						</div>
+						<Description>
+							{item.type === "subscription" && item.subscriptionPrice !== undefined ? (
+								<>
+									<span className="line-through text-[#515151] mr-1">
+										{formatPrice(originalPrice)}
+									</span>
+									{formatPrice(actualPrice)}
+								</>
+							) : (
+								formatPrice(actualPrice)
+							)}
+						</Description>
 					</div>
-					<div className="">
-						<Description>Подгузники</Description>
-						<Description className="text-[#515151]">Подписка</Description>
-					</div>
-				</div>
-				<Description>14 000 c</Description>
-			</div>
+				);
+			})}
 
-      <div className="py-2 flex justify-between items-center">
-				<div className="flex items-center justify-start gap-3">
-					<div className=" relative overflow-hidden w-[100px] h-[100px] flex justify-center items-center">
-						<Image
-							className="rounded-[8px] w-[75px] h-[75px]"
-							objectFit="cover"
-							src={img}
-							alt=""
-						/>
-						<div className="bg-black border-2 border-gray-300 text-white  py-0  px-2 rounded-[8px] absolute top-0 right-0">
-							1
-						</div>
-					</div>
-					<div className="">
-						<Description>Подгузники</Description>
-						<Description className="text-[#515151]">Подписка</Description>
-					</div>
-				</div>
-				<Description>14 000 c</Description>
-			</div>
+			{cartItems.length === 0 && (
+				<Description className="text-gray-500 py-4 text-center">Корзина пуста</Description>
+			)}
 
-			<div className="flex flex-col gap-3 ">
-				<div className="flex items-center justify-between">
-					<Description className="text-[12px]">Сумма заказа</Description>
-					<Description className="text-[#0071E3] font-[500] text-[12px] flex gap-2">
-						<span className="line-through  text-[#515151] ">16 000 с</span>
-						14 000 с
-					</Description>
-				</div>
-				<div className="flex items-center justify-between">
-					<Description className="text-[12px]">Доставка</Description>
-					<Description className="text-[12px]">200 с</Description>
-				</div>
-				<div className="flex items-center justify-between">
-					<Description>Итого:</Description>
-					<Description>14 000 с</Description>
-				</div>
-			</div>
+			{cartItems.length > 0 && (
+				<div className="flex flex-col gap-3 mt-4">
+					<div className="flex items-center justify-between">
+						<Description className="text-[12px]">Сумма заказа</Description>
+						<Description className="text-[#0071E3] font-[500] text-[12px]">
+							{formatPrice(orderTotal)}
+						</Description>
+					</div>
 
-			<Button className="w-full mt-4">Перейти к оплате </Button>
+					<div className="flex items-center justify-between">
+						<Description className="text-[12px]">Доставка</Description>
+						<Description className="text-[12px]">
+							{deliveryCost === 0 ? "Бесплатно" : formatPrice(deliveryCost)}
+						</Description>
+					</div>
+
+					<div className="flex items-center justify-between">
+						<Description>Итого:</Description>
+						<Description className="font-bold">{formatPrice(totalWithDelivery)}</Description>
+					</div>
+				</div>
+			)}
+
+			{cartItems.length > 0 && (
+				<Button className="w-full mt-4" onClick={onCheckout} disabled={isLoading}>
+					{isLoading ? "Оформление..." : "Перейти к оплате"}
+				</Button>
+			)}
+
 			<Description className="text-[#0000008F] mt-4">
 				Ваш адрес доставки будет сохранен, чтобы было легче оформлять товары
 			</Description>

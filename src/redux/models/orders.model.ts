@@ -28,8 +28,14 @@ export interface INotificationsResponse {
   detail: INotification[];
 }
 
+///
+
 export interface ICreateOneTimeOrderPayload {
-  product_id: number;
-  quantity: number;
-  address: string;
+  items: Item[]
+  address: string
+}
+
+export interface Item {
+  product_variant_id: number
+  quantity: number
 }
