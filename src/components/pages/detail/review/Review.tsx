@@ -293,12 +293,12 @@ const Review = ({ productId }: ReviewProps) => {
 					<Description className="font-[500] !text-[16px] text-center pt-3">
 						Выберите от 1 до 5
 					</Description>
-					<div className="flex justify-center items-center gap-1">
+					<div className="flex justify-center   items-center gap-1">
 						{[1, 2, 3, 4, 5].map((star) => (
 							<FaStar
 								key={star}
 								size={26}
-								color={star <= rating ? "#0071E3" : "#1783ee73"}
+								color={star <= rating ? "#6e6e6e" : "#cecece"}
 								onClick={() => handleStarClick(star)}
 								className="cursor-pointer"
 							/>

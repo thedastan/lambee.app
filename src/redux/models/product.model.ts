@@ -29,6 +29,7 @@ export interface Benefit {
 
 ///
  
+
 export interface IProductDetail {
   detail: DetailPro
 }
@@ -37,37 +38,51 @@ export interface DetailPro {
   id: number
   title: string
   description: string
+  variants: Variant[]
+  images: DetaiImage[]
+  benefits: DetaiBenefit[]
+}
+
+export interface Variant {
+  id: number
+  title: string
+  sku: string
   weight_range: string
   items_count: number
-  sku: string
   price: number
   subscription_price: number
   discount_percent: number
-  images: ImagePro[]
-  benefits: BenefitPro[]
 }
 
-export interface ImagePro {
+export interface DetaiImage {
   url: string
 }
 
-export interface BenefitPro {
+export interface DetaiBenefit {
   id: number
   title: string
   icon: string
 }
 
+
 ///
- 
 export interface IReview {
-	id: number;
-	user: {
-    id: number;
-		name: string;
-		surname: string;
-		birth_date: string | null;
-	};
-	rating: string; // "5.0", "4.0" и т.д.
-	text: string;
-	created_at: string; // ISO 8601
+  id: number;
+  user: {
+    name: string;
+    surname: string;
+    birth_date: string; // ISO 8601, например: "2005-04-24T00:00:00"
+  };
+  rating: string; // ← именно строка: "4.0", "5.0" и т.д.
+  text: string;
+  created_at: string; // ISO 8601: "2026-01-07T14:14:26.787Z"
+}
+
+export interface IProductReviewsResponse {
+  detail: {
+    count: number;
+    next: string | null;
+    previous: string | null;
+    results: IReview[];
+  };
 }

@@ -9,6 +9,8 @@ import { useUserProfile, useCreateShippingAddress } from "@/redux/hooks/user";
 import React, { useState, useMemo, useEffect } from "react";
 import { FiEdit2 } from "react-icons/fi";
 import { SlLocationPin } from "react-icons/sl";
+import 'alert-go/dist/notifier.css';
+import { toast } from "alert-go";
 
 const PROFILE_ADDRESS_KEY = "selectedShippingAddressId";
 const PROFILE_ADDRESS_LABEL_KEY = "selectedShippingAddressLabel"; // ← вынесем в константу
@@ -69,7 +71,7 @@ const ProfileAddress = () => {
       setModalType("select");
     } catch (err) {
       console.error("Ошибка добавления адреса:", err);
-      alert("Не удалось добавить адрес.");
+      toast.error("Не удалось добавить адрес.",{position:"top-center"});
     }
   };
 

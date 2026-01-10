@@ -26,6 +26,8 @@ import ProfileAddress from "./ProfileAddress";
 import { useFinikPay } from "@/redux/hooks/finik-pay";
 import { CiLogout } from "react-icons/ci";
 import { useRouter } from "next/navigation";
+import { toast } from "alert-go";
+import 'alert-go/dist/notifier.css';
 
 const Profile = () => {
 	const router = useRouter();
@@ -39,7 +41,7 @@ const Profile = () => {
 	const handlePay = async () => {
 		const numAmount = Number(amount.trim());
 		if (isNaN(numAmount) || numAmount <= 0) {
-			alert("Введите корректную сумму");
+			toast.warning("Введите корректную сумму",{position:"top-center"});
 			return;
 		}
 
@@ -48,10 +50,10 @@ const Profile = () => {
 			if (response?.detail) {
 				window.location.href = response.detail;
 			} else {
-				alert("Не удалось получить ссылку на оплату");
+				toast.error("Не удалось получить ссылку на оплату",{position:"top-center"});
 			}
 		} catch {
-			alert("Ошибка при создании платежа");
+			toast.error("Ошибка при создании платежа",{position:"top-center"});
 		}
 	};
 
