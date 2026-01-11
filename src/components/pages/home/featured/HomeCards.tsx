@@ -16,27 +16,25 @@ const HomeCards = () => {
 	const { data, isLoading } = useProduct();
 	const { addItem } = useCart(); // ← получаем метод добавления
 
-	const handleBuyNow = (product: any) => {
-		// Берём первый вариант
-		const firstVariant = product.variants[0];
-		if (!firstVariant) {
-			toast.error("Нет доступных вариантов товара", { position: "top-center" });
-			return;
-		}
-
+	const handleBuyNow = (product: any, variant: any) => {
+		const imageUrl = variant.images.length > 0 
+			? variant.images[0].url.trim() 
+			: "";
+	
 		const newItem = {
 			productId: product.id,
 			productTitle: product.title,
-			variantId: firstVariant.id,
-			variantTitle: firstVariant.title,
-			type: "one-time" as const, // или можно спросить у пользователя, но для "Купить сейчас" — разовый
-			price: firstVariant.price,
-			itemsCount: firstVariant.items_count,
-			subscriptionPrice: firstVariant.subscription_price,
-			discountPercent: firstVariant.discount_percent,
+			variantId: variant.id,
+			variantTitle: variant.title,
+			type: "one-time" as const,
+			price: variant.price,
+			itemsCount: variant.items_count,
+			subscriptionPrice: variant.subscription_price,
+			discountPercent: variant.discount_percent,
 			quantity: 1,
+			imageUrl, // ← теперь с изображением
 		};
-
+	
 		try {
 			addItem(newItem);
 			toast.success("Товар добавлен в корзину!", { position: "top-center" });
@@ -46,6 +44,15 @@ const HomeCards = () => {
 			});
 		}
 	};
+
+	// Внутри компонента, после получения data
+	const allVariants =
+		data?.detail.flatMap((product) =>
+			product.variants.map((variant) => ({
+				product,
+				variant,
+			}))
+		) || [];
 
 	if (isLoading) {
 		return (
@@ -86,64 +93,60 @@ const HomeCards = () => {
 				Размер подобран по возрасту и весу
 			</Description>
 
-			<div className="grid md:grid-cols-2 grid-cols-1 gap-2">
-				{data?.detail.map((el, index) => (
-					<Link
-						href={`/detail/${el.id}`}
-						key={index}
-						className="p-3 bg-white border border-[#E4E4E7] rounded-[16px] relative">
-						<div className="flex gap-3">
-							<div className="relative overflow-hidden rounded-[8px] w-[114px] h-[114px]">
-								<Image
-									fill
-									style={{ objectFit: "cover" }}
-									src={el.images[0]?.url}
-									alt={el.title}
-								/>
-							</div>
-							<div className="w-[138px] flex flex-col gap-1">
-								<div className="flex gap-1">
-									<Title>{el.title},</Title>
-								</div>
-								<Description className="text-[#515151]">
-									По подписке
-								</Description>
-
-								{el.variants.slice(0, 1).map((item, idx) => (
-									<div key={idx}>
-										<Description className="text-[#515151]">
-											Количество: {item.items_count} шт
-										</Description>
-										<div>
-											<Description className="text-[#0071E3] font-[500] text-[16px]">
-												{item.subscription_price} c
-												<span className="line-through text-[#515151] text-[14px] ml-1">
-													{item.price} c
-												</span>
-											</Description>
-											<Description className="text-[#0071E3] rounded-[32px] absolute top-0 right-0 border border-[#0071E3] p-1 px-2">
-												{item.discount_percent}% Скидка
-											</Description>
-										</div>
-									</div>
-								))}
-							</div>
-						</div>
-
+				<div className="grid md:grid-cols-2 grid-cols-1 gap-2">
+					{allVariants.map(({ product, variant }) => (
+						<Link
+							href={`/detail/${product.id}?variant=${variant.id}`}
+							key={`${product.id}-${variant.id}`} // уникальный ключ
+							className="p-3 bg-white border border-[#E4E4E7] rounded-[16px] relative"
 						 
-						<button
-						 onClick={(e) => {
-							e.preventDefault();     
-							e.stopPropagation();  
-							handleBuyNow(el);
-						}}
-						type="button"
-						className="mt-3 w-full flex items-center bg-[#0071E3] px-8 h-[40px] text-[14px] text-md justify-center font-[600] text-white rounded-[8px]">
-							Купить сейчас
-						</button>
-					</Link>
-				))}
-			</div>
+						>
+							<div className="flex gap-3">
+								<div className="relative overflow-hidden rounded-[8px] w-[114px] h-[114px]">
+									<Image
+										fill
+										style={{ objectFit: "cover" }}
+										src={variant.images[0]?.url}
+										alt={`${product.title} ${variant.title}`}
+									/>
+								</div>
+								<div className="w-[138px] flex flex-col gap-1">
+									<Title>
+										{product.title}, {variant.title}
+									</Title>
+									<Description className="text-[#515151]">
+										По подписке
+									</Description>
+									<Description className="text-[#515151]">
+										Количество: {variant.items_count} шт
+									</Description>
+									<div>
+										<Description className="text-[#0071E3] font-[500] text-[16px]">
+											{variant.subscription_price} c
+											<span className="line-through text-[#515151] text-[14px] ml-1">
+												{variant.price} c
+											</span>
+										</Description>
+										<Description className="text-[#0071E3] rounded-[32px] absolute top-0 right-0 border border-[#0071E3] p-1 px-2">
+											{variant.discount_percent}% Скидка
+										</Description>
+									</div>
+								</div>
+							</div>
+
+							<button
+								onClick={(e) => {
+									e.preventDefault();
+									e.stopPropagation();
+									handleBuyNow(product,variant); // или передавайте конкретный variant, если нужно
+								}}
+								type="button"
+								className="mt-3 w-full flex items-center bg-[#0071E3] px-8 h-[40px] text-[14px] text-md justify-center font-[600] text-white rounded-[8px]">
+								Купить сейчас
+							</button>
+						</Link>
+					))}
+				</div>
 		</section>
 	);
 };

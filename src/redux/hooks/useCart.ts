@@ -13,6 +13,7 @@ export interface CartItem {
 	discountPercent?: number;
 	productId: number;
 	productTitle: string;
+	imageUrl: string; 
 }
 
 let cartState: CartItem[] = [];

@@ -1,27 +1,16 @@
 // BasketCards.tsx
+
 import React from "react";
 import Image from "next/image";
-import img from "@/assets/images/Diapers.png";
+// УДАЛИТЕ: import img from "@/assets/images/Diapers.png";
 import { TitleComponent } from "@/components/ui/text/TitleComponent";
 import { Description } from "@/components/ui/text/Description";
 import { FiMinus } from "react-icons/fi";
 import { VscAdd } from "react-icons/vsc";
 import DeleteSvg from "@/assets/svg/delete";
 
-// Импортируйте CartItem или определите здесь
-interface CartItem {
-	id: number;
-	variantId: number;
-	variantTitle: string;
-	type: "one-time" | "subscription";
-	price: number;
-	quantity: number;
-	itemsCount: number;
-	subscriptionPrice?: number;
-	discountPercent?: number;
-	productId: number;
-	productTitle: string;
-}
+// Убедитесь, что CartItem импортирован правильно
+import { CartItem } from "@/redux/hooks/useCart"; // ← рекомендуется использовать общий тип
 
 interface BasketCardsProps {
 	cart: CartItem[];
@@ -45,7 +34,18 @@ const BasketCards: React.FC<BasketCardsProps> = ({ cart, updateQuantity, removeI
 			{cart.map((item) => (
 				<div key={item.id} className="flex items-center gap-2">
 					<div className="w-[80px] min-w-[80px] h-[80px] rounded-[8px] relative overflow-hidden">
-						<Image src={img} alt={item.productTitle} className="object-cover" fill />
+						{item.imageUrl ? (
+							<Image
+								src={item.imageUrl}
+								alt={item.productTitle}
+								fill
+								className="object-cover"
+							/>
+						) : (
+							<div className="w-full h-full bg-gray-100 flex items-center justify-center text-xs text-gray-400">
+								Нет фото
+							</div>
+						)}
 					</div>
 					<div className="flex flex-col justify-between gap-1 w-full">
 						<div className="flex md:justify-start justify-between gap-2 items-start">

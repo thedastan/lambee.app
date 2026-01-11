@@ -1,12 +1,11 @@
-// PaymentTotal.tsx
 "use client";
 
 import { useState, useEffect } from "react";
 import Button from "@/components/ui/button/Button";
 import { Description } from "@/components/ui/text/Description";
-import img from "@/assets/images/Diapers.png";
-import Image from "next/image";
+import Image from "next/image"; // ← удаляем импорт статичной img
 
+// Обновлённый интерфейс
 interface CartItem {
 	id: number;
 	variantId: number;
@@ -19,10 +18,11 @@ interface CartItem {
 	discountPercent?: number;
 	productId: number;
 	productTitle: string;
+	imageUrl: string; // ← обязательно
 }
 
 interface PaymentTotalProps {
-	onCheckout: () => void; // ← новый пропс
+	onCheckout: () => void;
 	isLoading?: boolean;
 }
 
@@ -56,7 +56,7 @@ const PaymentTotal = ({ onCheckout, isLoading = false }: PaymentTotalProps) => {
 					orderSum += price * item.quantity;
 				});
 
-				const delivery = orderSum >= 15000 ? 0 : 0; // у вас сейчас всегда 0
+				const delivery = orderSum >= 15000 ? 0 : 0;
 				setOrderTotal(orderSum);
 				setDeliveryCost(delivery);
 				setTotalWithDelivery(orderSum + delivery);
@@ -73,11 +73,6 @@ const PaymentTotal = ({ onCheckout, isLoading = false }: PaymentTotalProps) => {
 	}, []);
 
 	const formatPrice = (price: number) => `${price.toLocaleString()} сом`;
-
-	// Экспортируем cartItems для родителя (опционально, но лучше передавать через колбэк)
-	useEffect(() => {
-		// Ничего не делаем — данные остаются внутри
-	}, []);
 
 	return (
 		<section className="bg-[#FFFDFA] p-4">
@@ -100,18 +95,26 @@ const PaymentTotal = ({ onCheckout, isLoading = false }: PaymentTotalProps) => {
 					<div key={item.id} className="py-2 flex justify-between items-center">
 						<div className="flex items-center justify-start gap-3">
 							<div className="relative overflow-hidden w-[100px] h-[100px] flex justify-center items-center">
-								<Image
-									className="rounded-[8px] w-[75px] h-[75px] object-cover"
-									src={img}
-									alt={item.productTitle}
-									fill
-								/>
+								{item.imageUrl ? (
+									<Image
+										src={item.imageUrl}
+										alt={`${item.productTitle} ${item.variantTitle}`}
+										fill
+										className="rounded-[8px] object-cover"
+									/>
+								) : (
+									<div className="w-full h-full bg-gray-100 rounded-[8px] flex items-center justify-center text-xs text-gray-400">
+										Нет фото
+									</div>
+								)}
 								<div className="bg-black border-2 border-gray-300 text-white py-0 px-2 rounded-[8px] absolute top-0 right-0">
 									{item.quantity}
 								</div>
 							</div>
 							<div>
-								<Description>{item.productTitle}</Description>
+								<Description>
+									{item.productTitle} - <span className="font-medium">{item.variantTitle}</span>
+								</Description>
 								<Description className="text-[#515151]">
 									{item.type === "subscription" ? "Подписка" : "Разовый заказ"}
 								</Description>

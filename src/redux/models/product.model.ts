@@ -7,7 +7,6 @@ export interface Detail {
 	title: string;
 	description: string;
 	variants: IProductVariant[];
-	images: Image[];
 	benefits: Benefit[];
 }
 
@@ -20,6 +19,7 @@ export interface IProductVariant {
 	price: number;
 	subscription_price: number;
 	discount_percent: number;
+	images: Image[];
 }
 
 export interface Image {
@@ -43,7 +43,6 @@ export interface DetailPro {
 	title: string;
 	description: string;
 	variants: Variant[];
-	images: DetaiImage[];
 	benefits: DetaiBenefit[];
 }
 
@@ -56,6 +55,7 @@ export interface Variant {
 	price: number;
 	subscription_price: number;
 	discount_percent: number;
+	images: DetaiImage[];
 }
 
 export interface DetaiImage {

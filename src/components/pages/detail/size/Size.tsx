@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { Description } from "@/components/ui/text/Description";
 import { Title } from "@/components/ui/text/Title";
-import { DetailPro } from "@/redux/models/product.model";
+import { Detail, DetailPro, Variant } from "@/redux/models/product.model";
 import Image from "next/image";
 import { TitleComponent } from "@/components/ui/text/TitleComponent";
 import { IoStarSharp } from "react-icons/io5";
@@ -25,41 +26,66 @@ interface CartItem {
 	discountPercent?: number;
 	productId: number;
 	productTitle: string;
+	
 }
 
-interface HeroDetailProps {
+interface SizeDetailProps {
 	product: DetailPro;
 	productId: number;
+	onVariantChange: (variant: Variant) => void;
 }
 
-const SizeDetail = ({ product, productId }: HeroDetailProps) => {
+const SizeDetail = ({ product, productId, onVariantChange }: SizeDetailProps) => {
+	const searchParams = useSearchParams();
+	const initialVariantFromUrl = searchParams.get("variant");
+
 	const { data } = useProductReviews(productId);
 	const allReviews = data?.detail.results || [];
 	const reviewCount = allReviews.length;
 
-	const [selectedVariantId, setSelectedVariantId] = useState<number | null>(null);
+	const [selectedVariantId, setSelectedVariantId] = useState<number | null>(() => {
+		if (initialVariantFromUrl) {
+			const id = Number(initialVariantFromUrl);
+			if (!isNaN(id) && product.variants.some(v => v.id === id)) {
+				return id;
+			}
+		}
+		return product.variants[0]?.id || null;
+	});
+
 	const [selectedOrderType, setSelectedOrderType] = useState<"one-time" | "subscription" | null>(null);
 
 	const selectedVariant = product.variants.find((v) => v.id === selectedVariantId);
-	const { addItem } = useCart();  
+	const { addItem } = useCart();
 
+	// Уведомляем родителя о смене варианта
+	useEffect(() => {
+		if (selectedVariant) {
+			onVariantChange(selectedVariant);
+		}
+	}, [selectedVariantId]);
 
 	const handleAddToCart = () => {
 		if (selectedVariantId === null || selectedOrderType === null || !selectedVariant) {
 			toast.warning("Пожалуйста, выберите размер и тип заказа", { position: "top-center" });
 			return;
 		}
-
+	
 		const priceNum = Number(selectedVariant.price);
 		const subPriceNum = selectedVariant.subscription_price
 			? Number(selectedVariant.subscription_price)
 			: undefined;
-
+	
 		if (isNaN(priceNum) || (subPriceNum !== undefined && isNaN(subPriceNum))) {
 			toast.error("Ошибка: некорректная цена товара", { position: "top-center" });
 			return;
 		}
-
+	
+		// Получаем URL первого изображения варианта (или пустую строку)
+		const imageUrl = selectedVariant.images.length > 0 
+			? selectedVariant.images[0].url.trim() 
+			: "";
+	
 		const newItem = {
 			productId: productId,
 			productTitle: product.title,
@@ -73,14 +99,19 @@ const SizeDetail = ({ product, productId }: HeroDetailProps) => {
 			subscriptionPrice: subPriceNum,
 			discountPercent: selectedVariant.discount_percent,
 			quantity: 1,
+			imageUrl, // ← добавляем
 		};
-
+	
 		try {
 			addItem(newItem);
 			toast.success("Товар добавлен в корзину!", { position: "top-center" });
 		} catch (err: any) {
 			toast.warning(err.message || "Товар уже в корзине", { position: "top-center" });
 		}
+	};
+
+	const handleSelectVariant = (variantId: number) => {
+		setSelectedVariantId(variantId);
 	};
 
 	return (
@@ -91,7 +122,7 @@ const SizeDetail = ({ product, productId }: HeroDetailProps) => {
 				{product.variants.map((el) => (
 					<div
 						key={el.id}
-						onClick={() => setSelectedVariantId(el.id)}
+						onClick={() => handleSelectVariant(el.id)}
 						className={`border flex flex-col gap-1 rounded-[8px] p-3 cursor-pointer transition-all duration-200 ${
 							selectedVariantId === el.id ? "bg-[#0071E3] text-white" : ""
 						}`}
