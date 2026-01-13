@@ -143,7 +143,7 @@ const HomeCards = () => {
 											</span>
 										</Description>
 										<Description className="text-[#0071E3] rounded-[32px] absolute top-0 right-0 border border-[#0071E3] p-1 px-2">
-											{variant.discount_percent}% Скидка
+											{variant.discount_percent}% Эконом
 										</Description>
 									</div>
 								</div>
