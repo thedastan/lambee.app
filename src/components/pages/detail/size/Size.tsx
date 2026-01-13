@@ -249,7 +249,7 @@ const SizeDetail = ({
 										? "bg-[#ffffff] text-[#000000]"
 										: "bg-[#0071E3] text-[#ffffff]"
 								}`}>
-								Скидка {selectedVariant.discount_percent}%
+								Эконом {selectedVariant.discount_percent}%
 							</Title>
 						</div>
 
