@@ -12,7 +12,7 @@ import "alert-go/dist/notifier.css";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 
-const AlsoBuy = () => {
+const SubscriptionsAlsoBuy = () => {
 	const { data } = useProduct();
 	const { cart, addItem } = useCart();
 	const router = useRouter();
@@ -23,7 +23,7 @@ const AlsoBuy = () => {
 			(item) =>
 				item.productId === productId &&
 				item.variantId === variantId &&
-				item.type === "one-time"
+				item.type === "subscription"
 		);
 	};
 
@@ -35,14 +35,15 @@ const AlsoBuy = () => {
 			return;
 		}
 
-		const imageUrl = variant.images.length > 0 ? variant.images[0].url.trim() : "";
+		const imageUrl =
+			variant.images.length > 0 ? variant.images[0].url.trim() : "";
 
 		const newItem = {
 			productId: product.id,
 			productTitle: product.title,
 			variantId: variant.id,
 			variantTitle: variant.title,
-			type: "one-time" as const,
+			type: "subscription" as const,
 			price: Number(variant.price),
 			itemsCount: variant.items_count,
 			subscriptionPrice: variant.subscription_price
@@ -65,14 +66,12 @@ const AlsoBuy = () => {
 
 	return (
 		<section className="">
-			 
 			<div className="bg-[#F9F4EC] py-4 mt-6">
 				<Description className="px-4 pb-4">Также покупают</Description>
 
 				<div
 					className="overflow-x-auto scrollbar-hide flex items-start gap-3 pl-[calc((100%-96%)/3)] pr-[calc((100%-96%)/3)]"
-					style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-				>
+					style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
 					{data?.detail.map((product, productIndex) => (
 						<div key={productIndex} className="flex-shrink-0 flex gap-2">
 							{product.variants.map((variant) => {
@@ -81,8 +80,7 @@ const AlsoBuy = () => {
 								return (
 									<div
 										key={`${product.id}-${variant.id}`}
-										className="border border-[#E4E4E7] rounded-[8px] p-3 bg-white flex gap-2 w-full max-w-[280px]"
-									>
+										className="border border-[#E4E4E7] rounded-[8px] p-3 bg-white flex gap-2 w-full max-w-[320px]">
 										<div className="w-[80px] min-w-[80px] h-[80px] relative overflow-hidden rounded-[8px]">
 											<Image
 												fill
@@ -101,9 +99,16 @@ const AlsoBuy = () => {
 													<Description className="font-[600]">
 														{product.title}, {variant.title}
 													</Description>
-													<Description className="font-[600] text-nowrap">
-														{variant.price} c
-													</Description>
+
+													<div className="flex items-center gap-1">
+														<Description className="font-[600] text-nowrap">
+															{variant.subscription_price} c
+														</Description>
+														<Description className="font-[400] text-nowrap line-through text-gray-600">
+															{variant.price} c
+														</Description>
+													</div>
+													
 												</div>
 												<Description className="text-[#515151] mt-1">
 													{product.description}
@@ -119,9 +124,8 @@ const AlsoBuy = () => {
 														isInCart
 															? "text-black"
 															: "text-[#0071E3] border-b border-[#0071E3]"
-													}`}
-												>
-													{isInCart ? "Добавлено" : "Добавить в корзину"}
+													}`}>
+													{isInCart ? "Добавлено" : "Добавить"}
 												</button>
 											</div>
 										</div>
@@ -136,4 +140,4 @@ const AlsoBuy = () => {
 	);
 };
 
-export default AlsoBuy;
+export default SubscriptionsAlsoBuy;

@@ -7,22 +7,10 @@ import type { StaticImageData } from "next/image";
 import Link from "next/link";
 import ActionMenuButton from "../button/ActionMenuButton";
 import { Description } from "../text/Description";
+import { ISubscription } from "@/redux/models/subscription.model";
 
 interface FollowCardProps {
-	data: {
-		id: number;
-		image: string | StaticImageData;
-		title: string;
-		suspended: string;
-		status: string;
-		diapers: number;
-		panties: number;
-		payment: string;
-		address: string;
-		next_delivery: string;
-		old_price: number;
-		new_price: number;
-	};
+	data:ISubscription;
 	isOpenMenu: boolean;
 	onToggleMenu: (id: number) => void;
 	onAction: (action: string, id: number) => void;
@@ -53,12 +41,15 @@ const FollowCard = ({
 		}
 	};
 
+	console.log(data,"data");
+	
+
 	return (
 		<Link
 			href="/follow/detail"
 			className="border border-[#E4E4E7] rounded-[16px] p-4 bg-white w-full relative block">
 			{/* Header */}
-			<div className="flex items-center justify-between gap-2 border-b pb-3 border-[#E4E4E7]">
+			{/* <div className="flex items-center justify-between gap-2 border-b pb-3 border-[#E4E4E7]">
 				<div className="flex w-full   h-[45px] gap-3 items-center">
 					<div className="relative w-[40px] h-[40px] overflow-hidden rounded-[8px]">
 						<Image
@@ -77,16 +68,15 @@ const FollowCard = ({
 					</div>
 				</div>
 
-				{/* ✅ Вынесено в отдельный компонент */}
 				<ActionMenuButton
 					isOpen={isOpenMenu}
 					onToggle={handleToggle}
 					onAction={handleAction}
 				/>
-			</div>
+			</div> */}
 
 			{/* Content */}
-			<div className="flex flex-col gap-4 mt-3">
+			{/* <div className="flex flex-col gap-4 mt-3">
 				<div className="flex items-center justify-between">
 					<Title className="text-[#515151]">Статус:</Title>
 					<Title
@@ -127,7 +117,7 @@ const FollowCard = ({
 						<span className="text-[#0071E3] font-[600]">{data.new_price}c</span>
 					</Title>
 				</div>
-			</div>
+			</div> */}
 		</Link>
 	);
 };

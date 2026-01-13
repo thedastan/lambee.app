@@ -10,16 +10,11 @@ import Link from "next/link";
 import { FiBell } from "react-icons/fi";
 import { useCart } from "@/redux/hooks/useCart";
 
-// Тип для элемента корзины (может быть вынесен в общий файл)
-interface CartItem {
-	id: number;
-	quantity: number;
-	// остальные поля не нужны для подсчёта
-}
+ 
 
 const Header = () => {
 	const [scrolled, setScrolled] = useState(false);
-	const { getTotalItemsCount } = useCart(); // ← получаем количество
+	const { getTotalItemsCount } = useCart();  
 	const cartCount = getTotalItemsCount();
 	useEffect(() => {
 		const handleScroll = () => {

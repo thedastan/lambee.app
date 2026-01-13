@@ -5,18 +5,18 @@ import React, { useState } from "react";
 interface RadioOption {
 	id: string;
 	label: string;
-	description?: string; // Опциональное описание под лейблом
-	disabled?: boolean; // Можно отключить вариант
+	description?: string;  
+	disabled?: boolean;  
 }
 
 interface CustomRadioGroupProps {
 	options: RadioOption[];
-	value?: string; // Управляемое значение (контролируемый)
-	defaultValue?: string; // Начальное значение (неконтролируемый)
-	name: string; // Имя группы (для семантики)
-	onChange?: (value: string) => void; // Обработчик изменения
-	className?: string; // Дополнительные стили контейнера
-	optionClassName?: string; // Дополнительные стили для каждого варианта
+	value?: string;  
+	defaultValue?: string;  
+	name: string;  
+	onChange?: (value: string) => void; 
+	className?: string;  
+	optionClassName?: string;  
 }
 
 const CustomRadioGroup: React.FC<CustomRadioGroupProps> = ({

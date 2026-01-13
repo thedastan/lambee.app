@@ -1,4 +1,4 @@
-// BasketCards.tsx
+// SubscriptionsCards.tsx
 
 import React from "react";
 import Image from "next/image";
@@ -7,31 +7,26 @@ import { Description } from "@/components/ui/text/Description";
 import { FiMinus } from "react-icons/fi";
 import { VscAdd } from "react-icons/vsc";
 import DeleteSvg from "@/assets/svg/delete";
-
 import basket from "@/assets/images/basket.png";
-
-// Убедитесь, что CartItem импортирован правильно
-import { CartItem } from "@/redux/hooks/useCart"; // ← рекомендуется использовать общий тип
+import { CartItem } from "@/redux/hooks/useCart";
 import { Title } from "@/components/ui/text/Title";
 
-interface BasketCardsProps {
+interface SubscriptionsCardsProps {
 	oneTimeItems: CartItem[];
 	updateQuantity: (id: number, quantity: number) => void;
 	removeItem: (id: number) => void;
 }
 
-const BasketCards: React.FC<BasketCardsProps> = ({
+const SubscriptionsCards: React.FC<SubscriptionsCardsProps> = ({
 	oneTimeItems,
 	updateQuantity,
 	removeItem,
 }) => {
 	const formatPrice = (price: number) => `${price} сом`;
 
-	 
-
 	if (oneTimeItems.length === 0) {
 		return (
-			<div className="w-full h-[200px] relative ">
+			<div className="w-full h-[200px] relative">
 				<Image fill objectFit="contain" src={basket} alt="img" />
 			</div>
 		);
@@ -62,12 +57,6 @@ const BasketCards: React.FC<BasketCardsProps> = ({
 									<TitleComponent className="!font-[400] mt-1">
 										{item.productTitle}
 									</TitleComponent>
-									{/* <Description className="text-[#515151] text-[13px] mt-1">
-										Размер: {item.variantTitle} •{" "}
-										{item.type === "subscription"
-											? "Подписка"
-											: "Разовый заказ"}
-									</Description> */}
 								</div>
 								<button onClick={() => removeItem(item.id)} className="p-1">
 									<DeleteSvg />
@@ -88,17 +77,24 @@ const BasketCards: React.FC<BasketCardsProps> = ({
 								)}
 							</Description>
 
-							<div className="flex items-center  gap-2">
+							<div className="flex items-center gap-2">
 								<div className="border border-[#E4E4E7] w-full max-w-[90px] rounded-[4px] flex justify-between items-center">
 									<button
-										onClick={() => updateQuantity(item.id, item.quantity - 1)}
-										className="border-r w-[28px] h-[28px] flex justify-center items-center text-[#515151]">
+										onClick={
+											() =>
+												item.quantity > 1
+													? updateQuantity(item.id, item.quantity - 1)
+													: removeItem(item.id) // ← Удаление при quantity = 1
+										}
+										className="border-r w-[28px] h-[28px] flex justify-center items-center text-[#515151]"
+										aria-label="Уменьшить количество">
 										<FiMinus />
 									</button>
 									<Description>{item.quantity}</Description>
 									<button
 										onClick={() => updateQuantity(item.id, item.quantity + 1)}
-										className="border-l w-[28px] h-[28px] flex justify-center items-center text-[#515151]">
+										className="border-l w-[28px] h-[28px] flex justify-center items-center text-[#515151]"
+										aria-label="Увеличить количество">
 										<VscAdd />
 									</button>
 								</div>
@@ -116,10 +112,16 @@ const BasketCards: React.FC<BasketCardsProps> = ({
 
 						<button className="text-[#515151]">Изменить</button>
 					</div>
+
+					{item.quantity >= 4 && (
+								<Description className="text-[#515151] text-[14px] font-[400] mt-1 bg-[#DCFCE7] border border-[#22C55E] rounded-[8px] w-full p-4">
+									4 упаковки в месяц вполне оптимально для данного товара. Вы можете взять больше или меньше — как вам удобно.
+								</Description>
+							)}
 				</div>
 			))}
 		</section>
 	);
 };
 
-export default BasketCards;
+export default SubscriptionsCards;

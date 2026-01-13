@@ -12,27 +12,28 @@ import { useCart } from "@/redux/hooks/useCart";
 const PaymentComponents = () => {
 	const [selectedAddressLabel, setSelectedAddressLabel] = useState<string>("Не выбран");
 	const [isLoading, setIsLoading] = useState(false);
-	const { cart, clear } = useCart(); // ← получаем корзину и метод очистки
+	const { cart, clear } = useCart();
 
-	// Обработчик изменения адреса из PaymentForma
 	const handleAddressChange = (label: string) => {
 		setSelectedAddressLabel(label);
 	};
 
-	// Обработчик оформления заказа
 	const handleCheckout = async () => {
 		if (!selectedAddressLabel || selectedAddressLabel === "Не выбран") {
 			toast.error("Пожалуйста, выберите адрес доставки", { position: "top-center" });
 			return;
 		}
 
-		if (cart.length === 0) {
-			toast.error("Корзина пуста", { position: "top-center" });
+		// 🔥 Фильтруем только "one-time" товары
+		const oneTimeItems = cart.filter((item) => item.type === "one-time");
+
+		if (oneTimeItems.length === 0) {
+			toast.error("Нет товаров для разового заказа", { position: "top-center" });
 			return;
 		}
 
-		// Формируем payload для отправки
-		const items = cart.map((item) => ({
+		// Формируем payload только из one-time товаров
+		const items = oneTimeItems.map((item) => ({
 			product_variant_id: item.variantId,
 			quantity: item.quantity,
 		}));
@@ -48,9 +49,7 @@ const PaymentComponents = () => {
 			const paymentUrl = response.data?.detail;
 
 			if (typeof paymentUrl === "string" && paymentUrl.trim().startsWith("http")) {
-				// Успешно → очищаем корзину
-				clear();
-				// Редирект на оплату
+				clear(); // ← очищает всю корзину (включая подписки, если они были)
 				window.location.href = paymentUrl;
 			} else {
 				toast.error("Некорректный ответ от сервера: не получен URL оплаты");
