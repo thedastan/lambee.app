@@ -353,7 +353,7 @@ const PaymentForma = ({ onAddressChange }: PaymentFormaProps) => {
 										}`}
 									></span>
 								</span>
-								Бонусы - 500
+								Бонусы - 0
 							</label>
 						</div>
 					</div>
