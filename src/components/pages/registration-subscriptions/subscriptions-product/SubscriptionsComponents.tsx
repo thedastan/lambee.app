@@ -1,20 +1,19 @@
-// BasketComponents.tsx
 "use client";
 
-import BasketCards from "./basket-cards/BasketCards";
-import AlsoBuy from "./also-buy/AlsoBuy";
-import Total from "./total/Total";
 import { useCart } from "@/redux/hooks/useCart";
+import SubscriptionsAlsoBuy from "./also-buy/SubscriptionsAlsoBuy";
+import SubscriptionsTotal from "./total/SubscriptionsTotal";
+import SubscriptionsCards from "./subscriptions-cards/SubscriptionsCards";
 
 
-interface BasketComponentsProps {
+interface SubscriptionsComponentsProps {
 	onProceedToCheckout: () => void;
 }
 
-const BasketComponents: React.FC<BasketComponentsProps> = ({ onProceedToCheckout }) => {
-	const { cart, updateQuantity, removeItem, getTotalAmount, getSavedAmount } = useCart();
+const SubscriptionsComponents: React.FC<SubscriptionsComponentsProps> = ({ onProceedToCheckout }) => {
+	const { cart, updateQuantity, removeItem } = useCart();
 
-	const oneTimeItems = cart.filter((item) => item.type === "one-time");
+	const oneTimeItems = cart.filter((item) => item.type === "subscription");
 
 
 	// Считаем итог только по разовым заказам
@@ -29,21 +28,21 @@ const BasketComponents: React.FC<BasketComponentsProps> = ({ onProceedToCheckout
 	return (
 		<div className="md:p-4 bg-white md:bg-transparent p-0 flex flex-col md:flex-row justify-between items-start h-full gap-8 relative">
 			<div className="bg-white md:p-4 p-0 md:w-[50%] w-full">
-				<BasketCards
+				<SubscriptionsCards
 					oneTimeItems={oneTimeItems}
 					updateQuantity={updateQuantity}
 					removeItem={removeItem}
 				/>
 				<div className="md:block hidden">
-					<AlsoBuy />
+					<SubscriptionsAlsoBuy />
 				</div>
 			</div>
 
 			<div className="md:w-[50%] w-full bg-[#F9F4EC] md:bg-transparent">
 				<div className="block md:hidden">
-					<AlsoBuy />
+					<SubscriptionsAlsoBuy />
 				</div>
-				<Total
+				<SubscriptionsTotal
 					totalAmount={totalAmount}
 					savedAmount={savedAmount}
 					onProceedToCheckout={onProceedToCheckout}
@@ -53,4 +52,4 @@ const BasketComponents: React.FC<BasketComponentsProps> = ({ onProceedToCheckout
 	);
 };
 
-export default BasketComponents;
+export default SubscriptionsComponents;

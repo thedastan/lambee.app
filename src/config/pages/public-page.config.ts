@@ -3,6 +3,7 @@ class PublicPage {
 	HOME = "/";
 	NOTICE = "/notice";
 	BASKET = "/basket";
+	REGISTRATION_SUBSCRIPTION = "/registration-subscriptions";
 	MYORDERS = "/my-orders";
 	FOLLOW = "/follow";
 

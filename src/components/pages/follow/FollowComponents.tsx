@@ -4,101 +4,82 @@
 import image from "@/assets/images/Diapers.png";
 import FollowCard from "@/components/ui/cards/FollowCard";
 import PageHeader from "@/components/ui/heading/PageHeader";
+import { useSubscriptions } from "@/redux/hooks/useSubscriptions";
 import { useEffect, useState } from "react";
 
 const FollowComponents = () => {
-	const data = [
-		{
-			id: 1,
-			image: image,
-			title: "Подгузники",
-			status: "В обработке",
-			suspended: "Подписка приостановлена",
-			diapers: 50,
-			panties: 50,
-			payment: "Finik",
-			address: "Горького 1/2",
-			next_delivery: "17.10.2025 до 15:00",
-			old_price: 600,
-			new_price: 500,
-		},
-		{
-			id: 2,
-			image: image,
-			title: "Салфетки",
-			suspended: "",
-			status: "В пути",
-			diapers: 50,
-			panties: 50,
-			payment: "Finik",
-			address: "Горького 1/2",
-			next_delivery: "17.10.2025 до 15:00",
-			old_price: 600,
-			new_price: 500,
-		},
-		{
-			id: 3,
-			image: image,
-			title: "Трусики",
-			suspended: "",
-			status: "В пути",
-			diapers: 50,
-			panties: 50,
-			payment: "Finik",
-			address: "Горького 1/2",
-			next_delivery: "17.10.2025 до 15:00",
-			old_price: 600,
-			new_price: 500,
-		},
-	];
 
-	const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+	// const [openMenuId, setOpenMenuId] = useState<number | null>(null);
 
-	useEffect(() => {
-		const handleClickOutside = (e: MouseEvent) => {
-			const target = e.target as HTMLElement;
-			if (
-				target.closest('[data-menu-trigger="true"]') ||
-				target.closest('[data-menu-content="true"]')
-			) {
-				return;
-			}
-			setOpenMenuId(null);
-		};
+	const { subscriptions, isLoading } = useSubscriptions();
 
-		document.addEventListener("click", handleClickOutside);
-		return () => {
-			document.removeEventListener("click", handleClickOutside);
-		};
-	}, []);
+	console.log(subscriptions,"subscriptions");
+	
+	if (isLoading) return <div>Загрузка...</div>;
 
-	const toggleMenu = (id: number) => {
-		setOpenMenuId(openMenuId === id ? null : id);
-	};
+	// useEffect(() => {
+	// 	const handleClickOutside = (e: MouseEvent) => {
+	// 		const target = e.target as HTMLElement;
+	// 		if (
+	// 			target.closest('[data-menu-trigger="true"]') ||
+	// 			target.closest('[data-menu-content="true"]')
+	// 		) {
+	// 			return;
+	// 		}
+	// 		setOpenMenuId(null);
+	// 	};
 
-	const handleAction = (action: string, itemId: number) => {
-		console.log(`Действие: ${action}, ID: ${itemId}`);
-		setOpenMenuId(null);
-	};
+	// 	document.addEventListener("click", handleClickOutside);
+	// 	return () => {
+	// 		document.removeEventListener("click", handleClickOutside);
+	// 	};
+	// }, []);
+
+	// const toggleMenu = (id: number) => {
+	// 	setOpenMenuId(openMenuId === id ? null : id);
+	// };
+
+	// const handleAction = (action: string, itemId: number) => {
+	// 	console.log(`Действие: ${action}, ID: ${itemId}`);
+	// 	setOpenMenuId(null);
+	// };
 
 	return (
 		<section>
-			<PageHeader
+			{/* <PageHeader
 				title="Мои подписки"
 				description="Экономьте до 25% с нашими пакетами"
 			/>
 
 			<div className="grid md:grid-cols-3 grid-cols-1 gap-4 p-4">
-				{data.map((el) => (
-					<FollowCard
-						key={el.id}
-						data={el}
-						isOpenMenu={openMenuId === el.id}
-						onToggleMenu={toggleMenu}
-						onAction={handleAction}
-					/>
-				))}
-			</div>
+				{data
+					? [data].map((el) => (
+							<FollowCard
+								key={el.id}
+								data={el}
+								isOpenMenu={openMenuId === el.id}
+								onToggleMenu={toggleMenu}
+								onAction={handleAction}
+							/>
+					  ))
+					: null}
+			</div> */}
+
+<div>
+			<h2>Мои подписки</h2>
+			{subscriptions.length === 0 ? (
+				<p>У вас нет активных подписок</p>
+			) : (
+				subscriptions.map((sub) => (
+					<div key={sub.id} className="border p-4 mb-3">
+						<p>Адрес: {sub.address}</p>
+						<p>Сумма: {sub.total_amount} сом</p>
+						<p>Статус: {sub.status}</p>
+						<p>Создано: {new Date(sub.created_at).toLocaleDateString("ru-RU")}</p>
+					</div>
+				))
+			)}
+		</div>
 		</section>
 	);
 };

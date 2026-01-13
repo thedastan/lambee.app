@@ -1,33 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect, useMemo } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Description } from "@/components/ui/text/Description";
 import { Title } from "@/components/ui/text/Title";
-import { Detail, DetailPro, Variant } from "@/redux/models/product.model";
+import { DetailPro, Variant } from "@/redux/models/product.model";
 import Image from "next/image";
 import { TitleComponent } from "@/components/ui/text/TitleComponent";
-import { IoStarSharp } from "react-icons/io5";
+import { IoCheckmark, IoStarSharp } from "react-icons/io5";
 import { useProductReviews } from "@/redux/hooks/product";
 import Button from "@/components/ui/button/Button";
 import { toast } from "alert-go";
-import 'alert-go/dist/notifier.css';
+import "alert-go/dist/notifier.css";
 import { useCart } from "@/redux/hooks/useCart";
-
-interface CartItem {
-	id: number;
-	variantId: number;
-	variantTitle: string;
-	type: "one-time" | "subscription";
-	price: number;
-	quantity: number;
-	itemsCount: number;
-	subscriptionPrice?: number;
-	discountPercent?: number;
-	productId: number;
-	productTitle: string;
-	
-}
+import { PAGE } from "@/config/pages/public-page.config";
 
 interface SizeDetailProps {
 	product: DetailPro;
@@ -35,78 +21,118 @@ interface SizeDetailProps {
 	onVariantChange: (variant: Variant) => void;
 }
 
-const SizeDetail = ({ product, productId, onVariantChange }: SizeDetailProps) => {
+const SizeDetail = ({
+	product,
+	productId,
+	onVariantChange,
+}: SizeDetailProps) => {
 	const searchParams = useSearchParams();
 	const initialVariantFromUrl = searchParams.get("variant");
-
+	const router = useRouter();
 	const { data } = useProductReviews(productId);
 	const allReviews = data?.detail.results || [];
 	const reviewCount = allReviews.length;
 
-	const [selectedVariantId, setSelectedVariantId] = useState<number | null>(() => {
-		if (initialVariantFromUrl) {
-			const id = Number(initialVariantFromUrl);
-			if (!isNaN(id) && product.variants.some(v => v.id === id)) {
-				return id;
+	const [selectedVariantId, setSelectedVariantId] = useState<number | null>(
+		() => {
+			if (initialVariantFromUrl) {
+				const id = Number(initialVariantFromUrl);
+				if (!isNaN(id) && product.variants.some((v) => v.id === id)) {
+					return id;
+				}
 			}
+			return product.variants[0]?.id || null;
 		}
-		return product.variants[0]?.id || null;
-	});
+	);
 
-	const [selectedOrderType, setSelectedOrderType] = useState<"one-time" | "subscription" | null>(null);
+	const [selectedOrderType, setSelectedOrderType] = useState<
+		"one-time" | "subscription" | null
+	>(null);
 
-	const selectedVariant = product.variants.find((v) => v.id === selectedVariantId);
-	const { addItem } = useCart();
+	const selectedVariant = product.variants.find(
+		(v) => v.id === selectedVariantId
+	);
 
-	// Уведомляем родителя о смене варианта
+	const { cart, addItem } = useCart();
+
+	// 🔥 Проверяем наличие В КОРЗИНЕ для ЛЮБОГО типа (включая subscription)
+	const isInCart = useMemo(() => {
+		if (!selectedVariant || !selectedOrderType) return false;
+		return cart.some(
+			(item) =>
+				item.productId === productId &&
+				item.variantId === selectedVariant.id &&
+				item.type === selectedOrderType
+		);
+	}, [cart, productId, selectedVariant, selectedOrderType]);
+
 	useEffect(() => {
 		if (selectedVariant) {
 			onVariantChange(selectedVariant);
 		}
-	}, [selectedVariantId]);
+	}, [selectedVariantId, selectedVariant, onVariantChange]);
 
-	const handleAddToCart = () => {
-		if (selectedVariantId === null || selectedOrderType === null || !selectedVariant) {
-			toast.warning("Пожалуйста, выберите размер и тип заказа", { position: "top-center" });
+	const handleAction = () => {
+		if (
+			selectedVariantId === null ||
+			selectedOrderType === null ||
+			!selectedVariant
+		) {
+			toast.warning("Пожалуйста, выберите размер и тип заказа", {
+				position: "top-center",
+			});
 			return;
 		}
-	
+
+		// 🔁 Если товар УЖЕ в корзине — переходим на нужную страницу
+		if (isInCart) {
+			if (selectedOrderType === "subscription") {
+				router.push(PAGE.REGISTRATION_SUBSCRIPTION);
+			} else {
+				router.push(PAGE.BASKET);
+			}
+			return;
+		}
+
+		// ➕ Добавляем в корзину (и для one-time, и для subscription)
 		const priceNum = Number(selectedVariant.price);
-		const subPriceNum = selectedVariant.subscription_price
-			? Number(selectedVariant.subscription_price)
-			: undefined;
-	
-		if (isNaN(priceNum) || (subPriceNum !== undefined && isNaN(subPriceNum))) {
-			toast.error("Ошибка: некорректная цена товара", { position: "top-center" });
+		if (isNaN(priceNum)) {
+			toast.error("Ошибка: некорректная цена товара", {
+				position: "top-center",
+			});
 			return;
 		}
-	
-		// Получаем URL первого изображения варианта (или пустую строку)
-		const imageUrl = selectedVariant.images.length > 0 
-			? selectedVariant.images[0].url.trim() 
-			: "";
-	
+
+		const imageUrl =
+			selectedVariant.images.length > 0
+				? selectedVariant.images[0].url.trim()
+				: "";
+
 		const newItem = {
 			productId: productId,
 			productTitle: product.title,
 			variantId: selectedVariant.id,
 			variantTitle: selectedVariant.title,
-			type: selectedOrderType,
-			price: selectedOrderType === "subscription" && subPriceNum !== undefined
-				? subPriceNum
-				: priceNum,
+			type: selectedOrderType, // "one-time" или "subscription"
+			price: priceNum,
 			itemsCount: selectedVariant.items_count,
-			subscriptionPrice: subPriceNum,
+			subscriptionPrice: selectedVariant.subscription_price
+				? Number(selectedVariant.subscription_price)
+				: undefined,
 			discountPercent: selectedVariant.discount_percent,
 			quantity: 1,
-			imageUrl, // ← добавляем
+			imageUrl,
 		};
-	
+
 		try {
 			addItem(newItem);
-			toast.success("Товар добавлен в корзину!", { position: "top-center" });
+			toast.success("Товар добавлен в корзину", {
+				position: "top-center",
+			});
 		} catch (err: any) {
-			toast.warning(err.message || "Товар уже в корзине", { position: "top-center" });
+			toast.warning(err.message || "Товар уже в корзине", {
+				position: "top-center",
+			});
 		}
 	};
 
@@ -114,10 +140,39 @@ const SizeDetail = ({ product, productId, onVariantChange }: SizeDetailProps) =>
 		setSelectedVariantId(variantId);
 	};
 
+	// 📝 Текст кнопки
+	const getButtonText = () => {
+		if (!selectedOrderType) return "Выберите тип заказа";
+
+		if (isInCart) {
+			return selectedOrderType === "subscription"
+				? "Перейти к оформлению"
+				: "Товар в корзине";
+		}
+
+		return selectedOrderType === "subscription"
+			? "Оформить по подписке"
+			: "Купить сейчас";
+	};
+
+	// 🎨 Стиль кнопки
+	const getButtonClassName = () => {
+		if (!selectedOrderType) {
+			return "w-full max-w-full opacity-50 cursor-not-allowed";
+		}
+
+		if (isInCart) {
+			return selectedOrderType === "subscription"
+				? "w-full bg-[#0071E3] text-white max-w-full"
+				: "w-full bg-[#8f8f8f] text-white max-w-full";
+		}
+
+		return "w-full max-w-full";
+	};
+
 	return (
 		<section className="p-4 w-full bg-white rounded-[8px] border">
 			<TitleComponent>Выберите свой размер:</TitleComponent>
-
 			<div className="w-full grid grid-cols-2 gap-2 mt-4">
 				{product.variants.map((el) => (
 					<div
@@ -125,21 +180,18 @@ const SizeDetail = ({ product, productId, onVariantChange }: SizeDetailProps) =>
 						onClick={() => handleSelectVariant(el.id)}
 						className={`border flex flex-col gap-1 rounded-[8px] p-3 cursor-pointer transition-all duration-200 ${
 							selectedVariantId === el.id ? "bg-[#0071E3] text-white" : ""
-						}`}
-					>
+						}`}>
 						<Title className="font-semibold">{el.title}</Title>
 						<Description
 							className={`transition-all duration-200 ${
 								selectedVariantId === el.id ? "text-white" : "text-[#515151]"
-							}`}
-						>
+							}`}>
 							{el.weight_range} кг
 						</Description>
 						<Description
 							className={`transition-all duration-200 ${
 								selectedVariantId === el.id ? "text-white" : "text-[#515151]"
-							}`}
-						>
+							}`}>
 							{el.items_count} шт
 						</Description>
 					</div>
@@ -150,31 +202,31 @@ const SizeDetail = ({ product, productId, onVariantChange }: SizeDetailProps) =>
 				<div className="w-full p-4 border rounded-[8px] flex flex-col gap-2 mt-4">
 					<Title className="font-[600]">{product.title}</Title>
 					<Description className="flex items-center gap-1">
-						<IoStarSharp />
-						<IoStarSharp />
-						<IoStarSharp />
-						<IoStarSharp />
-						<IoStarSharp />
+						<IoStarSharp className="text-gray-400" />
+						<IoStarSharp className="text-gray-400" />
+						<IoStarSharp className="text-gray-400" />
+						<IoStarSharp className="text-gray-400" />
+						<IoStarSharp className="text-gray-400" />
 						<span className="text-[#515151] ml-2">
 							{reviewCount.toLocaleString()} отзывов
 						</span>
 					</Description>
-					<Description className="w-full max-w-[280px]">{product.description}</Description>
-
+					<Description className="w-full max-w-[280px]">
+						{product.description}
+					</Description>
 					<div className="border-b w-full mt-2" />
-
-					<Description className="text-[#141414] mt-2">Выберите тип заказа:</Description>
-
+					<Description className="text-[#141414] mt-2">
+						Выберите тип заказа:
+					</Description>
 					<div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
 						{/* Подписка */}
 						<div
 							onClick={() => setSelectedOrderType("subscription")}
 							className={`p-3 rounded-[8px] relative border cursor-pointer transition-all duration-200 flex flex-col gap-2 ${
 								selectedOrderType === "subscription"
-									? "bg-[#0071E3] text-white"
-									: ""
-							}`}
-						>
+									? "bg-[#0071E3] text-white border-[#0071E3]"
+									: "border-gray-300 hover:border-[#0071E3]"
+							}`}>
 							<Title className="font-[600] w-full max-w-[185px]">
 								По подписке - {selectedVariant.items_count} шт
 							</Title>
@@ -184,9 +236,10 @@ const SizeDetail = ({ product, productId, onVariantChange }: SizeDetailProps) =>
 								</Title>
 								<span
 									className={`line-through ml-1 transition-all duration-200 ${
-										selectedOrderType === "subscription" ? "text-white" : "text-gray-500"
-									}`}
-								>
+										selectedOrderType === "subscription"
+											? "text-white"
+											: "text-gray-500"
+									}`}>
 									{selectedVariant.price} сом
 								</span>
 							</div>
@@ -195,8 +248,7 @@ const SizeDetail = ({ product, productId, onVariantChange }: SizeDetailProps) =>
 									selectedOrderType === "subscription"
 										? "bg-[#ffffff] text-[#000000]"
 										: "bg-[#0071E3] text-[#ffffff]"
-								}`}
-							>
+								}`}>
 								Скидка {selectedVariant.discount_percent}%
 							</Title>
 						</div>
@@ -206,30 +258,34 @@ const SizeDetail = ({ product, productId, onVariantChange }: SizeDetailProps) =>
 							onClick={() => setSelectedOrderType("one-time")}
 							className={`p-3 rounded-[8px] relative cursor-pointer transition-all duration-200 border ${
 								selectedOrderType === "one-time"
-									? "bg-[#0071E3] text-white"
-									: "border-gray-300"
-							}`}
-						>
+									? "bg-[#0071E3] text-white border-[#0071E3]"
+									: "border-gray-300 hover:border-[#0071E3]"
+							}`}>
 							<div className="flex justify-between">
 								<Description className="font-[600]">Разовый заказ</Description>
 								<Description>{selectedVariant.price} сом</Description>
 							</div>
-							<div className="w-full mt-2 max-w-[90px] rounded-[4px] flex justify-center items-center">
+							<div className="w-full mt-2 rounded-[4px] flex justify-start items-center">
 								<p
-									className={`transition-all duration-200 ${
-										selectedOrderType === "one-time" ? "text-white" : "text-gray-600"
-									}`}
-								>
-									{selectedVariant.items_count} шт
+									className={`transition-all flex gap-1 duration-200 ${
+										selectedOrderType === "one-time"
+											? "text-white"
+											: "text-gray-600"
+									}`}>
+									<IoCheckmark size={23} /> {selectedVariant.items_count} шт
 								</p>
 							</div>
 						</div>
 					</div>
 
-					<Title className="font-[600] text-center mt-2">Доставка в течение месяца</Title>
-					<Button onClick={handleAddToCart} className="w-full max-w-full">
-						Добавить в корзину
-					</Button>
+					<div className="mt-4">
+						<Button
+							onClick={handleAction}
+							disabled={!selectedOrderType}
+							className={getButtonClassName()}>
+							{getButtonText()}
+						</Button>
+					</div>
 				</div>
 			)}
 
@@ -238,12 +294,18 @@ const SizeDetail = ({ product, productId, onVariantChange }: SizeDetailProps) =>
 					{product.benefits.map((el, index) => (
 						<div
 							key={index}
-							className="flex flex-col justify-center items-center w-full max-w-full"
-						>
+							className="flex flex-col justify-center items-center w-full max-w-full">
 							<div className="bg-[#DCDCDC] relative overflow-hidden w-[40px] h-[40px] rounded-[8px]">
-								<Image fill style={{ objectFit: "cover" }} src={el.icon.trim()} alt="icon" />
+								<Image
+									fill
+									style={{ objectFit: "cover" }}
+									src={el.icon.trim()}
+									alt="icon"
+								/>
 							</div>
-							<Description className="text-[#515151] mt-2">{el.title}</Description>
+							<Description className="text-[#515151] mt-2">
+								{el.title}
+							</Description>
 						</div>
 					))}
 				</div>

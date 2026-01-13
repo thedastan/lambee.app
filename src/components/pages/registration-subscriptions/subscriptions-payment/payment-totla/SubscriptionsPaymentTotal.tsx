@@ -25,7 +25,7 @@ interface PaymentTotalProps {
 	isLoading?: boolean;
 }
 
-const PaymentTotal = ({ onCheckout, isLoading = false }: PaymentTotalProps) => {
+const SubscriptionsPaymentTotal = ({ onCheckout, isLoading = false }: PaymentTotalProps) => {
 	const [oneTimeItems, setOneTimeItems] = useState<CartItem[]>([]);
 	const [orderTotal, setOrderTotal] = useState(0);
 	const [deliveryCost, setDeliveryCost] = useState(0);
@@ -36,25 +36,26 @@ const PaymentTotal = ({ onCheckout, isLoading = false }: PaymentTotalProps) => {
 			try {
 				const raw = localStorage.getItem("cart");
 				if (!raw) {
-					setOneTimeItems([]);
+					setOneTimeItems([]); // ← можно переименовать в subscriptionItems
 					setOrderTotal(0);
 					setDeliveryCost(0);
 					setTotalWithDelivery(0);
 					return;
 				}
-
+	
 				const allItems: CartItem[] = JSON.parse(raw);
-
-				// 🔥 Фильтруем ТОЛЬКО разовые заказы
-				const oneTime = allItems.filter((item) => item.type === "one-time");
-
+	
+				// 🔥 Только подписки
+				const subscriptions = allItems.filter((item) => item.type === "subscription");
+	
 				let orderSum = 0;
-				oneTime.forEach((item) => {
-					orderSum += item.price * item.quantity; // для one-time всегда price
+				subscriptions.forEach((item) => {
+					const price = item.subscriptionPrice !== undefined ? item.subscriptionPrice : item.price;
+					orderSum += price * item.quantity;
 				});
-
-				const delivery = orderSum >= 15000 ? 0 : 0; // бесплатная доставка от 15000 сом
-				setOneTimeItems(oneTime);
+	
+				const delivery = orderSum >= 15000 ? 0 : 0;
+				setOneTimeItems(subscriptions); // ← лучше переименовать состояние
 				setOrderTotal(orderSum);
 				setDeliveryCost(delivery);
 				setTotalWithDelivery(orderSum + delivery);
@@ -66,7 +67,7 @@ const PaymentTotal = ({ onCheckout, isLoading = false }: PaymentTotalProps) => {
 				setTotalWithDelivery(0);
 			}
 		};
-
+	
 		loadCart();
 	}, []);
 
@@ -153,4 +154,4 @@ const PaymentTotal = ({ onCheckout, isLoading = false }: PaymentTotalProps) => {
 	);
 };
 
-export default PaymentTotal;
+export default SubscriptionsPaymentTotal;
