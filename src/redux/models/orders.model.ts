@@ -1,41 +1,40 @@
 // src/models/order.model.ts
 export interface IOrderItem {
-  product_id: number;
-  quantity: number;
-  price: number;
+	product_id: number;
+	quantity: number;
+	price: number;
 }
 
 export interface IOrder {
-  id: number;
-  type: string;
-  status: string;
-  address: string;
-  created_at: string;
-  items: IOrderItem[];
+	id: number;
+	type: string;
+	status: string;
+	address: string;
+	created_at: string;
+	items: IOrderItem[];
 }
 
 export interface IOrdersResponse {
-  detail: IOrder[];
+	detail: IOrder[];
 }
 
 export interface INotification {
-  title: string;
-  description: string;
-  created_at: string;
+	title: string;
+	description: string;
+	created_at: string;
 }
 
 export interface INotificationsResponse {
-  detail: INotification[];
+	detail: INotification[];
 }
 
 ///
 
 export interface ICreateOneTimeOrderPayload {
-  items: Item[]
-  address: string
-}
-
-export interface Item {
-  product_variant_id: number
-  quantity: number
+	items: {
+		product_variant_id: number;
+		quantity: number;
+	}[];
+	address: string;
+	payment_method: 'finik' | 'balance' | "bonuses";
 }

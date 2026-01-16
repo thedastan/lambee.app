@@ -6,8 +6,15 @@ export interface Detail {
 	id: number;
 	title: string;
 	description: string;
+	category: Category;
 	variants: IProductVariant[];
 	benefits: Benefit[];
+}
+
+export interface Category {
+	id: number;
+	title: string;
+	image: string;
 }
 
 export interface IProductVariant {
@@ -16,6 +23,8 @@ export interface IProductVariant {
 	sku: string;
 	weight_range: string;
 	items_count: number;
+	min_count_subscription: number;
+	min_count_one_time: number;
 	price: number;
 	subscription_price: number;
 	discount_percent: number;
@@ -31,8 +40,6 @@ export interface Benefit {
 	title: string;
 	icon: string;
 }
-
-///
 
 export interface IProductDetail {
 	detail: DetailPro;

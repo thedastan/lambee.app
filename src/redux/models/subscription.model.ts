@@ -1,9 +1,8 @@
-// src/redux/models/subscription.model.ts
-
 export interface ICreateSubscriptionPayload {
 	main_product_variant_id: number;
 	address: string;
-	deliveries: string[]; // ISO-даты: "2026-01-12T08:36:21.885Z"
+	deliveries: string[];
+	payment_method: 'finik' | 'balance'; // ← добавлено
 	items: {
 		product_variant_id: number;
 		quantity: number;
@@ -12,7 +11,7 @@ export interface ICreateSubscriptionPayload {
 }
 
 export interface ICreateSubscriptionResponse {
-	detail: string; // или более сложный объект, если API возвращает данные
+	detail: string; 
 }
 
 
@@ -20,11 +19,11 @@ export interface ISubscriptionItem {
 	product_variant_id: number;
 	quantity: number;
 	price: number;
-	apply_to: string; // или "each_cycle" | "first_cycle", если известны значения
+	apply_to: string; 
 }
 
 export interface IDelivery {
-	delivery_datetime: string; // ISO дата
+	delivery_datetime: string;  
 	status: string;
 }
 
@@ -33,7 +32,7 @@ export interface ISubscription {
 	status: string;
 	address: string;
 	total_amount: number;
-	created_at: string; // ISO дата
+	created_at: string;  
 	items: ISubscriptionItem[];
 	deliveries: IDelivery[];
 }

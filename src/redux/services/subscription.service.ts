@@ -1,6 +1,4 @@
-// src/redux/services/subscriptions.service.ts
-
-import { PRIVATE_API } from "@/api/interceptors"; // ← убедитесь, что PRIVATE_API использует авторизацию
+import { PRIVATE_API } from "@/api/interceptors";  
 import { ICreateSubscriptionPayload, ICreateSubscriptionResponse, ISubscriptionsResponse } from "../models/subscription.model";
 
 class SubscriptionsService {

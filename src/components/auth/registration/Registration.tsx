@@ -112,7 +112,7 @@ const Registration = () => {
 
 			toast.success("Регистрация завершена!", { position: "top-center" });
 
-			router.push(PAGE.AUTH_MINI_SURVEY);
+			router.push(PAGE.HOME);
 		} catch (err: unknown) {
 			let msg = "Неверный код";
 			if (

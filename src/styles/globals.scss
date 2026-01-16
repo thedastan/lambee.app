@@ -144,23 +144,29 @@ html {
 }
 
 .notify.warning {
-	background: #f59e0b !important;
+	background: #000000cc !important;
 	color: #ffffff !important;
 	text-align: center;
 	width: 100% !important;
 	max-width: 300px !important;
 	min-width: 350px !important;
+	backdrop-filter: blur(10px);
+ 
 }
 
 .notify.success {
 	text-align: center;
+	background: #000000cc !important;
+	color: #ffffff !important;
 }
 
 .notify.error {
 	text-align: center;
+	background: #000000cc !important;
+	color: #ffffff !important;
 }
 
 
 .react-datepicker-wrapper {
 	width: 100%;
-}
+}	

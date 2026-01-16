@@ -12,7 +12,6 @@ import basket from "@/assets/images/basket.png";
 
 // Убедитесь, что CartItem импортирован правильно
 import { CartItem } from "@/redux/hooks/useCart"; // ← рекомендуется использовать общий тип
-import { Title } from "@/components/ui/text/Title";
 
 interface BasketCardsProps {
 	oneTimeItems: CartItem[];
@@ -26,8 +25,6 @@ const BasketCards: React.FC<BasketCardsProps> = ({
 	removeItem,
 }) => {
 	const formatPrice = (price: number) => `${price} сом`;
-
-	 
 
 	if (oneTimeItems.length === 0) {
 		return (
@@ -62,12 +59,6 @@ const BasketCards: React.FC<BasketCardsProps> = ({
 									<TitleComponent className="!font-[400] mt-1">
 										{item.productTitle}
 									</TitleComponent>
-									{/* <Description className="text-[#515151] text-[13px] mt-1">
-										Размер: {item.variantTitle} •{" "}
-										{item.type === "subscription"
-											? "Подписка"
-											: "Разовый заказ"}
-									</Description> */}
 								</div>
 								<button onClick={() => removeItem(item.id)} className="p-1">
 									<DeleteSvg />
@@ -91,7 +82,13 @@ const BasketCards: React.FC<BasketCardsProps> = ({
 							<div className="flex items-center  gap-2">
 								<div className="border border-[#E4E4E7] w-full max-w-[90px] rounded-[4px] flex justify-between items-center">
 									<button
-										onClick={() => updateQuantity(item.id, item.quantity - 1)}
+										onClick={() => {
+											if (item.quantity <= 1) {
+												removeItem(item.id);
+											} else {
+												updateQuantity(item.id, item.quantity - 1);
+											}
+										}}
 										className="border-r w-[28px] h-[28px] flex justify-center items-center text-[#515151]">
 										<FiMinus />
 									</button>

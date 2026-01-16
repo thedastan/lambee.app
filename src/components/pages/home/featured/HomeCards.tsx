@@ -104,11 +104,9 @@ const HomeCards = () => {
 	return (
 		<section className="pb-10 px-4">
 			<TitleComponent className="w-full md:max-w-full pb-2">
-				Рекомендовано для вашего ребёнка
+			Каталог товаров
 			</TitleComponent>
-			<Description className="!text-[#515151] pb-4">
-				Размер подобран по возрасту и весу
-			</Description>
+			 
 
 			<div className="grid md:grid-cols-2 grid-cols-1 gap-2">
 				{allVariants.map(({ product, variant }) => {
@@ -129,8 +127,8 @@ const HomeCards = () => {
 										alt={`${product.title} ${variant.title}`}
 									/>
 								</div>
-								<div className="w-[138px] flex flex-col gap-1">
-									<Title>{product.title}, {variant.title}</Title>
+								<div className="max-w-[138px] w-full flex flex-col gap-1">
+									<Title >{product.title}, {variant.title}</Title>
 									<Description className="text-[#515151]">По подписке</Description>
 									<Description className="text-[#515151]">
 										Количество: {variant.items_count} шт

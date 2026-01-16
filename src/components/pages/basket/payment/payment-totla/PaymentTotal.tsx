@@ -106,6 +106,7 @@ const PaymentTotal = ({ onCheckout, isLoading = false }: PaymentTotalProps) => {
 									{item.productTitle} - <span className="font-medium">{item.variantTitle}</span>
 								</Description>
 								<Description className="text-[#515151]">Разовый заказ</Description>
+								<Description className="text-[#515151]">{item.itemsCount * item.quantity} шт</Description>
 							</div>
 						</div>
 						<Description>{formatPrice(totalPrice)}</Description>

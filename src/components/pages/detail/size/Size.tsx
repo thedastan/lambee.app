@@ -21,7 +21,7 @@ interface SizeDetailProps {
 	onVariantChange: (variant: Variant) => void;
 }
 
-const SizeDetail = ({
+const SizeDetail = ({   
 	product,
 	productId,
 	onVariantChange,
@@ -44,6 +44,8 @@ const SizeDetail = ({
 			return product.variants[0]?.id || null;
 		}
 	);
+
+	  
 
 	const [selectedOrderType, setSelectedOrderType] = useState<
 		"one-time" | "subscription" | null
@@ -126,6 +128,13 @@ const SizeDetail = ({
 
 		try {
 			addItem(newItem);
+		
+			// 🔥 ЕСЛИ ПОДПИСКА — СРАЗУ ПЕРЕХОДИМ
+			if (selectedOrderType === "subscription") {
+				router.push(PAGE.REGISTRATION_SUBSCRIPTION);
+				return;
+			}
+		
 			toast.success("Товар добавлен в корзину", {
 				position: "top-center",
 			});
@@ -134,6 +143,7 @@ const SizeDetail = ({
 				position: "top-center",
 			});
 		}
+		
 	};
 
 	const handleSelectVariant = (variantId: number) => {
@@ -146,7 +156,7 @@ const SizeDetail = ({
 
 		if (isInCart) {
 			return selectedOrderType === "subscription"
-				? "Перейти к оформлению"
+				? "Оформить по подписке"
 				: "Товар в корзине";
 		}
 
@@ -228,11 +238,11 @@ const SizeDetail = ({
 									: "border-gray-300 hover:border-[#0071E3]"
 							}`}>
 							<Title className="font-[600] w-full max-w-[185px]">
-								По подписке - {selectedVariant.items_count} шт
+								По подписке
 							</Title>
 							<div className="flex items-center gap-1">
 								<Title className="font-medium">
-									{selectedVariant.subscription_price} сом в месяц
+									{selectedVariant.subscription_price} сом
 								</Title>
 								<span
 									className={`line-through ml-1 transition-all duration-200 ${
@@ -251,9 +261,27 @@ const SizeDetail = ({
 								}`}>
 								Эконом {selectedVariant.discount_percent}%
 							</Title>
+
+							<div className="flex flex-col gap-1">
+								<Description className="flex gap-2">
+									<IoCheckmark size={20} /> - 10% от общей суммы
+								</Description>
+								<Description className="flex gap-2">
+									<IoCheckmark size={20} /> Получаете весь товар сразу
+								</Description>{" "}
+								<Description className="flex gap-2">
+									<IoCheckmark size={20} /> Бесплатная доставка до двери
+								</Description>{" "}
+								<Description className="flex gap-2">
+									<IoCheckmark size={20} /> Планируйте покупки: 3 или 6 недель
+								</Description>{" "}
+								<Description className="flex gap-2">
+									<IoCheckmark size={20} /> Управление подпиской в личном кабинете
+								</Description>
+							</div>
 						</div>
 
-						{/* Разовый заказ */}
+						{/* Разовая покупка */}
 						<div
 							onClick={() => setSelectedOrderType("one-time")}
 							className={`p-3 rounded-[8px] relative cursor-pointer transition-all duration-200 border ${
@@ -262,18 +290,12 @@ const SizeDetail = ({
 									: "border-gray-300 hover:border-[#0071E3]"
 							}`}>
 							<div className="flex justify-between">
-								<Description className="font-[600]">Разовый заказ</Description>
-								<Description>{selectedVariant.price} сом</Description>
+								<Description className="font-[600]">
+									Разовая покупка
+								</Description>
 							</div>
 							<div className="w-full mt-2 rounded-[4px] flex justify-start items-center">
-								<p
-									className={`transition-all flex gap-1 duration-200 ${
-										selectedOrderType === "one-time"
-											? "text-white"
-											: "text-gray-600"
-									}`}>
-									<IoCheckmark size={23} /> {selectedVariant.items_count} шт
-								</p>
+								<Description>{selectedVariant.price} сом</Description>
 							</div>
 						</div>
 					</div>

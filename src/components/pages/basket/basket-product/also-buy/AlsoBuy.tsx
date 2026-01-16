@@ -2,15 +2,11 @@
 
 import { Description } from "@/components/ui/text/Description";
 import Image from "next/image";
-import { TitleComponent } from "@/components/ui/text/TitleComponent";
-import { IoStarSharp } from "react-icons/io5";
-import { Title } from "@/components/ui/text/Title";
 import { useProduct } from "@/redux/hooks/product";
 import { useCart } from "@/redux/hooks/useCart"; // ← убедитесь, что путь корректен
 import { toast } from "alert-go";
 import "alert-go/dist/notifier.css";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
 
 const AlsoBuy = () => {
 	const { data } = useProduct();
@@ -35,7 +31,8 @@ const AlsoBuy = () => {
 			return;
 		}
 
-		const imageUrl = variant.images.length > 0 ? variant.images[0].url.trim() : "";
+		const imageUrl =
+			variant.images.length > 0 ? variant.images[0].url.trim() : "";
 
 		const newItem = {
 			productId: product.id,
@@ -65,14 +62,12 @@ const AlsoBuy = () => {
 
 	return (
 		<section className="">
-			 
 			<div className="bg-[#F9F4EC] py-4 mt-6">
 				<Description className="px-4 pb-4">Также покупают</Description>
 
 				<div
 					className="overflow-x-auto scrollbar-hide flex items-start gap-3 pl-[calc((100%-96%)/3)] pr-[calc((100%-96%)/3)]"
-					style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-				>
+					style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
 					{data?.detail.map((product, productIndex) => (
 						<div key={productIndex} className="flex-shrink-0 flex gap-2">
 							{product.variants.map((variant) => {
@@ -81,8 +76,7 @@ const AlsoBuy = () => {
 								return (
 									<div
 										key={`${product.id}-${variant.id}`}
-										className="border border-[#E4E4E7] rounded-[8px] p-3 bg-white flex gap-2 w-full max-w-[280px]"
-									>
+										className="border border-[#E4E4E7] rounded-[8px] p-3 bg-white flex gap-2 w-full max-w-[280px]">
 										<div className="w-[80px] min-w-[80px] h-[80px] relative overflow-hidden rounded-[8px]">
 											<Image
 												fill
@@ -110,19 +104,29 @@ const AlsoBuy = () => {
 												</Description>
 											</div>
 											<div className="w-full flex justify-end">
-												<button
-													onClick={(e) => {
-														e.stopPropagation();
-														handleBuyNow(product, variant);
-													}}
-													className={`text-[12px] font-[600] ${
-														isInCart
-															? "text-black"
-															: "text-[#0071E3] border-b border-[#0071E3]"
-													}`}
-												>
-													{isInCart ? "Добавлено" : "Добавить в корзину"}
-												</button>
+												{isInCart ? (
+													<>
+														<button
+															className={`text-[12px] text-black font-[600] ${
+																isInCart
+																	? "text-black"
+																	: "text-[#0071E3] border-b border-[#0071E3]"
+															}`}>
+															Добавлено
+														</button>
+													</>
+												) : (
+													<>
+														<button
+															onClick={(e) => {
+																e.stopPropagation();
+																handleBuyNow(product, variant);
+															}}
+															className={`text-[12px] font-[600] text-[#0071E3] border-b border-[#0071E3]`}>
+															Добавить в корзину
+														</button>
+													</>
+												)}
 											</div>
 										</div>
 									</div>

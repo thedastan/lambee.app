@@ -1,3 +1,4 @@
+// src/app/(main)/payment/payment-forma/PaymentForma.tsx
 "use client";
 
 import Button from "@/components/ui/button/Button";
@@ -10,8 +11,8 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useUserProfile, useCreateShippingAddress } from "@/redux/hooks/user";
 import { toast } from "alert-go";
 import 'alert-go/dist/notifier.css';
+import PaymentMethodSelector from "./PaymentMethod";
 
-// Тот же CartItem, что и в других компонентах
 interface CartItem {
 	id: number;
 	variantId: number;
@@ -27,28 +28,38 @@ interface CartItem {
 }
 
 type PaymentMethod = "finikPay" | "lambeeBalance" | "bonuses";
-type ModalType = "select" | "add" | null;
+type ModalType = "select" | "add" | "guest-address" | null;
 
 interface PaymentFormaProps {
 	onAddressChange?: (label: string) => void;
+	onPaymentMethodChange?: (method: PaymentMethod) => void;
+	selectedMethod: PaymentMethod;
 }
 
 const PROFILE_ADDRESS_KEY = "selectedShippingAddressId";
 const PROFILE_ADDRESS_LABEL_KEY = "selectedShippingAddressLabel";
 
-const PaymentForma = ({ onAddressChange }: PaymentFormaProps) => {
-	const { profile, refetch: refetchProfile } = useUserProfile();
+const PaymentForma = ({ onAddressChange, onPaymentMethodChange, selectedMethod }: PaymentFormaProps) => {
+	// ✅ Правильная деструктуризация: data → profile
+	const {  profile, refetch: refetchProfile } = useUserProfile();
 	const { createShippingAddress, isCreating } = useCreateShippingAddress();
 
-	const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>("finikPay");
 	const [modalType, setModalType] = useState<ModalType>(null);
 	const [selectedAddressId, setSelectedAddressId] = useState<string>("");
 	const [newAddressValue, setNewAddressValue] = useState("");
 	const [totalAmount, setTotalAmount] = useState<number>(0);
 
-	// 1. Загружаем сохранённый адрес при монтировании
+	// Гостевые поля — НЕ сохраняются в localStorage
+	const [guestName, setGuestName] = useState("");
+	const [guestSurname, setGuestSurname] = useState("");
+	const [guestPhone, setGuestPhone] = useState("");
+	const [guestAddress, setGuestAddress] = useState("");
+
+	const isAuthorized = !!profile;
+
+	// Загрузка сохранённого адреса (только для авторизованных)
 	useEffect(() => {
-		if (profile?.shipping_addresses) {
+		if (isAuthorized && profile?.shipping_addresses) {
 			const savedId = localStorage.getItem(PROFILE_ADDRESS_KEY);
 			if (
 				savedId &&
@@ -57,35 +68,34 @@ const PaymentForma = ({ onAddressChange }: PaymentFormaProps) => {
 				setSelectedAddressId(savedId);
 			}
 		}
-	}, [profile?.shipping_addresses]);
+	}, [isAuthorized, profile?.shipping_addresses]);
 
-	// 2. Формируем опции адресов
 	const addressOptions = useMemo(() => {
-		if (!profile?.shipping_addresses) return [];
+		if (!isAuthorized || !profile?.shipping_addresses) return [];
 		return profile.shipping_addresses.map((addr) => ({
 			id: String(addr.id),
 			label: addr.address,
 		}));
-	}, [profile?.shipping_addresses]);
+	}, [isAuthorized, profile?.shipping_addresses]);
 
-	// 3. Сохраняем выбранный адрес и уведомляем родителя
 	useEffect(() => {
-		if (selectedAddressId) {
+		if (isAuthorized && selectedAddressId) {
 			localStorage.setItem(PROFILE_ADDRESS_KEY, selectedAddressId);
 			const label = addressOptions.find((a) => a.id === selectedAddressId)?.label;
 			if (label) {
 				localStorage.setItem(PROFILE_ADDRESS_LABEL_KEY, label);
 				onAddressChange?.(label);
 			}
+		} else if (!isAuthorized) {
+			onAddressChange?.(guestAddress);
 		}
-	}, [selectedAddressId, addressOptions, onAddressChange]);
+	}, [isAuthorized, selectedAddressId, addressOptions, guestAddress, onAddressChange]);
 
-	// 4. Считаем сумму ТОЛЬКО по one-time товарам
+	// Расчёт суммы
 	useEffect(() => {
 		const calculateTotal = () => {
 			const raw = localStorage.getItem("cart");
 			if (!raw) return 0;
-
 			try {
 				const cart: CartItem[] = JSON.parse(raw);
 				const oneTimeItems = cart.filter((item) => item.type === "one-time");
@@ -95,49 +105,76 @@ const PaymentForma = ({ onAddressChange }: PaymentFormaProps) => {
 				return 0;
 			}
 		};
-
 		setTotalAmount(calculateTotal());
 	}, []);
 
-	const closeModal = () => {
-		setModalType(null);
+	// Обработчики гостей
+	const handleGuestNameChange = (e: React.ChangeEvent<HTMLInputElement>) => setGuestName(e.target.value);
+	const handleGuestSurnameChange = (e: React.ChangeEvent<HTMLInputElement>) => setGuestSurname(e.target.value);
+	const handleGuestPhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => setGuestPhone(e.target.value);
+	const handleGuestAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const value = e.target.value;
+		setGuestAddress(value);
+		onAddressChange?.(value);
 	};
 
-	const openSelectModal = () => {
-		setModalType("select");
-	};
-
+	const closeModal = () => setModalType(null);
+	const openSelectModal = () => isAuthorized && setModalType("select");
 	const openAddModal = () => {
 		setNewAddressValue("");
 		setModalType("add");
 	};
+	const openGuestAddressModal = () => !isAuthorized && setModalType("guest-address");
 
 	const handleAddAddress = async () => {
 		if (!newAddressValue.trim()) return;
-
 		try {
 			await createShippingAddress(newAddressValue.trim());
-			await refetchProfile(); // обновляем список адресов
+			const updatedResult = await refetchProfile();
+			const updatedProfile = updatedResult.data;
+	
+			const newAddr = updatedProfile?.shipping_addresses?.find(
+				(addr) => addr.address === newAddressValue.trim()
+			);
+	
+			if (newAddr) {
+				const newId = String(newAddr.id);
+				const newLabel = newAddr.address;
+	
+				// ✅ Устанавливаем ID
+				setSelectedAddressId(newId);
+	
+				// ✅ Сразу сохраняем в localStorage
+				localStorage.setItem(PROFILE_ADDRESS_KEY, newId);
+				localStorage.setItem(PROFILE_ADDRESS_LABEL_KEY, newLabel);
+	
+				// ✅ Сразу уведомляем родителя
+				onAddressChange?.(newLabel);
+			}
+	
 			toast.success("Адрес успешно добавлен", { position: "top-center" });
-			setModalType("select");
+			setModalType(null);
 		} catch (err) {
 			console.error("Ошибка добавления адреса:", err);
 			toast.error("Не удалось добавить адрес.", { position: "top-center" });
 		}
 	};
-
 	const handleAddressChange = (id: string) => {
 		setSelectedAddressId(id);
 	};
 
 	const handleSelect = (method: PaymentMethod) => {
-		setSelectedMethod(method);
+		onPaymentMethodChange?.(method);
 	};
 
-	const isSelected = (method: PaymentMethod) => selectedMethod === method;
+	 
 
-	const selectedAddressLabel =
-		addressOptions.find((a) => a.id === selectedAddressId)?.label || "Не выбран";
+	const displayAddress = useMemo(() => {
+		if (isAuthorized) {
+			return addressOptions.find((a) => a.id === selectedAddressId)?.label || "Не выбран";
+		}
+		return guestAddress || "Введите адрес";
+	}, [isAuthorized, addressOptions, selectedAddressId, guestAddress]);
 
 	return (
 		<section className="flex flex-col gap-2">
@@ -148,8 +185,18 @@ const PaymentForma = ({ onAddressChange }: PaymentFormaProps) => {
 
 			<div className="bg-[#FFFDFA] w-full h-[28px]"></div>
 			<div className="bg-[#FFFDFA] p-4 flex flex-col gap-3">
-				<Input label="Имя *" value={profile?.name || ""} readOnly />
-				<Input label="Фамилия *" value={profile?.surname || ""} readOnly />
+				<Input
+					label="Имя *"
+					value={isAuthorized ? profile.name || "" : guestName}
+					readOnly={isAuthorized}
+					onChange={!isAuthorized ? handleGuestNameChange : undefined}
+				/>
+				<Input
+					label="Фамилия *"
+					value={isAuthorized ? profile.surname || "" : guestSurname}
+					readOnly={isAuthorized}
+					onChange={!isAuthorized ? handleGuestSurnameChange : undefined}
+				/>
 
 				{/* Адрес доставки */}
 				<div>
@@ -157,208 +204,133 @@ const PaymentForma = ({ onAddressChange }: PaymentFormaProps) => {
 						Адрес *
 					</label>
 					<button
-						onClick={openSelectModal}
+						onClick={isAuthorized ? openSelectModal : openGuestAddressModal}
 						className="w-full h-[48px] px-4 rounded-[8px] text-[16px] font-[600] border border-[#E4E4E7] outline-none transition-all duration-200 text-left"
 					>
-						{selectedAddressLabel}
+						{displayAddress}
 					</button>
 				</div>
 
 				<Input
 					label="Номер телефона *"
-					value={profile?.phone ? `+996${profile.phone}` : ""}
-					readOnly
+					value={
+						isAuthorized
+							? profile.phone
+								? `+996${profile.phone}`
+								: ""
+							: guestPhone
+					}
+					readOnly={isAuthorized}
+					onChange={!isAuthorized ? handleGuestPhoneChange : undefined}
 				/>
 			</div>
 
-			{/* Модальное окно: выбор адреса */}
-			<Modal
-				isOpen={modalType === "select"}
-				onClose={closeModal}
-				title="Выберите адрес доставки"
-			>
-				<div className="flex flex-col gap-3">
-					<CustomRadioGroup
-						options={addressOptions}
-						name="deliveryAddress"
-						value={selectedAddressId}
-						onChange={handleAddressChange}
-					/>
-
-					<div className="border-[#E4E4E7] border-b w-full h-[1px]"></div>
-
-					<Button
-						className="w-full border border-[#E4E4E7] !bg-transparent !text-black"
-						onClick={openAddModal}
-					>
-						Добавить ещё адрес
-					</Button>
-
-					<div className="flex gap-3 w-full">
+			{/* Модалки адреса */}
+			{isAuthorized && (
+				<Modal isOpen={modalType === "select"} onClose={closeModal} title="Выберите адрес доставки">
+					<div className="flex flex-col gap-3">
+						<CustomRadioGroup
+							options={addressOptions}
+							name="deliveryAddress"
+							value={selectedAddressId}
+							onChange={handleAddressChange}
+						/>
+						<div className="border-[#E4E4E7] border-b w-full h-[1px]"></div>
 						<Button
 							className="w-full border border-[#E4E4E7] !bg-transparent !text-black"
-							onClick={closeModal}
+							onClick={openAddModal}
 						>
-							Отмена
+							Добавить ещё адрес
 						</Button>
-						<Button className="w-full" onClick={closeModal}>
-							Готово
-						</Button>
-					</div>
-				</div>
-			</Modal>
-
-			{/* Модальное окно: добавление адреса */}
-			<Modal isOpen={modalType === "add"} onClose={closeModal} title="Добавить адрес">
-				<div className="flex flex-col gap-3">
-					<Input
-						label={
-							<>
-								Адрес <span className="text-[#FF5F57]">*</span>
-							</>
-						}
-						value={newAddressValue}
-						onChange={(e) => setNewAddressValue(e.target.value)}
-						placeholder="Введите адрес доставки"
-					/>
-
-					<div className="border-[#E4E4E7] border-b w-full h-[1px]"></div>
-
-					<div className="flex gap-3 w-full">
-						<Button
-							className="w-full border border-[#E4E4E7] !bg-transparent !text-black"
-							onClick={closeModal}
-						>
-							Отмена
-						</Button>
-						<Button
-							className="w-full"
-							onClick={handleAddAddress}
-							disabled={isCreating || !newAddressValue.trim()}
-						>
-							{isCreating ? "Добавление..." : "Сохранить"}
-						</Button>
-					</div>
-				</div>
-			</Modal>
-
-			<div className="flex flex-col gap-4 bg-[#FFFDFA] p-4">
-				<Title>Способ оплаты</Title>
-
-				<div className="rounded-[8px] bg-white">
-					{/* Finik Pay */}
-					<div
-						className={`flex items-center justify-between px-4 py-3 cursor-pointer border ${
-							isSelected("finikPay") ? "border-[#0071E3]" : "border-[#DEDEDE]"
-						} rounded-tr-[8px] rounded-tl-[8px]`}
-						onClick={() => handleSelect("finikPay")}
-					>
-						<div className="flex items-center gap-3">
-							<input
-								type="radio"
-								name="paymentMethod"
-								className="sr-only"
-								checked={isSelected("finikPay")}
-								readOnly
-							/>
-							<label className="flex items-center text-[14px] gap-2 cursor-pointer">
-								<span
-									className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-										isSelected("finikPay")
-											? "border-[#0071E3] bg-[#0071E3]"
-											: "border-[#DEDEDE]"
-									}`}
-								>
-									<span
-										className={`w-2 h-2 rounded-full ${
-											isSelected("finikPay") ? "bg-white" : "bg-transparent"
-										}`}
-									></span>
-								</span>
-								Finik Pay
-							</label>
-						</div>
-
-						<span className="bg-[#0071E3] text-white text-[12px] px-2 py-1 rounded-[6px] font-[500]">
-							КЭШБЕК 5%
-						</span>
-					</div>
-
-					{/* Баланс Lambee */}
-					<div
-						className={`flex items-center justify-between border ${
-							isSelected("lambeeBalance")
-								? "border-[#0071E3]"
-								: "border-[#DEDEDE]"
-						} px-4 py-3 cursor-pointer`}
-						onClick={() => handleSelect("lambeeBalance")}
-					>
-						<div className="flex items-center gap-3">
-							<input
-								type="radio"
-								name="paymentMethod"
-								className="sr-only"
-								checked={isSelected("lambeeBalance")}
-								readOnly
-							/>
-							<label className="flex items-center text-[14px] gap-2 cursor-pointer">
-								<span
-									className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-										isSelected("lambeeBalance")
-											? "border-[#0071E3] bg-[#0071E3]"
-											: "border-[#DEDEDE]"
-									}`}
-								>
-									<span
-										className={`w-2 h-2 rounded-full ${
-											isSelected("lambeeBalance") ? "bg-white" : "bg-transparent"
-										}`}
-									></span>
-								</span>
-								Баланс Lambee
-							</label>
-						</div>
-
-						<span className="bg-[#0071E3] text-white text-[12px] px-2 py-1 rounded-[6px] font-[500]">
-							КЭШБЕК 5%
-						</span>
-					</div>
-
-					{/* Бонусы */}
-					<div
-						className={`flex items-center justify-between px-4 py-3 cursor-pointer border ${
-							isSelected("bonuses") ? "border-[#0071E3]" : "border-[#DEDEDE]"
-						} rounded-br-[8px] rounded-bl-[8px]`}
-						onClick={() => handleSelect("bonuses")}
-					>
-						<div className="flex items-center gap-3">
-							<input
-								type="radio"
-								name="paymentMethod"
-								className="sr-only"
-								checked={isSelected("bonuses")}
-								readOnly
-							/>
-							<label className="flex items-center text-[14px] gap-2 cursor-pointer">
-								<span
-									className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-										isSelected("bonuses")
-											? "border-[#0071E3] bg-[#0071E3]"
-											: "border-[#DEDEDE]"
-									}`}
-								>
-									<span
-										className={`w-2 h-2 rounded-full ${
-											isSelected("bonuses") ? "bg-white" : "bg-transparent"
-										}`}
-									></span>
-								</span>
-								Бонусы - 0
-							</label>
+						<div className="flex gap-3 w-full">
+							<Button
+								className="w-full border border-[#E4E4E7] !bg-transparent !text-black"
+								onClick={closeModal}
+							>
+								Отмена
+							</Button>
+							<Button className="w-full" onClick={closeModal}>
+								Готово
+							</Button>
 						</div>
 					</div>
-				</div>
-			</div>
+				</Modal>
+			)}
+
+			{isAuthorized && (
+				<Modal isOpen={modalType === "add"} onClose={closeModal} title="Добавить адрес">
+					<div className="flex flex-col gap-3">
+						<Input
+							label={
+								<>
+									Адрес <span className="text-[#FF5F57]">*</span>
+								</>
+							}
+							value={newAddressValue}
+							onChange={(e) => setNewAddressValue(e.target.value)}
+							placeholder="Введите адрес доставки"
+						/>
+						<div className="border-[#E4E4E7] border-b w-full h-[1px]"></div>
+						<div className="flex gap-3 w-full">
+							<Button
+								className="w-full border border-[#E4E4E7] !bg-transparent !text-black"
+								onClick={closeModal}
+							>
+								Отмена
+							</Button>
+							<Button
+								className="w-full"
+								onClick={handleAddAddress}
+								disabled={isCreating || !newAddressValue.trim()}
+							>
+								{isCreating ? "Добавление..." : "Сохранить"}
+							</Button>
+						</div>
+					</div>
+				</Modal>
+			)}
+
+			{!isAuthorized && (
+				<Modal
+					isOpen={modalType === "guest-address"}
+					onClose={closeModal}
+					title="Укажите адрес доставки"
+				>
+					<div className="flex flex-col gap-3">
+						<Input
+							label={
+								<>
+									Адрес <span className="text-[#FF5F57]">*</span>
+								</>
+							}
+							value={guestAddress}
+							onChange={handleGuestAddressChange}
+							placeholder="Например: Бишкек, ул. Чуй 123"
+						/>
+						<div className="flex gap-3 w-full">
+							<Button
+								className="w-full border border-[#E4E4E7] !bg-transparent !text-black"
+								onClick={closeModal}
+							>
+								Отмена
+							</Button>
+							<Button
+								className="w-full"
+								onClick={closeModal}
+								disabled={!guestAddress.trim()}
+							>
+								Готово
+							</Button>
+						</div>
+					</div>
+				</Modal>
+			)}
+
+			{/* Способ оплаты */}
+			<PaymentMethodSelector
+				selectedMethod={selectedMethod}
+				onSelect={handleSelect}
+			/>
 		</section>
 	);
 };
