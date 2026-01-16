@@ -21,7 +21,7 @@ interface SizeDetailProps {
 	onVariantChange: (variant: Variant) => void;
 }
 
-const SizeDetail = ({   
+const SizeDetail = ({
 	product,
 	productId,
 	onVariantChange,
@@ -44,8 +44,6 @@ const SizeDetail = ({
 			return product.variants[0]?.id || null;
 		}
 	);
-
-	  
 
 	const [selectedOrderType, setSelectedOrderType] = useState<
 		"one-time" | "subscription" | null
@@ -110,12 +108,19 @@ const SizeDetail = ({
 				? selectedVariant.images[0].url.trim()
 				: "";
 
+		const allVariantsForCart = product.variants.map((v) => ({
+			id: v.id,
+			title: v.title,
+			weight_range: v.weight_range,
+			items_count: v.items_count,
+		}));
+
 		const newItem = {
 			productId: productId,
 			productTitle: product.title,
 			variantId: selectedVariant.id,
 			variantTitle: selectedVariant.title,
-			type: selectedOrderType, // "one-time" или "subscription"
+			type: selectedOrderType,
 			price: priceNum,
 			itemsCount: selectedVariant.items_count,
 			subscriptionPrice: selectedVariant.subscription_price
@@ -124,17 +129,18 @@ const SizeDetail = ({
 			discountPercent: selectedVariant.discount_percent,
 			quantity: 1,
 			imageUrl,
+			availableVariants: allVariantsForCart, // ✅
 		};
 
 		try {
 			addItem(newItem);
-		
+
 			// 🔥 ЕСЛИ ПОДПИСКА — СРАЗУ ПЕРЕХОДИМ
 			if (selectedOrderType === "subscription") {
 				router.push(PAGE.REGISTRATION_SUBSCRIPTION);
 				return;
 			}
-		
+
 			toast.success("Товар добавлен в корзину", {
 				position: "top-center",
 			});
@@ -143,7 +149,6 @@ const SizeDetail = ({
 				position: "top-center",
 			});
 		}
-		
 	};
 
 	const handleSelectVariant = (variantId: number) => {
@@ -276,7 +281,8 @@ const SizeDetail = ({
 									<IoCheckmark size={20} /> Планируйте покупки: 3 или 6 недель
 								</Description>{" "}
 								<Description className="flex gap-2">
-									<IoCheckmark size={20} /> Управление подпиской в личном кабинете
+									<IoCheckmark size={20} /> Управление подпиской в личном
+									кабинете
 								</Description>
 							</div>
 						</div>

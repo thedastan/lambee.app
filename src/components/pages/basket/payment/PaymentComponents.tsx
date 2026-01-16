@@ -9,8 +9,8 @@ import "alert-go/dist/notifier.css";
 import { orderService } from "@/redux/services/orders.service";
 import { useCart } from "@/redux/hooks/useCart";
 
-type PaymentMethod = "finikPay" | "lambeeBalance" | "bonuses";
-type BackendPaymentMethod = "finik" | "balance" | "bonuses";
+type PaymentMethod = "finikPay" | "lambeeBalance" | "bonus";
+type BackendPaymentMethod = "finik" | "balance" | "bonus";
 
 const PaymentComponents = () => {
 	const [selectedAddressLabel, setSelectedAddressLabel] = useState("Не выбран");
@@ -62,8 +62,8 @@ const PaymentComponents = () => {
 			backendPaymentMethod = "finik";
 		} else if (selectedPaymentMethod === "lambeeBalance") {
 			backendPaymentMethod = "balance";
-		} else if (selectedPaymentMethod === "bonuses") {
-			backendPaymentMethod = "bonuses"; // ← уточните у бэка точное значение
+		} else if (selectedPaymentMethod === "bonus") {
+			backendPaymentMethod = "bonus"; // ← уточните у бэка точное значение
 		} else {
 			toast.error("Неизвестный способ оплаты", { position: "top-center" });
 			return;

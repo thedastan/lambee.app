@@ -1,4 +1,4 @@
-// src/hooks/useCart.ts
+// src/redux/hooks/useCart.ts
 import { useState, useEffect } from "react";
 
 export interface CartItem {
@@ -13,13 +13,18 @@ export interface CartItem {
 	discountPercent?: number;
 	productId: number;
 	productTitle: string;
-	imageUrl: string; 
+	imageUrl: string;
+	availableVariants: {
+		id: number;
+		title: string;
+		weight_range: string;
+		items_count: number;
+	}[];
 }
 
 let cartState: CartItem[] = [];
 const listeners: Array<(cart: CartItem[]) => void> = [];
 
-// Загружаем из localStorage при первом импорте
 if (typeof window !== "undefined") {
 	const raw = localStorage.getItem("cart");
 	if (raw) {
@@ -35,7 +40,6 @@ if (typeof window !== "undefined") {
 const setCart = (newCart: CartItem[]) => {
 	cartState = newCart;
 	localStorage.setItem("cart", JSON.stringify(newCart));
-	// Уведомляем всех подписчиков
 	listeners.forEach((listener) => listener([...newCart]));
 };
 
@@ -49,7 +53,6 @@ const subscribe = (listener: (cart: CartItem[]) => void) => {
 	};
 };
 
-// Основной хук
 export const useCart = () => {
 	const [cart, setLocalCart] = useState<CartItem[]>(getCart());
 
@@ -72,7 +75,7 @@ export const useCart = () => {
 
 		const newItem: CartItem = {
 			...item,
-			id: Date.now(), // или crypto.randomUUID() если поддерживается
+			id: Date.now(),
 		};
 
 		setCart([...cart, newItem]);
@@ -89,6 +92,49 @@ export const useCart = () => {
 	const removeItem = (id: number) => {
 		const updated = cart.filter((item) => item.id !== id);
 		setCart(updated);
+	};
+
+	const updateItem = (id: number, updates: Partial<CartItem>) => {
+		const updated = cart.map((item) =>
+			item.id === id ? { ...item, ...updates } : item
+		);
+		setCart(updated);
+	};
+
+	// ✅ НОВЫЙ МЕТОД: изменение варианта с объединением
+	const changeItemVariant = (itemId: number, newVariantId: number) => {
+		const item = cart.find(i => i.id === itemId);
+		if (!item || !item.availableVariants) return;
+
+		const newVariant = item.availableVariants.find(v => v.id === newVariantId);
+		if (!newVariant) return;
+
+		const existingItem = cart.find(
+			i =>
+				i.productId === item.productId &&
+				i.variantId === newVariantId &&
+				i.type === item.type &&
+				i.id !== itemId
+		);
+
+		if (existingItem) {
+			// Увеличиваем количество у существующего
+			const updated = cart.map(i =>
+				i.id === existingItem.id
+					? { ...i, quantity: i.quantity + item.quantity }
+					: i
+			).filter(i => i.id !== itemId); // удаляем старый
+
+			setCart(updated);
+		} else {
+			// Просто обновляем текущий элемент
+			const updated = cart.map(i =>
+				i.id === itemId
+					? { ...i, variantId: newVariantId, variantTitle: newVariant.title }
+					: i
+			);
+			setCart(updated);
+		}
 	};
 
 	const getTotalAmount = () => {
@@ -114,18 +160,20 @@ export const useCart = () => {
 		return cart.reduce((sum, item) => sum + item.quantity, 0);
 	};
 
-  const clear = () => {
-    setCart([]);
-  };
+	const clear = () => {
+		setCart([]);
+	};
 
 	return {
 		cart,
 		addItem,
 		updateQuantity,
 		removeItem,
+		updateItem,
+		changeItemVariant, // ✅
 		getTotalAmount,
 		getSavedAmount,
 		getTotalItemsCount,
-    clear
+		clear,
 	};
 };

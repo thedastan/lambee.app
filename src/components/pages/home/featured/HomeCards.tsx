@@ -38,6 +38,13 @@ const HomeCards = () => {
 
 		const imageUrl = variant.images.length > 0 ? variant.images[0].url.trim() : "";
 
+		const allVariantsForCart = product.variants.map((v:any) => ({
+			id: v.id,
+			title: v.title,
+			weight_range: v.weight_range,
+			items_count: v.items_count,
+		}));
+
 		const newItem = {
 			productId: product.id,
 			productTitle: product.title,
@@ -50,6 +57,7 @@ const HomeCards = () => {
 			discountPercent: variant.discount_percent,
 			quantity: 1,
 			imageUrl,
+			availableVariants: allVariantsForCart,
 		};
 
 		try {

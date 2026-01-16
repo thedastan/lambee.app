@@ -27,7 +27,7 @@ interface CartItem {
 	productTitle: string;
 }
 
-type PaymentMethod = "finikPay" | "lambeeBalance" | "bonuses";
+type PaymentMethod = "finikPay" | "lambeeBalance" | "bonus";
 type ModalType = "select" | "add" | "guest-address" | null;
 
 interface PaymentFormaProps {

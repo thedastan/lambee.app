@@ -4,7 +4,7 @@
 import { Title } from "@/components/ui/text/Title";
 import React from "react";
 
-type PaymentMethod = "finikPay" | "lambeeBalance" | "bonuses";
+type PaymentMethod = "finikPay" | "lambeeBalance" | "bonus";
 
 interface PaymentMethodSelectorProps {
 	selectedMethod: PaymentMethod;
@@ -70,19 +70,19 @@ const PaymentMethodSelector = ({
 				{/* Бонусы — теперь доступны */}
 				<div
 					className={`flex items-center justify-between px-4 py-3 cursor-pointer border ${
-						isSelected("bonuses") ? "border-[#0071E3]" : "border-[#DEDEDE]"
+						isSelected("bonus") ? "border-[#0071E3]" : "border-[#DEDEDE]"
 					} rounded-br-[8px] rounded-bl-[8px]`}
-					onClick={() => onSelect("bonuses")}>
+					onClick={() => onSelect("bonus")}>
 					<div className="flex items-center gap-3">
 						<span
 							className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-								isSelected("bonuses")
+								isSelected("bonus")
 									? "border-[#0071E3] bg-[#0071E3]"
 									: "border-[#DEDEDE]"
 							}`}>
 							<span
 								className={`w-2 h-2 rounded-full ${
-									isSelected("bonuses") ? "bg-white" : "bg-transparent"
+									isSelected("bonus") ? "bg-white" : "bg-transparent"
 								}`}></span>
 						</span>
 						<span className="text-[14px]">Бонусы</span>
