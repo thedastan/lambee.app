@@ -2,6 +2,7 @@
 "use client";
 
 import { Title } from "@/components/ui/text/Title";
+import { useUserProfile } from "@/redux/hooks/user";
 import React from "react";
 
 type PaymentMethod = "finikPay" | "lambeeBalance" | "bonus";
@@ -16,6 +17,8 @@ const PaymentMethodSelector = ({
 	onSelect,
 }: PaymentMethodSelectorProps) => {
 	const isSelected = (method: PaymentMethod) => selectedMethod === method;
+
+	const { profile } = useUserProfile();
 
 	return (
 		<div className="flex flex-col gap-4 bg-[#FFFDFA] p-4">
@@ -63,7 +66,9 @@ const PaymentMethodSelector = ({
 									isSelected("lambeeBalance") ? "bg-white" : "bg-transparent"
 								}`}></span>
 						</span>
-						<span className="text-[14px]">Баланс Lambee</span>
+						<span className="text-[14px]">
+							Баланс Lambee - {profile?.balance?.amount}
+						</span>
 					</div>
 				</div>
 
@@ -85,7 +90,7 @@ const PaymentMethodSelector = ({
 									isSelected("bonus") ? "bg-white" : "bg-transparent"
 								}`}></span>
 						</span>
-						<span className="text-[14px]">Бонусы</span>
+						<span className="text-[14px]">Бонусы - {profile?.bonus_balance?.amount}</span>
 					</div>
 				</div>
 			</div>

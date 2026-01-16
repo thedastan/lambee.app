@@ -12,7 +12,7 @@ interface TotalProps {
 
 const Total: React.FC<TotalProps> = ({ totalAmount, savedAmount, onProceedToCheckout }) => {
 	return (
-		<section className="md:rounded-bl-[16px] md:rounded-br-[16px] rounded-tl-[16px] rounded-tr-[16px] bg-white border border-[#0071E3]">
+		<section className="md:rounded-bl-[16px] md:rounded-br-[16px] rounded-tl-[16px] rounded-tr-[16px] bg-white md:border border-t border-[#0071E3]">
 			<div className="px-4 pt-4">
 				<div className="flex border-b-2 border-[#0071E3] items-center justify-between pb-1">
 					<Description className="text-[#0071E3]">

@@ -1,5 +1,5 @@
 import { PRIVATE_API } from "@/api/interceptors";
-import { IUserProfile } from "../models/user.model";
+import { IUpdateProfileRequest, IUserProfile } from "../models/user.model";
 
 class UserService {
   private BASE_URL = "/api/private/v1/user/";
@@ -11,7 +11,7 @@ class UserService {
     return response.data;
   }
 
-  async updateProfile(data: Partial<IUserProfile> & { password?: string }) {
+  async updateProfile(data: IUpdateProfileRequest) {
     const response = await PRIVATE_API.patch<IUserProfile>(
       this.BASE_URL + "me/",
       data
@@ -37,6 +37,10 @@ class UserService {
       { id: number; address: string; created_at: string }
     >(this.BASE_URL + "shipping_address/", { address });
     return response.data;
+  }
+
+  async deleteShippingAddress(addressId: number) {
+    await PRIVATE_API.delete(this.BASE_URL + `shipping_address/${addressId}/`);
   }
 }
 

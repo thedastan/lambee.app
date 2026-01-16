@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { userService } from "../services/user.service";
-import { IUserProfile } from "../models/user.model";
+import { IUpdateProfileRequest, IUserProfile } from "../models/user.model";
 
 export function useUserProfile() {
   const hasToken =
@@ -25,7 +25,7 @@ export function useUpdateProfile() {
   const queryClient = useQueryClient();
 
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: (data:IUserProfile) => userService.updateProfile(data),
+    mutationFn: (data: IUpdateProfileRequest) => userService.updateProfile(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["userProfile"] });
     },
@@ -68,5 +68,23 @@ export function useCreateShippingAddress() {
   return {
     createShippingAddress: mutateAsync,
     isCreating: isPending,
+  };
+}
+
+
+export function useDeleteShippingAddress() {
+  const queryClient = useQueryClient();
+
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: (addressId: number) => userService.deleteShippingAddress(addressId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+      // Также можно очистить выбранный адрес из localStorage, если он был удалён
+    },
+  });
+
+  return {
+    deleteShippingAddress: mutateAsync,
+    isDeleting: isPending,
   };
 }

@@ -10,13 +10,15 @@ import Link from "next/link";
 import { FiBell } from "react-icons/fi";
 import { useCart } from "@/redux/hooks/useCart";
 
- 
-
 const Header = () => {
 	const [scrolled, setScrolled] = useState(false);
-	const { getTotalItemsCount } = useCart();  
-	const cartCount = getTotalItemsCount();
+	const [isClient, setIsClient] = useState(false); // ← добавлено
+	const { getTotalItemsCount } = useCart();
+	const cartCount = isClient ? getTotalItemsCount() : 0; // ← безопасно
+
 	useEffect(() => {
+		setIsClient(true); // ← помечаем, что мы на клиенте
+
 		const handleScroll = () => {
 			setScrolled(window.scrollY > 20);
 		};
@@ -24,8 +26,6 @@ const Header = () => {
 		window.addEventListener("scroll", handleScroll);
 		return () => window.removeEventListener("scroll", handleScroll);
 	}, []);
-
-	 
 
 	return (
 		<header className="w-full md:h-0 h-[65px]">
@@ -59,7 +59,7 @@ const Header = () => {
 						className="w-[44px] h-[40px] border border-[#E4E4E7] rounded-[5px] !text-black !bg-transparent !px-0 relative"
 					>
 						<BasketSvg />
-						{cartCount > 0 && (
+						{isClient && cartCount > 0 && (
 							<span className="absolute -top-1 -right-1 bg-[#ffffff] border text-black text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">
 								{cartCount}
 							</span>

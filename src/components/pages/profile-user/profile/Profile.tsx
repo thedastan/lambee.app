@@ -170,7 +170,7 @@ const Profile = () => {
 					</LinkButton>
 				</div>
 
-				{/* My Children */}
+			 
 			 
 
 				{/* Logout */}

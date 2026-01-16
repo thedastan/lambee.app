@@ -1,7 +1,7 @@
 // src/api/user/user.model.ts
 
 // ISO код страны (флаг, код)
-export interface IUserIsoCode {
+export interface IsoCode {
   flag: string;
   iso_code: string;
   created_at: string;
@@ -14,22 +14,42 @@ export interface IShippingAddress {
   created_at: string;
 }
 
-// Баланс
+// Баланс пользователя
 export interface IUserBalance {
   amount: number;
   created_at: string;
   modified_at: string;
 }
 
-// Основной профиль (ответ от /me/)
+// Бонусный баланс
+export interface BonusBalance {
+  amount: number;
+  created_at: string;
+  modified_at: string;
+}
+
+// Полный профиль пользователя — ответ от /api/private/v1/user/me/
 export interface IUserProfile {
+  profile_picture: string;
   name: string;
   surname: string;
+  iso_code: IsoCode;
+  phone: string;
   birth_date: string;
-  // Добавим необязательные поля, если они могут отсутствовать
-  profile_picture?: string | null;
-  iso_code?: IUserIsoCode;
+  referral_code: string;
+  shipping_addresses: IShippingAddress[];
+  balance: IUserBalance;
+  bonus_balance: BonusBalance;
+  invited_users_amount: number;
+  earned_bonus: number;
+}
+
+// Тип данных для PATCH-запроса обновления профиля
+// Только те поля, которые можно редактировать через форму
+export interface IUpdateProfileRequest {
+  name?: string;
+  surname?: string;
+  birth_date?: string;
   phone?: string;
-  shipping_addresses?: IShippingAddress[];
-  balance?: IUserBalance;
+  password?: string;
 }
