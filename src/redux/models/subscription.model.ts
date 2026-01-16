@@ -2,7 +2,7 @@ export interface ICreateSubscriptionPayload {
 	main_product_variant_id: number;
 	address: string;
 	deliveries: string[];
-	payment_method: 'finik' | 'balance'; // ← добавлено
+	payment_method: 'finik' | 'balance'| "bonus";  
 	items: {
 		product_variant_id: number;
 		quantity: number;

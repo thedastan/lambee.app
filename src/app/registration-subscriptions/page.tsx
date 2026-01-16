@@ -1,5 +1,5 @@
-import RegistrationSubscriptions from "@/components/pages/registration-subscriptions/RegistrationSubscriptions";
+import Subscriptions from "@/components/pages/subscriptions/Subscriptions";
 
-const RegistrationSubscriptionsPage = () => <RegistrationSubscriptions />;
+const RegistrationSubscriptionsPage = () => <Subscriptions />;
 
 export default RegistrationSubscriptionsPage;

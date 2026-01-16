@@ -10,7 +10,7 @@ interface TotalProps {
 	onProceedToCheckout: () => void;
 }
 
-const Total: React.FC<TotalProps> = ({ totalAmount, savedAmount, onProceedToCheckout }) => {
+const TotalSubscriptions: React.FC<TotalProps> = ({ totalAmount, savedAmount, onProceedToCheckout }) => {
 	return (
 		<section className="md:rounded-bl-[16px] md:rounded-br-[16px] rounded-tl-[16px] rounded-tr-[16px] bg-white md:border border-t border-[#0071E3]">
 			<div className="px-4 pt-4">
@@ -25,10 +25,10 @@ const Total: React.FC<TotalProps> = ({ totalAmount, savedAmount, onProceedToChec
 			</div>
 
 			<div className="p-4 flex flex-col gap-3 border-b border-[#0071E3]">
-			 
+				 
 				<div className="flex items-center justify-between">
 					<Description>Итого:</Description>
-					<Description>{totalAmount.toLocaleString()} сом</Description>
+					<Description>{savedAmount.toLocaleString()} сом</Description>
 				</div>
 			</div>
 
@@ -41,4 +41,4 @@ const Total: React.FC<TotalProps> = ({ totalAmount, savedAmount, onProceedToChec
 	);
 };
 
-export default Total;
+export default TotalSubscriptions;
