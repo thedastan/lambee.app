@@ -30,6 +30,8 @@ const Registration = () => {
 	const { verifyCode, isVerifying } = useVerifyCode();
 	const router = useRouter();
 
+	const [referralCode, setReferralCode] = useState("");
+
 	useEffect(() => {
 		let timer: NodeJS.Timeout;
 		if (isTimerActive && resendTimer > 0) {
@@ -65,6 +67,7 @@ const Registration = () => {
 				iso_code_id: 1,
 				phone: cleanPhone,
 				password: trimmedPassword,
+				referral_code: referralCode || null, // Передаем referral_code, если оно заполнено
 			});
 			setStep(2);
 			setResendTimer(60);
@@ -140,7 +143,11 @@ const Registration = () => {
 		setError(null);
 	};
 
-	const handlePinChange = (_: string | string[], __: number, values: string[]) => {
+	const handlePinChange = (
+		_: string | string[],
+		__: number,
+		values: string[]
+	) => {
 		setCode(values);
 		if (error) setError(null);
 	};
@@ -172,10 +179,9 @@ const Registration = () => {
 										Вам придёт SMS с кодом
 									</Description>
 
-									{/* === КАСТОМНЫЙ ТЕЛЕФОН БЕЗ PHONE-GO === */}
 									<div className="w-full">
 										<div className="relative flex items-center">
-										<span className="text-gray-700 h-[48px] bg-white rounded-tr-none rounded-br-none border-t border-b border-l border-[#E4E4E7] rounded-[8px] flex justify-center items-center px-3 text-[16px] font-medium min-w-[70px]">
+											<span className="text-gray-700 h-[48px] bg-white rounded-tr-none rounded-br-none border-t border-b border-l border-[#E4E4E7] rounded-[8px] flex justify-center items-center px-3 text-[16px] font-medium min-w-[70px]">
 												+996
 											</span>
 											<input
@@ -200,6 +206,14 @@ const Registration = () => {
 										placeholder="Пароль"
 										value={password}
 										onChange={(e) => setPassword(e.target.value)}
+										className="w-full p-3 border border-gray-300 rounded mt-2"
+									/>
+
+									<Input
+										type="text"
+										placeholder="Реферальный код (необязательно)"
+										value={referralCode}
+										onChange={(e) => setReferralCode(e.target.value)}
 										className="w-full p-3 border border-gray-300 rounded mt-2"
 									/>
 
@@ -267,7 +281,8 @@ const Registration = () => {
 									<div className="text-center mt-4">
 										{isTimerActive ? (
 											<Description className="text-[#0071E3]">
-												Отправить повторно {String(resendTimer).padStart(2, "0")}
+												Отправить повторно{" "}
+												{String(resendTimer).padStart(2, "0")}
 											</Description>
 										) : (
 											<button

@@ -10,6 +10,7 @@ export interface IAuthSendCodeRequest {
 	iso_code_id: number;
 	phone: string;
 	password: string;
+	referral_code:string | null;
 }
 
 export interface IAuthVerifyCodeRequest {
