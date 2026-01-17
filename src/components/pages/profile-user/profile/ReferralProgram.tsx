@@ -1,9 +1,69 @@
+"use client";
+
 import Button from "@/components/ui/button/Button";
 import { Description } from "@/components/ui/text/Description";
 import { Title } from "@/components/ui/text/Title";
-import React from "react";
+import { useUserProfile } from "@/redux/hooks/user";
+import { toast } from "alert-go";
+import { useEffect, useState } from "react";
 
 const ReferralProgram = () => {
+	const { profile } = useUserProfile();
+	const [isMobile, setIsMobile] = useState(false);
+
+	useEffect(() => {
+		// Определяем, мобильное ли устройство
+		const checkMobile = () => {
+			const userAgent =
+				typeof window !== "undefined" ? navigator.userAgent : "";
+			const mobile =
+				/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+					userAgent
+				);
+			setIsMobile(mobile);
+		};
+		checkMobile();
+	}, []);
+
+	const referralLink = profile?.referral_code
+		? `${window.location.origin}?ref=${profile.referral_code}`
+		: "";
+
+	const handleInviteFriends = async () => {
+		if (!profile?.referral_code) {
+			toast.error("Реферальный код недоступен");
+			return;
+		}
+
+		if (isMobile && navigator.share) {
+			// Мобильное устройство + поддержка Share API
+			try {
+				await navigator.share({
+					title: "Приглашаю вас!",
+					text: "Присоединяйтесь и получите бонусы!",
+					url: referralLink,
+				});
+			} catch (err) {
+				if ((err as Error).name !== "AbortError") {
+					// Если share не сработал (например, в старом браузере), копируем ссылку
+					await copyToClipboard(referralLink);
+				}
+			}
+		} else {
+			// Десктоп или браузер без Share API → копируем ссылку
+			await copyToClipboard(referralLink);
+		}
+	};
+
+	const copyToClipboard = async (text: string) => {
+		try {
+			await navigator.clipboard.writeText(text);
+			toast.success("Ссылка для приглашения скопирована!");
+		} catch {
+			toast.error("Не удалось скопировать ссылку");
+		}
+	};
+
 	return (
 		<div className="border border-[#E4E4E7] bg-transparent rounded-[16px] flex flex-col gap-6 p-4">
 			<div className="flex items-center gap-3">
@@ -21,7 +81,7 @@ const ReferralProgram = () => {
 						strokeLinejoin="round"
 					/>
 				</svg>
-				<div className="">
+				<div>
 					<Title className="font-[700]">Реферальная программа</Title>
 					<Description className="text-[#515151] mt-1">
 						Приглашайте друзей <br /> и получайте бонусы на баланс
@@ -44,12 +104,13 @@ const ReferralProgram = () => {
 						strokeLinejoin="round"
 					/>
 				</svg>
-
-				<div className="">
+				<div>
 					<Description className="text-[#515151]">
 						Количество приглашенных
 					</Description>
-					<Title className="font-[700]">322</Title>
+					<Title className="font-[700]">
+						{profile?.invited_users_amount ?? 0}
+					</Title>
 				</div>
 			</div>
 
@@ -68,16 +129,16 @@ const ReferralProgram = () => {
 						strokeLinejoin="round"
 					/>
 				</svg>
-
-				<div className="">
+				<div>
 					<Description className="text-[#515151]">
 						Заработано бонусов
 					</Description>
-					<Title className="font-[700]">322</Title>
+					<Title className="font-[700]">{profile?.earned_bonus ?? 0} сом</Title>
 				</div>
 			</div>
 
-			<Button>Пригласить друзей</Button>
+			 
+			<Button onClick={handleInviteFriends}>Пригласить друзей</Button>
 		</div>
 	);
 };
