@@ -27,7 +27,8 @@ import { useFinikPay } from "@/redux/hooks/finik-pay";
 import { CiLogout } from "react-icons/ci";
 import { useRouter } from "next/navigation";
 import { toast } from "alert-go";
-import 'alert-go/dist/notifier.css';
+import "alert-go/dist/notifier.css";
+import logo from "@/assets/svg/logo.svg";
 
 const Profile = () => {
 	const router = useRouter();
@@ -41,7 +42,7 @@ const Profile = () => {
 	const handlePay = async () => {
 		const numAmount = Number(amount.trim());
 		if (isNaN(numAmount) || numAmount <= 0) {
-			toast.warning("Введите корректную сумму",{position:"top-center"});
+			toast.warning("Введите корректную сумму", { position: "top-center" });
 			return;
 		}
 
@@ -50,17 +51,18 @@ const Profile = () => {
 			if (response?.detail) {
 				window.location.href = response.detail;
 			} else {
-				toast.error("Не удалось получить ссылку на оплату",{position:"top-center"});
+				toast.error("Не удалось получить ссылку на оплату", {
+					position: "top-center",
+				});
 			}
 		} catch {
-			toast.error("Ошибка при создании платежа",{position:"top-center"});
+			toast.error("Ошибка при создании платежа", { position: "top-center" });
 		}
 	};
 
 	const handleLogout = () => {
 		localStorage.removeItem("accessToken");
 		localStorage.removeItem("refreshToken");
-		 
 
 		window.location.href = PAGE.AUTH_PRE_REGISTRATION;
 	};
@@ -68,13 +70,25 @@ const Profile = () => {
 	if (!profile) {
 		return (
 			<section className="p-4 flex flex-col items-center justify-center min-h-[60vh]">
-				<Title className="mb-4 text-center">Сначала авторизуйтесь</Title>
-				<Description className="text-gray-500 mb-6 text-center">
-					Чтобы получить доступ к личному кабинету, войдите в свой аккаунт.
+				<div className="w-[128px] h-[128px] relative">
+					<Image fill objectFit="contain" src={logo} alt="logo" />
+				</div>
+				<Title className="mt-6 text-center">Зарегистрируйтесь или войдите </Title>
+				<Description className="text-gray-500 mb-4 text-center">
+				Чтобы пользоваться всеми <br /> функциями Lambee
 				</Description>
-				<LinkButton href={PAGE.AUTH_PRE_REGISTRATION} className="!px-6 !py-2">
-					Войти
-				</LinkButton>
+				<div className="w-full flex flex-col gap-3 md:max-w-[400px] max-w-full">
+					<LinkButton
+						href={PAGE.AUTH_REGISTRATION}
+						className="!px-6 !py-3 bg-[#AAA4C2] w-full">
+						Зарегистрироваться
+					</LinkButton>
+					<LinkButton
+						href={PAGE.AUTH_LOGIN}
+						className="!px-6 !py-3 bg-[#ffffff] !text-black border w-full">
+						Войти
+					</LinkButton>
+				</div>
 			</section>
 		);
 	}
@@ -112,7 +126,6 @@ const Profile = () => {
 				</div>
 
 				{/* Savings Card */}
-			 
 
 				{/* Time Saved */}
 				<div className="border border-[#E4E4E7] bg-white flex justify-between items-center rounded-[8px] w-full h-[130px] overflow-hidden">
@@ -170,9 +183,6 @@ const Profile = () => {
 					</LinkButton>
 				</div>
 
-			 
-			 
-
 				{/* Logout */}
 				<div
 					onClick={handleLogout}
@@ -228,4 +238,3 @@ const Profile = () => {
 };
 
 export default Profile;
- 

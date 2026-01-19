@@ -34,7 +34,7 @@ type ModalType = "select" | "add" | "guest-address" | null;
 interface PaymentFormaProps {
 	onAddressChange?: (label: string) => void;
 	onPaymentMethodChange?: (method: PaymentMethod) => void;
-
+	savedAmount: number;
 	selectedMethod: PaymentMethod;
 }
 
@@ -45,6 +45,7 @@ const PaymentSubForma = ({
 	onAddressChange,
 	onPaymentMethodChange,
 	selectedMethod,
+	savedAmount
 }: PaymentFormaProps) => {
 	// ✅ Правильная деструктуризация: data → profile
 	const { profile, refetch: refetchProfile } = useUserProfile();
@@ -206,7 +207,7 @@ const PaymentSubForma = ({
 		<section className="flex flex-col  relative gap-2">
 			<div className="bg-[#FFF3E0] flex justify-between items-center px-4 border-b border-[#F0DBB6] h-[64px]">
 				<Description className="text-[#0071E3]">Итого</Description>
-				<Title className="font-[600]">{totalAmount.toLocaleString()} сом</Title>
+				<Title className="font-[600]">{savedAmount.toLocaleString()} сом</Title>
 			</div>
 
 			<div className="bg-[#FFFDFA] w-full h-[28px]"/> 

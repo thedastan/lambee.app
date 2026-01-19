@@ -27,9 +27,9 @@ export const SubscriptionCard = ({
  
 
 	return (
-		<div className="p-3 bg-[#FEFFDE] flex-shrink-0   rounded-[16px] w-full max-w-[290px]">
-			<div className="flex justify-between items-start gap-2  pb-3  ">
-				<div className="flex gap-2">
+		<div className="p-3 bg-[#EFF7FF] flex-shrink-0   rounded-[16px] w-full max-w-[290px]">
+			<div className="flex justify-between items-start gap-2 border-b pb-3  ">
+				<div className="flex gap-2  ">
 					<Image
 						width={48}
 						height={48}
@@ -52,9 +52,9 @@ export const SubscriptionCard = ({
 				</LinkButton>
 			</div>
 
-			<div className="bg-[#B8BA8B] text-white flex flex-col  w-full items-start p-2 rounded-[8px] mt-3">
+			<div className="   flex flex-col  w-full items-start p-2 rounded-[8px]">
 				<Description>Следующая доставка:</Description>
-				<Description>
+				<Description className="text-[#0171E3]">
 					{date} в {time}
 				</Description>
 			</div>

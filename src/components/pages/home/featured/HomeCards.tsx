@@ -43,6 +43,7 @@ const HomeCards = () => {
 			title: v.title,
 			weight_range: v.weight_range,
 			items_count: v.items_count,
+			min_count_subscription: v.min_count_subscription ?? 0,
 		}));
 
 		const newItem = {
@@ -55,9 +56,11 @@ const HomeCards = () => {
 			itemsCount: variant.items_count,
 			subscriptionPrice: variant.subscription_price ? Number(variant.subscription_price) : undefined,
 			discountPercent: variant.discount_percent,
+			// minCountSubscription: variant.min_count_subscription ?? 0,
 			quantity: 1,
 			imageUrl,
 			availableVariants: allVariantsForCart,
+			
 		};
 
 		try {

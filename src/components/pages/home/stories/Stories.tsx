@@ -7,6 +7,7 @@ import { AiOutlineSound } from "react-icons/ai";
 import { Description } from "@/components/ui/text/Description";
 import { useStories } from "@/redux/hooks/stories";
 import LinkButton from "@/components/ui/button/LinkButton";
+import Button from "@/components/ui/button/Button";
 
 type Story = {
 	id: number;
@@ -262,15 +263,16 @@ const Stories = () => {
 
 							<div className="flex justify-between px-6 w-full items-center">
 								<div className="flex items-center gap-1">
-									<div className=" relative w-10 h-10  rounded-full overflow-hidden border-2 border-white flex justify-center items-center">
+									<div className=" relative w-10 h-10   rounded-full overflow-hidden border-2 border-white flex justify-center items-center">
 										<Image
 											fill
+										 
 											objectFit="cover"
 											src={currentStory.image}
 											alt="ava"
 										/>
 									</div>
-									<Description className="text-[#ffffff] shadow-sm">{currentStory.title}</Description>
+									<Description className="text-[#ffffff] shadow-sm  w-[200px] text-start  ">{currentStory.title}</Description>
 								</div>
 
 								<button
@@ -282,9 +284,9 @@ const Stories = () => {
 						</div>
 
 						<div className="absolute bottom-8 left-0 w-full z-30 px-[10px]">
-							<LinkButton href="/asim" className="w-full">
+							<Button onClick={closeModal} className="w-full">
 								Заказать
-							</LinkButton>
+							</Button>
 						</div>
 
 						<div className="relative flex  h-full   overflow-hidden">

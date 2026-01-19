@@ -150,6 +150,7 @@ const SubPaymentComponents = () => {
 					onAddressChange={handleAddressChange}
 					onPaymentMethodChange={handlePaymentMethodChange}
 					selectedMethod={selectedPaymentMethod}
+					savedAmount={savedAmount}
 				/>
 			</div>
 

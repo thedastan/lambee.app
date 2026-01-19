@@ -13,7 +13,7 @@ interface CartItem {
 	price: number;
 	quantity: number;
 	itemsCount: number;
-	subscriptionPrice?: number;
+	subscriptionPrice?: any;
 	discountPercent?: number;
 	productId: number;
 	productTitle: string;
@@ -82,7 +82,7 @@ const PaymentSubTotal = ({
 			)}
 
 			{oneTimeItems.map((item) => {
-				const totalPrice = item.price * item.quantity;
+			 
 
 				return (
 					<div key={item.id} className="py-2 flex justify-between items-center">
@@ -118,8 +118,8 @@ const PaymentSubTotal = ({
 							</div>
 						</div>
 						<Description className="flex gap-3">
-							<span className=" line-through text-gray-600">{item.price} сом</span>
-							{item.subscriptionPrice} сом
+							<span className=" line-through text-gray-600">{item.price * item.quantity} сом</span>
+							{item.subscriptionPrice * item.quantity} сом
 						</Description>
 					</div>
 				);

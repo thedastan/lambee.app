@@ -45,6 +45,9 @@ const SizeDetail = ({
 		}
 	);
 
+ 
+	
+
 	const [selectedOrderType, setSelectedOrderType] = useState<
 		"one-time" | "subscription" | null
 	>(null);
@@ -113,6 +116,7 @@ const SizeDetail = ({
 			title: v.title,
 			weight_range: v.weight_range,
 			items_count: v.items_count,
+			minCountSubscription: v.min_count_subscription ?? 0,
 		}));
 
 		const newItem = {
@@ -127,15 +131,17 @@ const SizeDetail = ({
 				? Number(selectedVariant.subscription_price)
 				: undefined,
 			discountPercent: selectedVariant.discount_percent,
-			quantity: 1,
+			quantity:
+				selectedOrderType === "subscription"
+					? selectedVariant.min_count_subscription ?? 1
+					: 1,
 			imageUrl,
-			availableVariants: allVariantsForCart, // ✅
+			availableVariants: allVariantsForCart,
 		};
 
 		try {
 			addItem(newItem);
 
-			// 🔥 ЕСЛИ ПОДПИСКА — СРАЗУ ПЕРЕХОДИМ
 			if (selectedOrderType === "subscription") {
 				router.push(PAGE.REGISTRATION_SUBSCRIPTION);
 				return;
@@ -229,6 +235,8 @@ const SizeDetail = ({
 					<Description className="w-full max-w-[280px]">
 						{product.description}
 					</Description>
+ 
+					
 					<div className="border-b w-full mt-2" />
 					<Description className="text-[#141414] mt-2">
 						Выберите тип заказа:

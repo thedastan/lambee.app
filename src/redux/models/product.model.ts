@@ -61,6 +61,8 @@ export interface Variant {
 	items_count: number;
 	price: number;
 	subscription_price: number;
+	min_count_subscription: number;
+	min_count_one_time: number;
 	discount_percent: number;
 	images: DetaiImage[];
 }
