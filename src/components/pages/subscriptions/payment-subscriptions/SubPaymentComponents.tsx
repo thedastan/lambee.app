@@ -155,7 +155,7 @@ const SubPaymentComponents = () => {
 			</div>
 
 			<div className="md:w-[50%] w-full bg-[#F9F4EC] md:bg-transparent">
-				<PaymentSubTotal savedAmount={savedAmount} onCheckout={handleCheckout} isLoading={isLoading} />
+				<PaymentSubTotal   onCheckout={handleCheckout} isLoading={isLoading} />
 			</div>
 		</div>
 	);

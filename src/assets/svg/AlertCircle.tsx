@@ -1,0 +1,24 @@
+import React from "react";
+
+const AlertCircle = () => {
+	return (
+		<div>
+			<svg
+				width="20"
+				height="20"
+				viewBox="0 0 20 20"
+				fill="none"
+				xmlns="http://www.w3.org/2000/svg">
+				<path
+					d="M9.99984 6.66663V9.99996M9.99984 13.3333H10.0082M18.3332 9.99996C18.3332 14.6023 14.6022 18.3333 9.99984 18.3333C5.39746 18.3333 1.6665 14.6023 1.6665 9.99996C1.6665 5.39759 5.39746 1.66663 9.99984 1.66663C14.6022 1.66663 18.3332 5.39759 18.3332 9.99996Z"
+					stroke="#AAA4C2"
+					strokeWidth="1.67"
+					strokeLinecap="round"
+					strokeLinejoin="round"
+				/>
+			</svg>
+		</div>
+	);
+};
+
+export default AlertCircle;
