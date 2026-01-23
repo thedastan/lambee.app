@@ -26,9 +26,9 @@ const ReferralProgram = () => {
 	}, []);
 
 	const referralLink = profile?.referral_code
-		? `${window.location.origin}?ref=${profile.referral_code}`
-		: "";
-
+	? `${window.location.origin}/auth/registration?ref=${profile.referral_code}`
+	: "";
+	
 	const handleInviteFriends = async () => {
 		if (!profile?.referral_code) {
 			toast.error("Реферальный код недоступен");
