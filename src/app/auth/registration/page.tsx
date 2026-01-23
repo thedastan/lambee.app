@@ -1,6 +1,10 @@
-import Registration from '@/components/auth/registration/Registration';
-import React from 'react';
+import { Suspense } from "react";
+import Registration from "@/components/auth/registration/Registration";
 
-const RegistrationPage = () => <Registration/>
-
-export default RegistrationPage;
+export default function RegistrationPage() {
+  return (
+    <Suspense fallback={<div>Загрузка...</div>}>
+      <Registration />
+    </Suspense>
+  );
+}
