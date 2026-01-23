@@ -11,7 +11,7 @@ import Button from "@/components/ui/button/Button";
 import { PAGE } from "@/config/pages/public-page.config";
 import { PinInput } from "react-input-pin-code";
 import { useSendCode, useVerifyCode } from "@/redux/hooks/useAuth";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation"; // ← добавлен useSearchParams
 import Input from "@/components/ui/input/Input";
 import { toast } from "alert-go";
 
@@ -26,11 +26,21 @@ const Registration = () => {
 	const [isTimerActive, setIsTimerActive] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
+	// ✅ Состояние для реферального кода — теперь только внутреннее
+	const [referralCode, setReferralCode] = useState<string>("");
+
 	const { sendCode, isSending } = useSendCode();
 	const { verifyCode, isVerifying } = useVerifyCode();
 	const router = useRouter();
+	const searchParams = useSearchParams(); // ← читаем URL-параметры
 
-	const [referralCode, setReferralCode] = useState("");
+	// ✅ При монтировании — читаем ?ref=...
+	useEffect(() => {
+		const refParam = searchParams.get("ref");
+		if (refParam) {
+			setReferralCode(refParam.trim());
+		}
+	}, [searchParams]);
 
 	useEffect(() => {
 		let timer: NodeJS.Timeout;
@@ -67,7 +77,7 @@ const Registration = () => {
 				iso_code_id: 1,
 				phone: cleanPhone,
 				password: trimmedPassword,
-				referral_code: referralCode || null, // Передаем referral_code, если оно заполнено
+				referral_code: referralCode || null, // ← передаём даже если не видно
 			});
 			setStep(2);
 			setResendTimer(60);
@@ -195,7 +205,7 @@ const Registration = () => {
 														setPhone(`+996${digitsOnly}`);
 													}
 												}}
-												className="w-full h-[48px] rounded-tl-none rounded-bl-none rounded-[8px] border border-[#E4E4E7] outline-none px-3  "
+												className="w-full h-[48px] rounded-tl-none rounded-bl-none rounded-[8px] border border-[#E4E4E7] outline-none px-3"
 											/>
 										</div>
 									</div>
@@ -209,13 +219,7 @@ const Registration = () => {
 										className="w-full p-3 border border-gray-300 rounded mt-2"
 									/>
 
-									<Input
-										type="text"
-										placeholder="Реферальный код (необязательно)"
-										value={referralCode}
-										onChange={(e) => setReferralCode(e.target.value)}
-										className="w-full p-3 border border-gray-300 rounded mt-2"
-									/>
+									{/* ❌ УДАЛЕНО: поле ввода реферального кода */}
 
 									<Description className="mt-6 !text-[12px] pb-6 text-start">
 										Регистрируясь вы принимаете{" "}
@@ -267,7 +271,7 @@ const Registration = () => {
 												width: "64px",
 												height: "64px",
 												border: "1px solid #CDD5DF",
-												borderRadius: "8  ",
+												borderRadius: "8px",
 												fontSize: "20px",
 												textAlign: "center",
 												background: "transparent",
