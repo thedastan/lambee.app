@@ -3,7 +3,7 @@ import Registration from "@/components/auth/registration/Registration";
 
 export default function RegistrationPage() {
   return (
-    <Suspense fallback={<div>Загрузка...</div>}>
+    <Suspense fallback={<div></div>}>
       <Registration />
     </Suspense>
   );
