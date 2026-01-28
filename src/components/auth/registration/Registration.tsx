@@ -117,6 +117,7 @@ const Registration = () => {
 				iso_code_id: 1,
 				phone: cleanPhone,
 				password: password.trim(),
+				referral_code: referralCode, // ← КРИТИЧЕСКИ ВАЖНО: добавлено поле
 				code: fullCode,
 			});
 

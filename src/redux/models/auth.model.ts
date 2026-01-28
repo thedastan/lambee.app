@@ -10,13 +10,14 @@ export interface IAuthSendCodeRequest {
 	iso_code_id: number;
 	phone: string;
 	password: string;
-	referral_code:string | null;
+	referral_code: string | null;
 }
 
 export interface IAuthVerifyCodeRequest {
 	iso_code_id: number;
 	phone: string;
-	password: string; // ← ДОБАВЛЕНО
+	password: string;
+	referral_code: string;
 	code: string;
 }
 
@@ -44,43 +45,42 @@ export interface IsoCode {
 	created_at: string;
 }
 
-
 // src/api/auth/auth.model.ts
 
 export interface IForgotSendCodeRequest {
-  iso_code_id: number;
-  phone: string;
+	iso_code_id: number;
+	phone: string;
 }
 
 export interface IForgotVerifyCodeRequest {
-  iso_code_id: number;
-  phone: string;
-  code: string;
+	iso_code_id: number;
+	phone: string;
+	code: string;
 }
 
 export interface IForgotResetPasswordRequest {
-  iso_code_id: number;
-  phone: string;
-  password: string;
-  code: string;
+	iso_code_id: number;
+	phone: string;
+	password: string;
+	code: string;
 }
 
 export interface IForgotSendCodeResponse {
-  detail: {
-    message: string;
-  };
+	detail: {
+		message: string;
+	};
 }
 
 export interface IForgotVerifyCodeResponse {
-  detail: {
-    message: string;
-  };
+	detail: {
+		message: string;
+	};
 }
 
 export interface IForgotResetPasswordResponse {
-  detail: {
-    access: string;
-    refresh: string;
-    new_user: boolean;
-  };
+	detail: {
+		access: string;
+		refresh: string;
+		new_user: boolean;
+	};
 }
