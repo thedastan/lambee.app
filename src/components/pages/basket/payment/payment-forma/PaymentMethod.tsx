@@ -85,7 +85,7 @@ const PaymentMethodSelector = ({
 										}`}></span>
 								</span>
 								<span className="text-[14px] py-2">
-									Баланс Lambee {balanceAmount > 0 ?  ("- " + balanceAmount) : ""}
+									Баланс Lambee {balanceAmount > 0 ?  ("- " + balanceAmount + " сом") : ""}
 								</span>
 							</div>
 							
@@ -121,7 +121,7 @@ const PaymentMethodSelector = ({
 										}`}></span>
 								</span>
 								<span className="text-[14px] py-2">
-									Бонусы - {bonusAmount}
+									Бонусы - {bonusAmount} сом
 								</span>
 							</div>
 						</div>
