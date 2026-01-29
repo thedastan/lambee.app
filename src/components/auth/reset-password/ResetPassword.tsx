@@ -45,57 +45,32 @@ const ResetPassword = () => {
 		return () => clearTimeout(timer);
 	}, [resendTimer, isTimerActive]);
 
+	// ✅ Автоматическая отправка кода после заполнения всех 4 полей
+	useEffect(() => {
+		if (step === 2 && code.join("").length === 4 && !isVerifying && !error) {
+			handleVerifyCode();
+		}
+	}, [code, step, isVerifying, error]);
+
+	useEffect(() => {
+		if (error) {
+			toast.error(error, { position: "top-center" });
+		}
+	}, [error]);
+
 	const isValidKyrgyzPhone = (value: string): boolean => {
 		return /^\+996[0-9]{9}$/.test(value);
 	};
 
-	// Шаг 1: отправка кода
-	const handleNext = async () => {
-		setError(null);
-		if (!isValidKyrgyzPhone(phone)) {
-			setError("Введите корректный номер (+996XXXXXXXXX)");
-			return;
-		}
-
-		const cleanPhone = phone.replace(/^\+996/, "");
-
-		try {
-			await sendForgotCode({
-				iso_code_id: 1,
-				phone: cleanPhone,
-			});
-			setStep(2);
-			setResendTimer(60);
-			setIsTimerActive(true);
-		} catch (err: unknown) {
-			let msg = "Не удалось отправить SMS";
-			if (
-				err &&
-				typeof err === "object" &&
-				"response" in err &&
-				err.response &&
-				typeof err.response === "object" &&
-				"data" in err.response &&
-				err.response.data &&
-				typeof err.response.data === "object" &&
-				"detail" in err.response.data
-			) {
-				msg = String(err.response.data.detail);
-			}
-			setError(msg);
-		}
-	};
-
-	// Шаг 2: проверка кода
-	const handleSubmitCode = async (e: React.FormEvent) => {
-		e.preventDefault();
-		setError(null);
+	// ✅ Вынесена логика верификации кода
+	const handleVerifyCode = async () => {
 		const fullCode = code.join("");
 		if (fullCode.length !== 4) {
 			setError("Введите 4-значный код");
 			return;
 		}
 
+		setError(null);
 		const cleanPhone = phone.replace(/^\+996/, "");
 
 		try {
@@ -122,6 +97,50 @@ const ResetPassword = () => {
 			}
 			setError(msg);
 		}
+	};
+
+	// Шаг 1: отправка кода
+	const handleNext = async () => {
+		setError(null);
+		if (!isValidKyrgyzPhone(phone)) {
+			setError("Введите корректный номер (+996XXXXXXXXX)");
+			return;
+		}
+
+		const cleanPhone = phone.replace(/^\+996/, "");
+
+		try {
+			await sendForgotCode({
+				iso_code_id: 1,
+				phone: cleanPhone,
+			});
+			setStep(2);
+			setResendTimer(60);
+			setIsTimerActive(true);
+			setCode(["", "", "", ""]); // ✅ Сброс кода после перехода на шаг 2
+		} catch (err: unknown) {
+			let msg = "Не удалось отправить SMS";
+			if (
+				err &&
+				typeof err === "object" &&
+				"response" in err &&
+				err.response &&
+				typeof err.response === "object" &&
+				"data" in err.response &&
+				err.response.data &&
+				typeof err.response.data === "object" &&
+				"detail" in err.response.data
+			) {
+				msg = String(err.response.data.detail);
+			}
+			setError(msg);
+		}
+	};
+
+	// Шаг 2: проверка кода (использует новую функцию)
+	const handleSubmitCode = async (e: React.FormEvent) => {
+		e.preventDefault();
+		await handleVerifyCode();
 	};
 
 	// Шаг 3: сброс пароля
@@ -171,11 +190,16 @@ const ResetPassword = () => {
 	const handleResendCode = () => {
 		setStep(1);
 		setError(null);
+		setCode(["", "", "", ""]); // ✅ Сброс кода при повторной отправке
 	};
 
-	const handlePinChange = (_: string | string[], __: number, values: string[]) => {
+	const handlePinChange = (
+		_: string | string[],
+		__: number,
+		values: string[]
+	) => {
 		setCode(values);
-		if (error) setError(null);
+		if (error) setError(null); // ✅ Сброс ошибки при изменении кода
 	};
 
 	return (
@@ -188,14 +212,9 @@ const ResetPassword = () => {
 					Восстановление аккаунта
 				</Link>
 
-				<div className="w-full h-full flex justify-center md:items-center items-start md:mt-0 mt-10">
-					<div className="max-w-[440px] w-full md:bg-[#FAFAFA] bg-transparent rounded-[16px] mx-auto p-[20px]">
-						{error && (
-							<div className="mb-4 p-3 bg-red-100 text-red-700 rounded text-sm text-center">
-								{error}
-							</div>
-						)}
-
+				<div className="w-full h-full   flex justify-center md:items-center items-start md:mt-0 mt-10">
+					<div className="max-w-[440px] h-[100%] md:h-[390px] w-full md:bg-[#FAFAFA] bg-transparent rounded-[16px] mx-auto p-[20px]">
+					 
 						<form
 							onSubmit={
 								step === 2
@@ -204,9 +223,9 @@ const ResetPassword = () => {
 									? handleSubmitPassword
 									: undefined
 							}
-							className="space-y-4 md:bg-white bg-[#f0f7ff] rounded-[16px] md:p-4 p-0">
+							className="space-y-4 md:bg-white bg-[#f0f7ff] h-full rounded-[16px] md:p-4 p-0">
 							{step === 1 && (
-								<div className="flex flex-col gap-2">
+								<div className="flex flex-col gap-2 md:justify-center justify-start h-full">
 									<TitleComponent className="text-center">
 										Введите номер телефона
 									</TitleComponent>
@@ -217,7 +236,7 @@ const ResetPassword = () => {
 									{/* === КАСТОМНЫЙ ТЕЛЕФОН БЕЗ PHONE-GO === */}
 									<div className="w-full">
 										<div className="relative flex items-center">
-										<span className="text-gray-700 h-[48px] bg-white rounded-tr-none rounded-br-none border-t border-b border-l border-[#E4E4E7] rounded-[8px] flex justify-center items-center px-3 text-[16px] font-medium min-w-[70px]">
+											<span className="text-gray-700 h-[48px] bg-white rounded-tr-none rounded-br-none border-t border-b border-l border-[#E4E4E7] rounded-[8px] flex justify-center items-center px-3 text-[16px] font-medium min-w-[70px]">
 												+996
 											</span>
 											<input
@@ -231,7 +250,6 @@ const ResetPassword = () => {
 														setPhone(`+996${digitsOnly}`);
 													}
 												}}
-												 
 												className="w-full h-[48px] rounded-tl-none rounded-bl-none rounded-[8px] border border-[#E4E4E7] outline-none px-3  "
 											/>
 										</div>
@@ -240,49 +258,49 @@ const ResetPassword = () => {
 									<Button
 										type="button"
 										onClick={handleNext}
-										disabled={!phone || !isValidKyrgyzPhone(phone) || isSending}>
+										disabled={
+											!phone || !isValidKyrgyzPhone(phone) || isSending
+										}>
 										{isSending ? "Отправка..." : "Получить код"}
 									</Button>
 								</div>
 							)}
 
 							{step === 2 && (
-								<div className="flex flex-col gap-6 text-center">
-									<TitleComponent>Введите код из SMS</TitleComponent>
+								<div className="flex flex-col gap-6 md:gap-1 text-center md:justify-center justify-between   h-full">
+									<div className="flex flex-col gap-3 text-center md:mt-0 mt-10">
+										<TitleComponent>Введите код из SMS</TitleComponent>
+										<Description>отправленный на номер {phone}</Description>
 
-									<div className="flex justify-center">
-										<PinInput
-											values={code}
-											onChange={handlePinChange}
-											type="number"
-											inputClassName="pin-input-field"
-											mask={false}
-											placeholder=""
-											inputStyle={{
-												width: "64px",
-												height: "64px",
-												border: "1px solid #CDD5DF",
-												borderRadius: "8px",
-												fontSize: "20px",
-												textAlign: "center",
-												background: "transparent",
-												margin: "0 2px",
-												boxShadow: "none",
-												backgroundColor: "white",
-											}}
-										/>
+										<div className="flex justify-center">
+											<PinInput
+												values={code}
+												onChange={handlePinChange}
+												type="number"
+												inputClassName="pin-input-field"
+												mask={false}
+												placeholder=""
+												inputStyle={{
+													width: "64px",
+													height: "64px",
+													border: "1px solid #CDD5DF",
+													borderRadius: "8px",
+													fontSize: "20px",
+													textAlign: "center",
+													background: "transparent",
+													margin: "0 2px",
+													boxShadow: "none",
+													backgroundColor: "white",
+												}}
+											/>
+										</div>
 									</div>
-
-									<Button
-										type="submit"
-										disabled={isVerifying || code.some((c) => c === "")}>
-										{isVerifying ? "Проверка..." : "Подтвердить"}
-									</Button>
 
 									<div className="text-center mt-4">
 										{isTimerActive ? (
 											<Description className="text-[#0071E3]">
-												Отправить повторно {String(resendTimer).padStart(2, "0")}
+												Отправить повторно{" "}
+												{String(resendTimer).padStart(2, "0")}
 											</Description>
 										) : (
 											<button
@@ -297,10 +315,10 @@ const ResetPassword = () => {
 							)}
 
 							{step === 3 && (
-								<div className="flex flex-col gap-6 text-center">
+								<div className="flex flex-col gap-2 md:justify-center justify-start h-full text-center">
 									<TitleComponent>Создайте новый пароль</TitleComponent>
 									<Description className="text-[#515151] mb-2">
-										Придумайте пароль для защиты <br /> вашего аккаунта
+										Придумайте пароль для защиты вашего аккаунта
 									</Description>
 
 									<Input

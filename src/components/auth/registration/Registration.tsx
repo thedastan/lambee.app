@@ -11,7 +11,7 @@ import Button from "@/components/ui/button/Button";
 import { PAGE } from "@/config/pages/public-page.config";
 import { PinInput } from "react-input-pin-code";
 import { useSendCode, useVerifyCode } from "@/redux/hooks/useAuth";
-import { useRouter, useSearchParams } from "next/navigation"; // ← добавлен useSearchParams
+import { useRouter, useSearchParams } from "next/navigation";
 import Input from "@/components/ui/input/Input";
 import { toast } from "alert-go";
 
@@ -52,74 +52,48 @@ const Registration = () => {
 		return () => clearTimeout(timer);
 	}, [resendTimer, isTimerActive]);
 
+	// ✅ Автоматическая отправка кода после заполнения всех 4 полей
+	useEffect(() => {
+		if (step === 2 && code.join("").length === 4 && !isVerifying && !error) {
+			handleVerify();
+		}
+	}, [code, step, isVerifying, error]);
+
+	useEffect(() => {
+		if (error) {
+			toast.error(error, { position: "top-center" });
+		}
+	}, [error]);
+
 	const isValidKyrgyzPhone = (value: string): boolean => {
 		return /^\+996[0-9]{9}$/.test(value);
 	};
 
-	const handleNext = async () => {
-		setError(null);
-
-		if (!isValidKyrgyzPhone(phone)) {
-			setError("Введите корректный номер (+996XXXXXXXXX)");
-			return;
-		}
-
-		const trimmedPassword = password.trim();
-		if (!trimmedPassword) {
-			setError("Введите пароль");
-			return;
-		}
-
-		const cleanPhone = phone.replace(/^\+996/, "");
-
-		try {
-			await sendCode({
-				iso_code_id: 1,
-				phone: cleanPhone,
-				password: trimmedPassword,
-				referral_code: referralCode || null, // ← передаём даже если не видно
-			});
-			setStep(2);
-			setResendTimer(60);
-			setIsTimerActive(true);
-		} catch (err: unknown) {
-			let msg = "Не удалось отправить SMS";
-			if (
-				err &&
-				typeof err === "object" &&
-				"response" in err &&
-				err.response &&
-				typeof err.response === "object" &&
-				"data" in err.response &&
-				err.response.data &&
-				typeof err.response.data === "object" &&
-				"detail" in err.response.data
-			) {
-				msg = String(err.response.data.detail);
-			}
-			setError(msg);
-		}
-	};
-
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-		setError(null);
+	const handleVerify = async () => {
 		const fullCode = code.join("");
 		if (fullCode.length !== 4) {
 			setError("Введите 4-значный код");
 			return;
 		}
 
+		setError(null);
 		const cleanPhone = phone.replace(/^\+996/, "");
 
+		// ✅ Формируем объект без лишних полей
+		const payload: any = {
+			iso_code_id: 1,
+			phone: cleanPhone,
+			password: password.trim(),
+			code: fullCode,
+		};
+
+		// ✅ Добавляем реферальный код только если он есть
+		if (referralCode) {
+			payload.referral_code = referralCode;
+		}
+
 		try {
-			const result = await verifyCode({
-				iso_code_id: 1,
-				phone: cleanPhone,
-				password: password.trim(),
-				referral_code: referralCode, // ← КРИТИЧЕСКИ ВАЖНО: добавлено поле
-				code: fullCode,
-			});
+			const result = await verifyCode(payload);
 
 			localStorage.setItem("accessToken", result.detail.access);
 			localStorage.setItem("refreshToken", result.detail.refresh);
@@ -149,9 +123,68 @@ const Registration = () => {
 		}
 	};
 
+	const handleNext = async () => {
+		setError(null);
+
+		if (!isValidKyrgyzPhone(phone)) {
+			setError("Введите корректный номер (+996XXXXXXXXX)");
+			return;
+		}
+
+		const trimmedPassword = password.trim();
+		if (!trimmedPassword) {
+			setError("Введите пароль");
+			return;
+		}
+
+		const cleanPhone = phone.replace(/^\+996/, "");
+
+		// ✅ Формируем объект без лишних полей
+		const payload: any = {
+			iso_code_id: 1,
+			phone: cleanPhone,
+			password: trimmedPassword,
+		};
+
+		// ✅ Добавляем реферальный код только если он есть
+		if (referralCode) {
+			payload.referral_code = referralCode;
+		}
+
+		try {
+			await sendCode(payload);
+			setStep(2);
+			setResendTimer(60);
+			setIsTimerActive(true);
+			setCode(["", "", "", ""]); // ✅ Сброс кода после перехода на шаг 2
+		} catch (err: unknown) {
+			let msg = "Не удалось отправить SMS";
+			if (
+				err &&
+				typeof err === "object" &&
+				"response" in err &&
+				err.response &&
+				typeof err.response === "object" &&
+				"data" in err.response &&
+				err.response.data &&
+				typeof err.response.data === "object" &&
+				"detail" in err.response.data
+			) {
+				msg = String(err.response.data.detail);
+			}
+			setError(msg);
+		}
+	};
+
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		await handleVerify();
+	};
+
 	const handleResendCode = () => {
 		setStep(1);
 		setError(null);
+		setCode(["", "", "", ""]); // ✅ Сброс кода при повторной отправке
 	};
 
 	const handlePinChange = (
@@ -160,7 +193,7 @@ const Registration = () => {
 		values: string[]
 	) => {
 		setCode(values);
-		if (error) setError(null);
+		if (error) setError(null); // ✅ Сброс ошибки при изменении кода
 	};
 
 	return (
@@ -173,16 +206,10 @@ const Registration = () => {
 					Регистрация
 				</Link>
 				<div className="w-full h-full flex justify-center md:items-center items-start md:mt-0 mt-10">
-					<div className="max-w-[440px] w-full md:bg-[#FAFAFA] bg-transparent rounded-[16px] mx-auto p-[20px]">
-						{error && (
-							<div className="mb-4 p-3 bg-red-100 text-red-700 rounded text-sm text-center">
-								{error}
-							</div>
-						)}
-
+					<div className="max-w-[440px] w-full h-full md:h-[390px] md:bg-[#FAFAFA] bg-transparent rounded-[16px] mx-auto p-[20px]">
 						<form
 							onSubmit={handleSubmit}
-							className="space-y-4 md:bg-white bg-[#f0f7ff] rounded-[16px] md:p-4 p-0">
+							className="space-y-4 md:bg-white bg-[#f0f7ff] h-full rounded-[16px] md:p-4 p-0">
 							{step === 1 && (
 								<div className="flex flex-col gap-2 text-center">
 									<TitleComponent>Введите номер и пароль</TitleComponent>
@@ -257,30 +284,33 @@ const Registration = () => {
 							)}
 
 							{step === 2 && (
-								<div className="flex flex-col gap-6 text-center mt-20">
-									<TitleComponent>Введите код из SMS</TitleComponent>
+								<div className="flex flex-col gap-6 md:gap-1 text-center md:justify-center justify-between   h-full">
+									<div className="flex flex-col gap-3 text-center md:mt-0 mt-10">
+										<TitleComponent>Введите код из SMS</TitleComponent>
+										<Description>отправленный на номер {phone}</Description>
 
-									<div className="flex justify-center">
-										<PinInput
-											values={code}
-											onChange={handlePinChange}
-											type="number"
-											inputClassName="pin-input-field"
-											mask={false}
-											placeholder=""
-											inputStyle={{
-												width: "64px",
-												height: "64px",
-												border: "1px solid #CDD5DF",
-												borderRadius: "8px",
-												fontSize: "20px",
-												textAlign: "center",
-												background: "transparent",
-												margin: "0 2px",
-												boxShadow: "none",
-												backgroundColor: "white",
-											}}
-										/>
+										<div className="flex justify-center">
+											<PinInput
+												values={code}
+												onChange={handlePinChange}
+												type="number"
+												inputClassName="pin-input-field"
+												mask={false}
+												placeholder=""
+												inputStyle={{
+													width: "64px",
+													height: "64px",
+													border: "1px solid #CDD5DF",
+													borderRadius: "8px",
+													fontSize: "20px",
+													textAlign: "center",
+													background: "transparent",
+													margin: "0 2px",
+													boxShadow: "none",
+													backgroundColor: "white",
+												}}
+											/>
+										</div>
 									</div>
 
 									<div className="text-center mt-4">
@@ -298,17 +328,15 @@ const Registration = () => {
 											</button>
 										)}
 									</div>
-
-									<Button
-										type="submit"
-										disabled={isVerifying || code.some((c) => c === "")}>
-										{isVerifying ? "Проверка..." : "Подтвердить"}
-									</Button>
 								</div>
 							)}
 						</form>
 					</div>
 				</div>
+			</div>
+
+			<div className="">
+				 
 			</div>
 
 			<ImageSwipwr />
