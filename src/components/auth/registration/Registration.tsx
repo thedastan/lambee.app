@@ -311,22 +311,22 @@ const Registration = () => {
 												}}
 											/>
 										</div>
-									</div>
 
-									<div className="text-center mt-4">
-										{isTimerActive ? (
-											<Description className="text-[#0071E3]">
-												Отправить повторно{" "}
-												{String(resendTimer).padStart(2, "0")}
-											</Description>
-										) : (
-											<button
-												type="button"
-												onClick={handleResendCode}
-												className="text-[#0071E3] underline">
-												Отправить повторно
-											</button>
-										)}
+										<div className="text-center mt-2">
+											{isTimerActive ? (
+												<Description className="text-[#0071E3]">
+													Отправить повторно{" "} 
+													{String(resendTimer).padStart(2, "0")} с
+												</Description>
+											) : (
+												<button
+													type="button"
+													onClick={handleResendCode}
+													className="text-[#0071E3] underline">
+													Отправить повторно
+												</button>
+											)}
+										</div>
 									</div>
 								</div>
 							)}
@@ -335,9 +335,7 @@ const Registration = () => {
 				</div>
 			</div>
 
-			<div className="">
-				 
-			</div>
+			<div className=""></div>
 
 			<ImageSwipwr />
 		</section>

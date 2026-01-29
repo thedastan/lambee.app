@@ -294,13 +294,13 @@ const ResetPassword = () => {
 												}}
 											/>
 										</div>
-									</div>
+									 
 
-									<div className="text-center mt-4">
+									<div className="text-center mt-2">
 										{isTimerActive ? (
 											<Description className="text-[#0071E3]">
 												Отправить повторно{" "}
-												{String(resendTimer).padStart(2, "0")}
+												{String(resendTimer).padStart(2, "0")} с
 											</Description>
 										) : (
 											<button
@@ -310,6 +310,7 @@ const ResetPassword = () => {
 												Отправить повторно
 											</button>
 										)}
+									</div>
 									</div>
 								</div>
 							)}
