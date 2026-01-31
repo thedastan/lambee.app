@@ -170,3 +170,112 @@ html {
 .react-datepicker-wrapper {
 	width: 100%;
 }	
+
+///
+ /* --- Стили для DatePicker (Модалка и Выравнивание) --- */
+
+/* Контейнер-портал (затемнение фона) */
+.react-datepicker__portal {
+  z-index: 9999 !important;
+  background-color: rgba(0, 0, 0, 0.4) !important;
+  backdrop-filter: blur(2px);
+}
+
+/* Основное окно календаря */
+.react-datepicker-custom {
+  font-family: 'Inter', sans-serif !important;
+  border: none !important;
+  border-radius: 20px !important;
+  padding: 10px 5px !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+  background-color: white !important;
+}
+
+/* Шапка календаря: Месяц + Стрелки в один ряд */
+.react-datepicker__header {
+  background-color: white !important;
+  border-bottom: none !important;
+  padding: 10px 0 0 0 !important;
+  position: relative;
+}
+
+/* Название месяца и года */
+.react-datepicker__current-month {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  height: 40px !important; /* Высота для выравнивания */
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  color: #1D2939 !important;
+  text-transform: capitalize;
+}
+
+/* Общие стили для кнопок навигации */
+.react-datepicker__navigation {
+  top: 15px !important; /* Выравнивание по вертикали с текстом */
+  height: 32px !important;
+  width: 32px !important;
+}
+
+.react-datepicker__navigation--previous {
+  left: 15px !important;
+	margin-top: 10px !important;
+
+}
+
+.react-datepicker__navigation--next {
+  right: 15px !important;
+	margin-top: 10px !important;
+}
+
+/* Иконки стрелок */
+.react-datepicker__navigation-icon::before {
+  border-color: #344054 !important;
+  border-width: 2px 2px 0 0 !important;
+  width: 9px !important;
+  height: 9px !important;
+}
+
+/* Дни недели */
+.react-datepicker__day-names {
+  margin-top: 10px !important;
+}
+
+.react-datepicker__day-name {
+  color: #667085 !important;
+  width: 2.8rem !important;
+  font-weight: 500;
+  font-size: 0.85rem !important;
+}
+
+/* Ячейки дней */
+.react-datepicker__day {
+  width: 2.8rem !important;
+  line-height: 2.8rem !important;
+  margin: 0.1rem !important;
+  border-radius: 50% !important;
+  color: #1D2939 !important;
+}
+
+/* Выделенный день */
+.react-datepicker__day--selected, 
+.react-datepicker__day--keyboard-selected {
+  background-color: #A8A4C4 !important; 
+  color: white !important;
+}
+
+.react-datepicker__day:hover {
+  background-color: #F2F4F7 !important;
+}
+
+/* Убираем хвостик (треугольник) */
+.react-datepicker__triangle {
+  display: none !important;
+}
+
+/* Стиль инпута при фокусе (когда пишем) */
+.react-datepicker-wrapper input:focus {
+  border-color: #A8A4C4 !important;
+  box-shadow: 0 0 0 1px #A8A4C4;
+}
