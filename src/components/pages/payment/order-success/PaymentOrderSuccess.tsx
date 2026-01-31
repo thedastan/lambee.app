@@ -15,11 +15,12 @@ const PaymentOrderSuccess = () => {
 							{" "}
 							Вы успешно оформили заказ!
 						</h1>
+						<p className="text-[#515151] text-[14px] font-[500]  ">Также действует кэшбек <span className="text-[#0071E3]">5%!</span></p>
 					 
 					</div>
 
 					<LinkButton href="/" className="w-full mt-2">
-						Вернуться на главную
+					Продолжить
 					</LinkButton>
 				</div>
 			</div>
