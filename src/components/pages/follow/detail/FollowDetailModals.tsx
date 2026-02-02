@@ -1,5 +1,4 @@
 import Button from "@/components/ui/button/Button";
-import DateInput from "@/components/ui/input/DateInput";
 import Input from "@/components/ui/input/Input";
 import Modal from "@/components/ui/modal/Modal";
 import DeliveryFrequencySelect from "@/components/ui/select/DeliveryFrequencySelect";
@@ -50,13 +49,7 @@ const FollowDetailModals: React.FC<FollowDetailModalsProps> = ({
 				onClose={() => setIsModalDateOpen(false)}
 				title="Изменить дату доставки">
 				<div className="flex flex-col gap-4">
-					<DateInput
-						label="Выберите дату доставки"
-						required
-						selected={birthDate}
-						onChange={(date) => setBirthDate(date)}
-						placeholderText="ДД.ММ.ГГГГ"
-					/>
+				 
 
 					<div className="border-[#E4E4E7] border-b w-full h-[1px]" />
 
