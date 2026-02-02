@@ -11,7 +11,6 @@ import Modal from "@/components/ui/modal/Modal";
 import CustomRadioGroup from "@/components/ui/radio-choice/CustomRadioGroup";
 import Input from "@/components/ui/input/Input";
 import "react-datepicker/dist/react-datepicker.css";
-import DateInput from "@/components/ui/input/DateInput";
 import Image from "next/image";
 
 
@@ -147,13 +146,7 @@ const MyChildren = () => {
 					onClose={closeModal}
 					title="Дата рождения ребёнка">
 					<div className="flex flex-col gap-4">
-						<DateInput
-							label="Дата рождения"
-							required
-							selected={birthDate}
-							onChange={(date) => setBirthDate(date)}
-							placeholderText="ДД.ММ.ГГГГ"
-						/>
+						 
 
 						<div className="flex gap-3 w-full">
 							<Button
