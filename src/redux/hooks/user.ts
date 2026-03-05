@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { userService } from "../services/user.service";
-import { IUpdateProfileRequest, IUserProfile } from "../models/user.model";
+import { IShippingAddress, IUpdateProfileRequest, IUserProfile } from "../models/user.model";
 
 export function useUserProfile() {
   const hasToken =
@@ -58,9 +58,8 @@ export function useCreateShippingAddress() {
   const queryClient = useQueryClient();
 
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: (address: string) => userService.createShippingAddress(address),
+    mutationFn: (data: IShippingAddress) => userService.createShippingAddress(data),
     onSuccess: () => {
-      // Обновляем данные профиля после добавления адреса
       queryClient.invalidateQueries({ queryKey: ["userProfile"] });
     },
   });

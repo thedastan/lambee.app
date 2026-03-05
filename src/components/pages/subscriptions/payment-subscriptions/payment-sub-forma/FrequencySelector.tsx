@@ -1,91 +1,140 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
+import { useFrequencies } from "@/redux/hooks/frequencies";
+import Modal from "@/components/ui/modal/Modal"; 
+import { FiChevronDown, FiCheck } from "react-icons/fi"; // иконки
 
-type Frequency = "weekly" | "biweekly" | "triweekly" | "monthly";
-
-const FREQUENCY_OPTIONS: { value: Frequency; label: string }[] = [
-	{ value: "weekly", label: "Каждую неделю" },
-	{ value: "biweekly", label: "каждые 2 недели" },
-	{ value: "triweekly", label: "каждые 3 недели" },
-	{ value: "monthly", label: "каждый месяц" },
+const WEEKDAYS = [
+  { id: 0, label: "Пн" },
+  { id: 1, label: "Вт" },
+  { id: 2, label: "Ср" },
+  { id: 3, label: "Чт" },
+  { id: 4, label: "Пт" },
+  { id: 5, label: "Сб" },
+  { id: 6, label: "Вс" },
 ];
 
 interface FrequencySelectorProps {
-	selectedFrequency: Frequency | null;
-	onChange: (frequency: Frequency) => void;
+  selectedFrequency: { id: number; day: number } | null;
+  onChange: (data: { id: number; day: number }) => void;
 }
 
 export default function FrequencySelector({
-	selectedFrequency,
-	onChange,
+  selectedFrequency,
+  onChange,
 }: FrequencySelectorProps) {
-	const [isOpen, setIsOpen] = useState(false);
-	const dropdownRef = useRef<HTMLDivElement>(null);
+  const { data: freqData, isLoading } = useFrequencies();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-	const getSelectedLabel = () => {
-		const option = FREQUENCY_OPTIONS.find((opt) => opt.value === selectedFrequency);
-		return option ? option.label : "Выберите частоту";
-	};
+  const frequencyOptions = freqData?.detail || [];
+  
+  // Текущая выбранная частота (объект из API)
+  const currentOption = frequencyOptions.find((opt) => opt.id === selectedFrequency?.id);
 
-	const handleSelect = (value: Frequency) => {
-		onChange(value);
-		setIsOpen(false);
-	};
+  const handleSelectFreq = (freqId: number) => {
+    onChange({ id: freqId, day: selectedFrequency?.day ?? 0 });
+    setIsDropdownOpen(false); // Закрываем только внутренний список
+  };
 
-	// Закрытие при клике вне
-	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-				setIsOpen(false);
-			}
-		};
+  const handleSelectDay = (dayId: number) => {
+    const defaultFreqId = frequencyOptions.length > 0 ? frequencyOptions[0].id : 1;
+    onChange({ id: selectedFrequency?.id ?? defaultFreqId, day: dayId });
+  };
 
-		if (isOpen) {
-			document.addEventListener("mousedown", handleClickOutside);
-		}
+  return (
+    <div className="mb-3 flex flex-col gap-3">
+      {/* 1. Поле вызова модалки */}
+      <div>
+        <label className="block text-[14px] font-medium text-[#515151] mb-2">
+          Частота доставки *
+        </label>
+        <button
+          type="button"
+          onClick={() => setIsModalOpen(true)}
+          className="w-full h-[48px] px-4 border-[#E4E4E7] bg-white rounded-[8px] border text-left flex justify-between items-center"
+        >
+          <span className={selectedFrequency?.id ? "text-black" : "text-gray-400"}>
+            {currentOption?.label || "Выберите частоту"}
+          </span>
+          <FiChevronDown className="text-gray-500" size={20} />
+        </button>
+      </div>
 
-		return () => {
-			document.removeEventListener("mousedown", handleClickOutside);
-		};
-	}, [isOpen]);
+      {/* 2. Выбор дня (плитка под селектором) */}
+      <div className="flex justify-between gap-1">
+        {WEEKDAYS.map((day) => (
+          <button
+            key={day.id}
+            type="button"
+            onClick={() => handleSelectDay(day.id)}
+            className={`flex-1 py-2.5 rounded-md border text-[12px] font-medium transition-all ${
+              selectedFrequency?.day === day.id
+                ? "bg-[#0071E3] text-white border-[#0071E3]"
+                : "bg-white text-gray-600 border-[#E4E4E7]"
+            }`}
+          >
+            {day.label}
+          </button>
+        ))}
+      </div>
 
-	return (
-		<div className="mb-3" ref={dropdownRef}>
-			<label className="block text-[14px] font-medium text-[#515151] mb-2">
-				Частота доставки *
-			</label>
-			<button
-				type="button"
-				onClick={() => setIsOpen(!isOpen)}
-				className="w-full h-[48px] px-4 border-[#E4E4E7] bg-white text-[#000000] rounded-[8px] text-[16px] font-[400] border outline-none transition-all duration-200 text-left flex justify-between items-center"
-			>
-				<span>{getSelectedLabel()}</span>
-				<span className="text-[#515151]">
-					<svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-						<path d="M7.5 11L4 7.5l-1 1L7.5 13 12 8.5l-1-1L7.5 11z" />
-					</svg>
-				</span>
-			</button>
+      {/* 3. Модальное окно (как на фото) */}
+      <Modal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        title="Частота доставки"
+      >
+        <div className="flex flex-col gap-4 py-2">
+          <p className="text-[14px] text-[#515151]">Выберите частоту доставки *</p>
+          
+          <div className="relative">
+            {/* Основной контрол внутри модалки */}
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className={`w-full flex justify-between items-center p-4 border rounded-[12px] transition-all ${
+                isDropdownOpen ? "border-[#0071E3]" : "border-[#E4E4E7]"
+              }`}
+            >
+              <span className="text-[16px]">
+                {currentOption?.label || "Выберите вариант"}
+              </span>
+              <FiChevronDown 
+                className={`transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} 
+                size={22} 
+              />
+            </button>
 
-			{isOpen && (
-				<div className="absolute z-10 mt-1 w-full max-w-[400px] bg-white border border-[#E4E4E7] rounded-[8px] shadow-lg max-h-60 overflow-auto">
-					{FREQUENCY_OPTIONS.map((option) => (
-						<button
-							key={option.value}
-							type="button"
-							onClick={() => handleSelect(option.value)}
-							className={`w-full text-left px-4 py-2 hover:bg-[#f0f0f0] ${
-								selectedFrequency === option.value
-									? "bg-[#e6f0ff] text-[#0071E3] font-medium"
-									: "text-[#515151]"
-							}`}
-						>
-							{option.label}
-						</button>
-					))}
-				</div>
-			)}
-		</div>
-	);
+            {/* Выпадающий список внутри модалки (как на фото) */}
+            {isDropdownOpen && (
+              <div className="mt-2 border absolute w-full border-[#E4E4E7] rounded-[12px] overflow-hidden bg-white shadow-sm">
+                {frequencyOptions.map((opt) => (
+                  <button
+                    key={opt.id}
+                    onClick={() => handleSelectFreq(opt.id)}
+                    className="w-full flex justify-between items-center p-4 hover:bg-gray-50 transition-colors text-left"
+                  >
+                    <span className={`text-[16px] ${selectedFrequency?.id === opt.id ? "text-black" : "text-gray-600"}`}>
+                      {opt.label}
+                    </span>
+                    {selectedFrequency?.id === opt.id && (
+                      <FiCheck className="text-black" size={20} />
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <button
+            onClick={() => setIsModalOpen(false)}
+            className="w-full mt-4 py-4 bg-[#0071E3] text-white rounded-[12px] font-semibold text-[16px]"
+          >
+            Готово
+          </button>
+        </div>
+      </Modal>
+    </div>
+  );
 }
