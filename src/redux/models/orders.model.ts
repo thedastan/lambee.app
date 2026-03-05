@@ -35,6 +35,9 @@ export interface ICreateOneTimeOrderPayload {
 		product_variant_id: number;
 		quantity: number;
 	}[];
-	address: string;
+	city_id: number
+  street: string
 	payment_method: 'finik' | 'balance' | "bonus";
 }
+
+ 
