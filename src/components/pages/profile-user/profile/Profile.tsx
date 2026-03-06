@@ -29,12 +29,15 @@ import { useRouter } from "next/navigation";
 import { toast } from "alert-go";
 import "alert-go/dist/notifier.css";
 import logo from "@/assets/svg/logo.svg";
+import { useAnalyticsSummary } from "@/redux/hooks/analytics";
 
 const Profile = () => {
-	const router = useRouter();
+	 
 	const [isPay, setIsPay] = useState(false);
 
 	const { profile } = useUserProfile();
+
+	const {data:analytic} = useAnalyticsSummary()
 
 	const [amount, setAmount] = useState<string>("");
 	const { mutateAsync: pay, isPending } = useFinikPay();
@@ -126,6 +129,37 @@ const Profile = () => {
 				</div>
 
 				{/* Savings Card */}
+				<div className="border border-[#E4E4E7] bg-[#FFF3E0] flex justify-between items-center rounded-[8px] w-full h-[250px] overflow-hidden">
+					<div className="flex flex-col justify-between items-start gap-6 m-4">
+						<div className="flex flex-col gap-2">
+							<Description className="font-[600]">Потрачено:</Description>
+							<Title>{analytic?.detail.total_saved} c</Title>
+							<div className="flex items-center gap-2">
+								<LogoTransparent />
+								<Description>
+									Разовые <br /> покупки+подписка
+								</Description>
+							</div>
+						</div>
+
+						<div className="flex flex-col gap-2">
+							<Description className="font-[600]">
+								Сэкономлено в общем:
+							</Description>
+							<Title className="text-[#0171E3]">{analytic?.detail.total_spent} с</Title>
+							<div className="flex items-center gap-2">
+								<AiOutlinePercentage color="#0071E3" size={19} />
+								<Description>
+									За розницу вы <br /> потратили бы больше
+								</Description>
+							</div>
+						</div>
+					</div>
+
+					<div className="relative object-cover rounded-tr-[8px] w-[119px] h-[250px] rounded-br-[8px]">
+						<Image fill objectFit="cover" src={img} alt="img" />
+					</div>
+				</div>
 
 				{/* Time Saved */}
 				<div className="border border-[#E4E4E7] bg-white flex justify-between items-center rounded-[8px] w-full h-[130px] overflow-hidden">
@@ -134,7 +168,7 @@ const Profile = () => {
 							<Description className="font-[600]">
 								Сэкономлено времени:
 							</Description>
-							<Title className="text-[#0171E3]">500 часов</Title>
+							<Title className="text-[#0171E3]">{analytic?.detail.time_saved_hours} часов</Title>
 							<div className="flex items-center gap-2">
 								<MdOutlineWatchLater color="#0071E3" size={19} />
 								<Description>

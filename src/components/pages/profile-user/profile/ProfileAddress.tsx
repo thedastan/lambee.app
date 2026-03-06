@@ -123,6 +123,8 @@ const ProfileAddress = () => {
 
   const selectedLabel = addressOptions.find((a) => a.id === selectedAddress)?.label || "Не выбран";
 
+  
+
   return (
     <div>
       {/* Виджет на главной/профиле */}

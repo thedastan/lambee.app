@@ -9,7 +9,6 @@ const HomeComponents = () => {
 	return (
 		<>
 			<PageHeader title="Главная" className="md:flex hidden" />
-
 			<Stories />
 			<Banner />
 			<FollowCardHome />

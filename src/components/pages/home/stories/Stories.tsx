@@ -6,21 +6,25 @@ import { IoMdClose } from "react-icons/io";
 import { AiOutlineSound } from "react-icons/ai";
 import { Description } from "@/components/ui/text/Description";
 import { useStories } from "@/redux/hooks/stories";
-import LinkButton from "@/components/ui/button/LinkButton";
 import Button from "@/components/ui/button/Button";
+import Link from "next/link";
 
 type Story = {
-	id: number;
-	title: string;
-	image: string;
-	content: string;
-	type: "image" | "video";
-	href?: string;
+  id: number;
+  title: string;
+  image: string;
+  content: string;
+  type: "image" | "video";
+  link_url: any;
+  link_text?: any;
+  preview?: string;
+  file?: string;
+  created_at?: string;
+  href?: string; 
 };
 
 const STORAGE_KEY = "viewedStories";
 
-// ✅ Вспомогательная функция для чтения (только при старте)
 const getViewedStoriesFromStorage = (): Set<number> => {
 	if (typeof window === "undefined") return new Set();
 	const data = localStorage.getItem(STORAGE_KEY);
@@ -43,13 +47,11 @@ const Stories = () => {
 	const [muted, setMuted] = useState(true);
 	const videoRef = useRef<HTMLVideoElement>(null);
 
-	// ✅ Храним просмотренные сторисы в состоянии
 	const [viewedStories, setViewedStories] = useState<Set<number>>(new Set());
 
 	const { data, isLoading } = useStories();
 
 
-	// ✅ Инициализируем при монтировании
 	useEffect(() => {
 		setViewedStories(getViewedStoriesFromStorage());
 	}, []);
@@ -62,7 +64,6 @@ const Stories = () => {
 		return "image";
 	};
 
-	// ✅ Обновлённая функция: обновляет и state, и localStorage
 	const markStoryAsViewed = (id: number) => {
 		setViewedStories((prev) => {
 			const newSet = new Set(prev);
@@ -81,6 +82,7 @@ const Stories = () => {
 			title: detail.title,
 			image: detail.preview,
 			content: detail.file,
+			link_url: detail.link_url,
 			type: getFileType(detail.file),
 		};
 		setCurrentStory(story);
@@ -105,7 +107,6 @@ const Stories = () => {
 		if (currentIndex === null) return;
 		const nextIndex = currentIndex + 1;
 		if (nextIndex < data!.detail.length) {
-			// ✅ Помечаем текущий как просмотренный перед переходом
 			if (currentStory) {
 				markStoryAsViewed(currentStory.id);
 			}
@@ -123,7 +124,6 @@ const Stories = () => {
 		}
 	};
 
-	// ... остальные эффекты без изменений ...
 
 	useEffect(() => {
 		if (!isModalOpen || !modalRef.current) return;
@@ -205,14 +205,13 @@ const Stories = () => {
 		);
 	}
 
-	// ✅ Теперь viewedStories — реактивное состояние
 	return (
 		<section className="pt-6">
 			<div
 				className="flex items-start gap-1 overflow-x-auto scrollbar-hide py-1 pl-[calc((100%-96%)/3)] pr-[calc((100%-96%)/3)] pb-3"
 				style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
 				{data?.detail.map((el, index) => {
-					const isViewed = viewedStories.has(el.id); // ✅ реактивно!
+					const isViewed = viewedStories.has(el.id); 
 					return (
 						<div
 							key={el.id}
@@ -244,7 +243,6 @@ const Stories = () => {
 			</div>
 
 			{isModalOpen && currentStory && (
-				// ... модалка без изменений ...
 				<div
 					ref={modalRef}
 					className="fixed inset-0 md:bg-[#131313] bg-black md:py-10 py-0 flex items-center justify-center z-50 touch-none">
@@ -283,11 +281,11 @@ const Stories = () => {
 							</div>
 						</div>
 
-						<div className="absolute bottom-8 left-0 w-full z-30 px-[10px]">
+						<Link href={currentStory.link_url} className="absolute bottom-8 left-0 w-full z-30 px-[10px]">
 							<Button onClick={closeModal} className="w-full">
 								Заказать
 							</Button>
-						</div>
+						</Link>
 
 						<div className="relative flex  h-full   overflow-hidden">
 							{currentStory.type === "image" ? (

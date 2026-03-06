@@ -1,87 +1,57 @@
-// src/components/FollowComponents.tsx
 "use client";
 
-import image from "@/assets/images/Diapers.png";
+import { useState } from "react";
 import FollowCard from "@/components/ui/cards/FollowCard";
 import PageHeader from "@/components/ui/heading/PageHeader";
 import { useSubscriptions } from "@/redux/hooks/useSubscriptions";
-import { useEffect, useState } from "react";
 
 const FollowComponents = () => {
+  // Извлекаем данные. Предполагаем, что хук возвращает объект с полем detail
+  const { subscriptions:data, isLoading } = useSubscriptions();
+  const [openMenuId, setOpenMenuId] = useState<number | null>(null);
 
-	// const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+  if (isLoading) return <div className="p-10 text-center">Загрузка...</div>;
 
-	const { subscriptions, isLoading } = useSubscriptions();
+  // Достаем массив подписок из поля detail
+  const subscriptions = data || [];
 
-	console.log(subscriptions,"subscriptions");
 	
-	if (isLoading) return <div>Загрузка...</div>;
 
-	// useEffect(() => {
-	// 	const handleClickOutside = (e: MouseEvent) => {
-	// 		const target = e.target as HTMLElement;
-	// 		if (
-	// 			target.closest('[data-menu-trigger="true"]') ||
-	// 			target.closest('[data-menu-content="true"]')
-	// 		) {
-	// 			return;
-	// 		}
-	// 		setOpenMenuId(null);
-	// 	};
+  const handleToggleMenu = (id: number) => {
+    setOpenMenuId(openMenuId === id ? null : id);
+  };
 
-	// 	document.addEventListener("click", handleClickOutside);
-	// 	return () => {
-	// 		document.removeEventListener("click", handleClickOutside);
-	// 	};
-	// }, []);
+  const handleAction = (action: string, id: number) => {
+    console.log(`Action: ${action} for subscription: ${id}`);
+    setOpenMenuId(null);
+  };
 
-	// const toggleMenu = (id: number) => {
-	// 	setOpenMenuId(openMenuId === id ? null : id);
-	// };
+  return (
+    <section>
+      <PageHeader
+        title="Мои подписки"
+        description="Экономьте до 25% с нашими пакетами"
+      />
 
-	// const handleAction = (action: string, itemId: number) => {
-	// 	console.log(`Действие: ${action}, ID: ${itemId}`);
-	// 	setOpenMenuId(null);
-	// };
-
-	return (
-		<section>
-			{/* <PageHeader
-				title="Мои подписки"
-				description="Экономьте до 25% с нашими пакетами"
-			/>
-
-			<div className="grid md:grid-cols-3 grid-cols-1 gap-4 p-4">
-				{data
-					? [data].map((el) => (
-							<FollowCard
-								key={el.id}
-								data={el}
-								isOpenMenu={openMenuId === el.id}
-								onToggleMenu={toggleMenu}
-								onAction={handleAction}
-							/>
-					  ))
-					: null}
-			</div> */}
-
-<div>
-			<h2>Мои подписки</h2>
-			{subscriptions.length === 0 ? (
-				<p>У вас нет активных подписок</p>
-			) : (
-				subscriptions.map((sub) => (
-					<div key={sub.id} className="border p-4 mb-3">
-						<p>Адрес: {sub.address}</p>
-						<p>Сумма: {sub.total_amount} сом</p>
-						<p>Статус: {sub.status}</p>
-						<p>Создано: {new Date(sub.created_at).toLocaleDateString("ru-RU")}</p>
-					</div>
-				))
-			)}
-		</div>
-		</section>
-	);
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 grid-cols-1 gap-4 p-4">
+        {subscriptions.length > 0 ? (
+          subscriptions.map((subscription: any) => (
+            <FollowCard 
+              key={subscription.id} 
+              data={subscription}
+              isOpenMenu={openMenuId === subscription.id}
+              onToggleMenu={handleToggleMenu}
+              onAction={handleAction}
+            />
+          ))
+        ) : (
+          <div className="col-span-full text-center py-10 text-gray-500">
+            у вас пока нет активных подписок
+          </div>
+        )}
+      </div>
+    </section>
+  );
 };
 
 export default FollowComponents;
