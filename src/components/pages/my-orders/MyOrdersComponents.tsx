@@ -1,132 +1,72 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import image from "@/assets/images/Diapers.png";
-import FollowCard from "@/components/ui/cards/FollowCard";
-import OrdersCard from "@/components/ui/cards/OrdersCard copy";
+import React, { useState, useMemo } from "react";
+import OrdersCard from "@/components/ui/cards/OrdersCard";
 import Button from "@/components/ui/button/Button";
 import SearchInput from "@/components/ui/input/SearchInput";
 import FilterMenu from "@/components/ui/button/FilterMenu";
 import PageHeader from "@/components/ui/heading/PageHeader";
- 
+import { useOrders } from "@/redux/hooks/useOrders";
 
 const MyOrdersComponents = () => {
-	const follow = [
-		{
-			id: 1,
-			image: image,
-			title: "Подгузники",
-			status: "В обработке",
-			suspended: "Подписка приостановлена",
-			diapers: 50,
-			panties: 50,
-			payment: "Finik",
-			address: "Горького 1/2",
-			next_delivery: "17.10.2025 до 15:00",
-			old_price: 600,
-			new_price: 500,
-		},
-		{
-			id: 2,
-			image: image,
-			title: "Салфетки",
-			suspended: "",
-			status: "В пути",
-			diapers: 50,
-			panties: 50,
-			payment: "Finik",
-			address: "Горького 1/2",
-			next_delivery: "17.10.2025 до 15:00",
-			old_price: 600,
-			new_price: 500,
-		},
-		{
-			id: 3,
-			image: image,
-			title: "Трусики",
-			suspended: "",
-			status: "В пути",
-			diapers: 50,
-			panties: 50,
-			payment: "Finik",
-			address: "Горького 1/2",
-			next_delivery: "17.10.2025 до 15:00",
-			old_price: 600,
-			new_price: 500,
-		},
-	];
-
-	const urgent_orders = [
-		{
-			id: 1,
-			title: "Подгузники",
-			status: "В обработке",
-			diapers: 50,
-			panties: 50,
-			payment: "Finik",
-			address: "Горького 1/2",
-			next_delivery: "17.10.2025 до 15:00",
-			old_price: 600,
-			new_price: 500,
-		},
-		{
-			id: 2,
-			title: "Салфетки",
-			status: "В пути",
-			diapers: 50,
-			panties: 50,
-			payment: "Finik",
-			address: "Горького 1/2",
-			next_delivery: "17.10.2025 до 15:00",
-			old_price: 600,
-			new_price: 500,
-		},
-		{
-			id: 3,
-			title: "Трусики",
-			status: "В пути",
-			diapers: 50,
-			panties: 50,
-			payment: "Finik",
-			address: "Горького 1/2",
-			next_delivery: "17.10.2025 до 15:00",
-			old_price: 600,
-			new_price: 500,
-		},
-	];
-
-	// ✅ Состояние для активной вкладки
 	const [activeTab, setActiveTab] = useState<"urgent" | "follow">("urgent");
 
-	// Состояние для меню (общее для всех карточек)
-	const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+	// Состояния для фильтрации
+	const [searchQuery, setSearchQuery] = useState("");
+	const [statusFilter, setStatusFilter] = useState<"future" | "delivered">(
+		"future"
+	);
 
-	// Закрытие меню при клике вне
-	useEffect(() => {
-		const handleClickOutside = (e: MouseEvent) => {
-			const target = e.target as HTMLElement;
-			if (
-				target.closest('[data-menu-trigger="true"]') ||
-				target.closest('[data-menu-content="true"]')
-			) {
-				return;
-			}
-			setOpenMenuId(null);
-		};
+	const { data: response, isLoading } = useOrders();
 
-		document.addEventListener("click", handleClickOutside);
-		return () => {
-			document.removeEventListener("click", handleClickOutside);
-		};
-	}, []);
+	// Функция фильтрации
+	const getFilteredData = (type: "one_time" | "subscription") => {
+		const baseOrders =
+			response?.data?.detail?.filter((order) => order.type === type) || [];
 
-	const toggleMenu = (id: number) => {
-		setOpenMenuId(openMenuId === id ? null : id);
+		return baseOrders.filter((order) => {
+			// 1. Поиск по ID или Адресу
+			const matchesSearch =
+				order.id.toString().includes(searchQuery) ||
+				(order.address &&
+					order.address.toLowerCase().includes(searchQuery.toLowerCase()));
+
+			// 2. Фильтр по статусу (completed считается доставленным)
+			const isCompleted = order.status === "completed";
+			const matchesStatus =
+				statusFilter === "delivered" ? isCompleted : !isCompleted;
+
+			return matchesSearch && matchesStatus;
+		});
 	};
 
-	const handleAction = (action: string, itemId: number) => {
-		console.log(`Действие: ${action}, ID: ${itemId}`);
-		setOpenMenuId(null);
-	};
+	const urgentOrders = useMemo(
+		() => getFilteredData("one_time"),
+		[response, searchQuery, statusFilter]
+	);
+	const subscriptionOrders = useMemo(
+		() => getFilteredData("subscription"),
+		[response, searchQuery, statusFilter]
+	);
+
+	if (isLoading) {
+		return (
+			<section>
+				<PageHeader
+					title="Мои заказы"
+					description="Здесь вы можете посмотреть ваши заказы"
+				/>
+				<div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-5">
+					{Array.from({ length: 3 }).map((_, i) => (
+						<div
+							key={i}
+							className="p-3 bg-white border border-[#E4E4E7] w-full h-[300px] rounded-[16px] animate-pulse">
+							<div className="h-full bg-gray-50 rounded-[8px]" />
+						</div>
+					))}
+				</div>
+			</section>
+		);
+	}
 
 	return (
 		<section>
@@ -136,6 +76,7 @@ const MyOrdersComponents = () => {
 			/>
 
 			<div className="p-4">
+				{/* Табы */}
 				<div className="bg-white flex justify-between items-center w-full rounded-[8px]">
 					<Button
 						className={`w-full py-3 rounded-[8px] font-medium transition-all duration-300 ease-in-out ${
@@ -153,32 +94,31 @@ const MyOrdersComponents = () => {
 					</Button>
 				</div>
 
+				{/* Поиск и фильтры */}
 				<div className="flex gap-3 py-6">
-					<SearchInput placeholder="Поиск" />
-
-					<FilterMenu />
+					<SearchInput
+						placeholder="Поиск по номеру или адресу"
+						value={searchQuery}
+						onChange={(e) => setSearchQuery(e.target.value)}
+					/>
+					<FilterMenu
+						currentFilter={statusFilter}
+						onFilterChange={(val) => setStatusFilter(val)}
+					/>
 				</div>
 
+				{/* Список карточек */}
 				<div className="grid md:grid-cols-3 grid-cols-1 gap-4">
-					{/* {activeTab === "urgent"
-						? urgent_orders.map((el) => (
-								<OrdersCard
-									key={el.id}
-									data={el}
-									isOpenMenu={openMenuId === el.id}
-									onToggleMenu={toggleMenu}
-									onAction={handleAction}
-								/>
-						  ))
-						: follow.map((el) => (
-								<FollowCard
-									key={el.id}
-									data={el}
-									isOpenMenu={openMenuId === el.id}
-									onToggleMenu={toggleMenu}
-									onAction={handleAction}
-								/>
-						  ))} */}
+					{(activeTab === "urgent" ? urgentOrders : subscriptionOrders).length >
+					0 ? (
+						(activeTab === "urgent" ? urgentOrders : subscriptionOrders).map(
+							(item) => <OrdersCard key={item.id} data={item} />
+						)
+					) : (
+						<div className="col-span-full text-center py-20 text-gray-400">
+							По вашему запросу ничего не найдено
+						</div>
+					)}
 				</div>
 			</div>
 		</section>

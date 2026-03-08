@@ -1,6 +1,6 @@
 // src/services/order.service.ts
 import { PRIVATE_API } from "@/api/interceptors";
-import { ICreateOneTimeOrderPayload, INotificationsResponse, IOrdersResponse } from "../models/orders.model";
+import { ICreateOneTimeOrderPayload, INotificationsResponse, IOrderId, IOrdersResponse } from "../models/orders.model";
  
 
 class OrderService {
@@ -9,6 +9,17 @@ class OrderService {
   getOrders() {
     return PRIVATE_API.get<IOrdersResponse>(`${this.BASE_URL}user/orders/`);
   }
+
+  getOrderById(id: string | number) {
+    return PRIVATE_API.get<IOrderId>(`${this.BASE_URL}user/orders/${id}/`);
+  }
+
+  async updateOrder(id: string | number, payload: { city_id?: number; street?: string }) {
+    const response = await PRIVATE_API.patch(`${this.BASE_URL}user/orders/${id}/`, payload);
+    return response.data;
+  }
+
+  ///
 
   getNotifications() {
     return PRIVATE_API.get<INotificationsResponse>(

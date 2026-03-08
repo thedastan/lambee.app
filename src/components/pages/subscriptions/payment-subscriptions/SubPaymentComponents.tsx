@@ -96,11 +96,14 @@ const SubPaymentComponents = () => {
 			items: items, // Теперь массив совпадает с типом в модели
 		};
 
+		
+
 		setIsLoading(true);
 
 		try {
 			const response = await subscriptionsService.createSubscription(payload);
-			const detail = response.detail;
+
+			const detail = (response as any).detail;
 
 			if (typeof detail === "string" && detail.startsWith("http")) {
 				clear();

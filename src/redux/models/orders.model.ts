@@ -1,31 +1,34 @@
-// src/models/order.model.ts
-export interface IOrderItem {
-	product_id: number;
-	quantity: number;
-	price: number;
+export interface IOrdersResponse {
+	detail: Detail[];
 }
 
-export interface IOrder {
+export interface Detail {
 	id: number;
 	type: string;
 	status: string;
 	address: string;
+	payment_method: string;
 	created_at: string;
-	items: IOrderItem[];
+	items: Item[];
 }
 
-export interface IOrdersResponse {
-	detail: IOrder[];
-}
-
-export interface INotification {
-	title: string;
-	description: string;
-	created_at: string;
+export interface Item {
+	id: number;
+	quantity: number;
+	price: number;
+	product_title: string;
+	variant_title: string;
+	variant_image: string;
 }
 
 export interface INotificationsResponse {
-	detail: INotification[];
+	detail: INotificationsDetail[];
+}
+
+export interface INotificationsDetail {
+	title: string;
+	description: string;
+	created_at: string;
 }
 
 ///
@@ -35,9 +38,33 @@ export interface ICreateOneTimeOrderPayload {
 		product_variant_id: number;
 		quantity: number;
 	}[];
-	city_id: number
-  street: string
-	payment_method: 'finik' | 'balance' | "bonus";
+	city_id: number;
+	street: string;
+	payment_method: "finik" | "balance" | "bonus";
 }
 
+///
+
  
+export interface IOrderId {
+  detail: IOrderIdDetail
+}
+
+export interface IOrderIdDetail {
+  id: number
+  type: string
+  status: string
+  address: string
+  payment_method: string
+  created_at: string
+  items: IOrderIdItem[]
+}
+
+export interface IOrderIdItem {
+  id: number
+  quantity: number
+  price: number
+  product_title: string
+  variant_title: string
+  variant_image: string
+}
