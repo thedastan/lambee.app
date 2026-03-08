@@ -13,34 +13,95 @@ export interface ICreateSubscriptionPayload {
 }
 
 
-///
+ 
 
 export interface ICreateSubscriptionResponse {
-	detail: string;
+  detail: Detail[]
 }
 
-export interface ISubscriptionItem {
-	product_variant_id: number;
-	quantity: number;
-	price: number;
-	apply_to: string;
+export interface Detail {
+  id: number
+  status: string
+  city: City
+  street: string
+  frequency: Frequency
+  weekday: number
+  created_at: string
+  payment_method: string
+  total_amount: number
+  next_delivery_date: string
+  items: Item[]
 }
 
-export interface IDelivery {
-	delivery_datetime: string;
-	status: string;
+export interface City {
+  id: number
+  name: string
+  country: Country
 }
 
-export interface ISubscription {
-	id: number;
-	status: string;
-	address: string;
-	total_amount: number;
-	created_at: string;
-	items: ISubscriptionItem[];
-	deliveries: IDelivery[];
+export interface Country {
+  id: number
+  name: string
 }
 
-export interface ISubscriptionsResponse {
-	detail: ISubscription[];
+export interface Frequency {
+  id: number
+  weeks: number
+  label: string
+}
+
+export interface Item {
+  product_variant_id: number
+  quantity: number
+  apply_to: string
+  product_title: string
+  variant_title: string
+  variant_image: string
+}
+
+
+///
+
+export interface SubID {
+  detail: SubIDDetail
+}
+
+export interface SubIDDetail {
+  id: number
+  status: string
+  city: SubIDCity
+  street: string
+  frequency: SubIDFrequency
+  weekday: number
+  created_at: string
+  payment_method: string
+  total_amount: string
+  next_delivery_date: any
+  items: SubIDItem[]
+}
+
+export interface SubIDCity {
+  id: number
+  name: string
+  country: SubIDCountry
+}
+
+export interface SubIDCountry {
+  id: number
+  name: string
+}
+
+export interface SubIDFrequency {
+  id: number
+  weeks: number
+  label: string
+}
+
+export interface SubIDItem {
+  product_variant_id: number
+  quantity: number
+  apply_to: string
+  product_title: string
+  variant_title: string
+  variant_image: string
 }

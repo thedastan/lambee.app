@@ -76,7 +76,7 @@ const PaymentHistory = () => {
 			<div className="p-4">
 				<div className="flex gap-3 pb-6">
 					<SearchInput placeholder="Поиск" />
-					<FilterMenu />
+					{/* <FilterMenu /> */}
 				</div>
 
 				<div className=" grid grid-cols-1 md:grid-cols-3 gap-3 ">
